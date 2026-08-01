@@ -1,11 +1,18 @@
-import { selectNextTrack, type PartyPlayback, type SelectionReason } from "@songfest/shared";
+import {
+  calculateRequiredSkipVotes,
+  selectNextTrack,
+  type PartyPlayback,
+  type SelectionReason,
+} from "@songfest/shared";
 
 import { AppError } from "../../errors/app-error.js";
 import { prisma } from "../../lib/prisma.js";
 import {
   publishAdminNotification,
+  publishPartyResync,
   publishPlaybackUpdated,
   publishPlaylistActivated,
+  publishPlaylistScheduled,
   publishTrackPlayed,
   publishTrackPlaying,
   publishTrackSelected,
@@ -19,9 +26,22 @@ import {
   startSpotifyTrack,
 } from "../spotify/spotify.service.js";
 import { playlistTrackSelect, toPlaylistTrack } from "../tracks/track.service.js";
-import { didObservedTrackChange, shouldPrepareNextTrack } from "./playback-policy.js";
+import {
+  didObservedTrackChange,
+  selectPlaybackTargetPlaylist,
+  shouldPrepareNextTrack,
+} from "./playback-policy.js";
 
 const activeSynchronizations = new Set<string>();
+
+const waitForPlaybackAvailability = async (partyId: string) => {
+  const deadline = Date.now() + 5_000;
+  while (activeSynchronizations.has(partyId) && Date.now() < deadline) {
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 50);
+    });
+  }
+};
 
 const getAutomationParty = (partyId: string) =>
   prisma.party.findFirst({
@@ -34,6 +54,95 @@ const getAutomationParty = (partyId: string) =>
       selectedDeviceId: true,
     },
   });
+
+export const resolvePlaybackTargetParty = async (partyId: string) => {
+  const party = await prisma.party.findFirst({
+    where: { id: partyId, status: "ACTIVE" },
+    select: {
+      id: true,
+      adminId: true,
+      activePlaylistId: true,
+      scheduledPlaylistId: true,
+      selectedDeviceId: true,
+      playlists: {
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        select: {
+          id: true,
+          createdAt: true,
+          _count: {
+            select: {
+              tracks: {
+                where: { status: "PENDING", isBannedForParty: false },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+  if (party === null || party.activePlaylistId === null) {
+    return party;
+  }
+
+  const targetPlaylistId = selectPlaybackTargetPlaylist({
+    activePlaylistId: party.activePlaylistId,
+    scheduledPlaylistId: party.scheduledPlaylistId,
+    playlists: party.playlists.map((playlist) => ({
+      id: playlist.id,
+      createdAtMs: playlist.createdAt.getTime(),
+      pendingTrackCount: playlist._count.tracks,
+    })),
+  });
+  const nextScheduledPlaylistId =
+    targetPlaylistId === null || targetPlaylistId === party.activePlaylistId
+      ? null
+      : targetPlaylistId;
+  if (nextScheduledPlaylistId === party.scheduledPlaylistId) {
+    return party;
+  }
+
+  const updated = await prisma.party.updateMany({
+    where: {
+      id: party.id,
+      scheduledPlaylistId: party.scheduledPlaylistId,
+    },
+    data: {
+      scheduledPlaylistId: nextScheduledPlaylistId,
+      stateVersion: { increment: 1 },
+    },
+  });
+  if (updated.count === 0) {
+    return getAutomationParty(party.id);
+  }
+
+  if (nextScheduledPlaylistId !== null) {
+    await prisma.auditLog.create({
+      data: {
+        partyId: party.id,
+        actorType: "SYSTEM",
+        action: "playlist.auto-scheduled-after-empty",
+        entityType: "PartyPlaylist",
+        entityId: nextScheduledPlaylistId,
+        metadata: { previousPlaylistId: party.activePlaylistId },
+      },
+    });
+    void publishPlaylistScheduled(nextScheduledPlaylistId);
+    void publishAdminNotification(
+      party.id,
+      "PLAYLIST_AUTO_SCHEDULED",
+      "La playlist active est épuisée. La prochaine ambiance prendra automatiquement le relais.",
+    );
+  }
+  void publishPartyResync(party.id, ["party", "playlists", "playback"]);
+
+  return {
+    id: party.id,
+    adminId: party.adminId,
+    activePlaylistId: party.activePlaylistId,
+    scheduledPlaylistId: nextScheduledPlaylistId,
+    selectedDeviceId: party.selectedDeviceId,
+  };
+};
 
 const getControllableParty = async (adminId: string, partyId: string) => {
   const party = await prisma.party.findFirst({
@@ -106,6 +215,7 @@ const reconcileObservedPlayback = async (partyId: string, observed: ObservedPlay
             select: {
               id: true,
               status: true,
+              playlistId: true,
               sequenceGroupId: true,
               sequencePosition: true,
             },
@@ -133,12 +243,20 @@ const reconcileObservedPlayback = async (partyId: string, observed: ObservedPlay
           playedAt: now,
         },
       });
+      await transaction.trackSkipVote.deleteMany({
+        where: { trackId: completedTrackId },
+      });
     }
 
     const hasNoCurrentPlayback =
       playbackState.spotifyTrackId === null && observed.spotifyTrackId === null;
+    const scheduledTrackStarted =
+      observedTrack !== null && observedTrack.playlistId === party.scheduledPlaylistId;
     let activatedPlaylistId: string | null = null;
-    if ((trackChanged || hasNoCurrentPlayback) && party.scheduledPlaylistId !== null) {
+    if (
+      (trackChanged || hasNoCurrentPlayback || scheduledTrackStarted) &&
+      party.scheduledPlaylistId !== null
+    ) {
       activatedPlaylistId = party.scheduledPlaylistId;
       await transaction.partyPlaylist.update({
         where: { id: activatedPlaylistId },
@@ -303,6 +421,8 @@ const reserveNextTrack = async (
         priorityLevel: true,
         createdAt: true,
         spotifyUri: true,
+        spotifyTrackId: true,
+        durationMs: true,
       },
     }),
     prisma.playlistTrack.findMany({
@@ -356,6 +476,8 @@ const reserveNextTrack = async (
     : {
         id: track.id,
         spotifyUri: track.spotifyUri,
+        spotifyTrackId: track.spotifyTrackId,
+        durationMs: track.durationMs,
         reason: selection.reason,
       };
 };
@@ -406,6 +528,214 @@ const releaseTrackReservation = async (trackId: string) => {
       selectedAt: null,
     },
   });
+};
+
+interface ImmediatePlaybackTarget {
+  id: string;
+  spotifyUri: string;
+  spotifyTrackId: string;
+  durationMs: number;
+  status: "PENDING" | "SELECTED" | "QUEUED";
+}
+
+interface ImmediatePlaybackActor {
+  action: "flash.playback-started" | "playback.skipped" | "playback.skipped-by-vote";
+  actorType: "ADMIN" | "PARTICIPANT" | "SYSTEM";
+  adminActorId?: string;
+  participantActorId?: string;
+}
+
+const getPreparedOrReserveNextTrack = async (
+  partyId: string,
+  activePlaylistId: string,
+  scheduledPlaylistId: string | null,
+): Promise<ImmediatePlaybackTarget | null> => {
+  const prepared = await prisma.playbackState.findUnique({
+    where: { partyId },
+    select: {
+      queuedTrack: {
+        select: {
+          id: true,
+          spotifyUri: true,
+          spotifyTrackId: true,
+          durationMs: true,
+          status: true,
+        },
+      },
+    },
+  });
+  if (prepared?.queuedTrack?.status === "QUEUED") {
+    return { ...prepared.queuedTrack, status: "QUEUED" };
+  }
+
+  const reserved = await reserveNextTrack(partyId, activePlaylistId, scheduledPlaylistId);
+  return reserved === null ? null : { ...reserved, status: "SELECTED" };
+};
+
+const startTrackImmediately = async (
+  partyId: string,
+  trackId: string,
+  actor: ImmediatePlaybackActor,
+  expectedCurrentTrackId?: string,
+) => {
+  await waitForPlaybackAvailability(partyId);
+  if (activeSynchronizations.has(partyId)) {
+    throw new AppError(
+      409,
+      "PLAYBACK_COMMAND_IN_PROGRESS",
+      "La lecture est en cours de synchronisation. Réessaie dans un instant.",
+    );
+  }
+  activeSynchronizations.add(partyId);
+
+  try {
+    const [party, track] = await Promise.all([
+      prisma.party.findUnique({
+        where: { id: partyId },
+        select: {
+          adminId: true,
+          status: true,
+          selectedDeviceId: true,
+          playbackState: {
+            select: { currentTrackId: true },
+          },
+        },
+      }),
+      prisma.playlistTrack.findFirst({
+        where: {
+          id: trackId,
+          playlist: { partyId },
+          status: { in: ["PENDING", "SELECTED", "QUEUED"] },
+          isBannedForParty: false,
+        },
+        select: {
+          id: true,
+          spotifyUri: true,
+          spotifyTrackId: true,
+          durationMs: true,
+          status: true,
+        },
+      }),
+    ]);
+    if (party === null) {
+      throw new AppError(404, "PARTY_NOT_FOUND", "Cette soirée n’existe pas.");
+    }
+    if (party.status !== "ACTIVE" || party.selectedDeviceId === null) {
+      throw new AppError(409, "PLAYBACK_NOT_READY", "La lecture Spotify n’est pas prête.");
+    }
+    if (
+      expectedCurrentTrackId !== undefined &&
+      party.playbackState?.currentTrackId !== expectedCurrentTrackId
+    ) {
+      return false;
+    }
+    if (track === null) {
+      throw new AppError(409, "TRACK_NOT_FOUND", "Ce morceau ne peut plus être lancé.");
+    }
+
+    try {
+      await startSpotifyTrack(party.adminId, party.selectedDeviceId, track.spotifyUri);
+    } catch (error) {
+      if (track.status === "SELECTED") {
+        await releaseTrackReservation(track.id);
+      }
+      throw error;
+    }
+
+    const now = new Date();
+    const previousTrackId = await prisma.$transaction(async (transaction) => {
+      const playback = await transaction.playbackState.findUniqueOrThrow({
+        where: { partyId },
+        select: {
+          currentTrackId: true,
+          queuedTrackId: true,
+          lockedNextTrackId: true,
+        },
+      });
+
+      if (playback.queuedTrackId !== null && playback.queuedTrackId !== track.id) {
+        await transaction.playlistTrack.updateMany({
+          where: { id: playback.queuedTrackId, status: "QUEUED" },
+          data: { status: "PENDING", queuedAt: null },
+        });
+      }
+      if (playback.currentTrackId !== null && playback.currentTrackId !== track.id) {
+        await transaction.playlistTrack.updateMany({
+          where: { id: playback.currentTrackId, status: "PLAYING" },
+          data: { status: "SKIPPED", playedAt: now },
+        });
+        await transaction.trackSkipVote.deleteMany({
+          where: { trackId: playback.currentTrackId },
+        });
+      }
+
+      await transaction.playlistTrack.update({
+        where: { id: track.id },
+        data: {
+          status: "PLAYING",
+          playingAt: now,
+        },
+      });
+      await transaction.playbackState.update({
+        where: { partyId },
+        data: {
+          currentTrackId: track.id,
+          queuedTrackId: null,
+          ...(playback.lockedNextTrackId === track.id ? { lockedNextTrackId: null } : {}),
+          spotifyTrackId: track.spotifyTrackId,
+          progressMs: 0,
+          durationMs: track.durationMs,
+          isPlaying: true,
+          lastSpotifySyncAt: now,
+        },
+      });
+      await transaction.party.update({
+        where: { id: partyId },
+        data: {
+          stateVersion: { increment: 1 },
+          auditLogs: {
+            create: {
+              actorType: actor.actorType,
+              ...(actor.adminActorId === undefined ? {} : { adminActorId: actor.adminActorId }),
+              ...(actor.participantActorId === undefined
+                ? {}
+                : { participantActorId: actor.participantActorId }),
+              action: actor.action,
+              entityType: "PlaylistTrack",
+              entityId: track.id,
+              metadata: {
+                skippedTrackId: playback.currentTrackId,
+              },
+            },
+          },
+        },
+      });
+
+      return playback.currentTrackId;
+    });
+
+    void publishTrackPlaying(track.id);
+    void publishPlaybackUpdated(partyId, {
+      trackId: track.id,
+      progressMs: 0,
+      durationMs: track.durationMs,
+      isPlaying: true,
+      serverTimestamp: now.getTime(),
+    });
+    void publishPartyResync(partyId, ["party", "playlists", "tracks", "playback", "flash"]);
+    if (previousTrackId !== null) {
+      void publishAdminNotification(
+        partyId,
+        actor.action === "flash.playback-started" ? "FLASH_TRACK_STARTED" : "TRACK_SKIPPED",
+        actor.action === "flash.playback-started"
+          ? "La Musique Flash a démarré immédiatement."
+          : "Le morceau en cours a été passé.",
+      );
+    }
+    return true;
+  } finally {
+    activeSynchronizations.delete(partyId);
+  }
 };
 
 export const synchronizePartyPlayback = async (partyId: string) => {
@@ -460,7 +790,7 @@ export const synchronizePartyPlayback = async (partyId: string) => {
       return;
     }
 
-    const currentParty = await getAutomationParty(party.id);
+    const currentParty = await resolvePlaybackTargetParty(party.id);
     if (currentParty === null || currentParty.activePlaylistId === null) {
       return;
     }
@@ -495,10 +825,14 @@ export const synchronizePartyPlayback = async (partyId: string) => {
   }
 };
 
-const loadPlaybackSnapshot = async (partyId: string): Promise<PartyPlayback> => {
+const loadPlaybackSnapshot = async (
+  partyId: string,
+  participantId?: string,
+): Promise<PartyPlayback> => {
   const party = await prisma.party.findUnique({
     where: { id: partyId },
     select: {
+      status: true,
       activePlaylistId: true,
       scheduledPlaylistId: true,
       playbackState: {
@@ -517,6 +851,33 @@ const loadPlaybackSnapshot = async (partyId: string): Promise<PartyPlayback> => 
     throw new AppError(404, "PARTY_NOT_FOUND", "Cette soirée n’existe pas.");
   }
 
+  const currentTrackId = party.playbackState.currentTrack?.id ?? null;
+  const [activeParticipantCount, skipVoteCount, participantSkipVote] = await Promise.all([
+    prisma.participant.count({
+      where: { partyId, isActive: true, isBlocked: false },
+    }),
+    currentTrackId === null
+      ? Promise.resolve(0)
+      : prisma.trackSkipVote.count({
+          where: {
+            partyId,
+            trackId: currentTrackId,
+            participant: { isActive: true, isBlocked: false },
+          },
+        }),
+    currentTrackId === null || participantId === undefined
+      ? Promise.resolve(null)
+      : prisma.trackSkipVote.findUnique({
+          where: {
+            trackId_participantId: {
+              trackId: currentTrackId,
+              participantId,
+            },
+          },
+          select: { id: true },
+        }),
+  ]);
+
   return {
     currentTrack:
       party.playbackState.currentTrack === null
@@ -531,6 +892,13 @@ const loadPlaybackSnapshot = async (partyId: string): Promise<PartyPlayback> => 
     progressMs: party.playbackState.progressMs,
     durationMs: party.playbackState.durationMs,
     isPlaying: party.playbackState.isPlaying,
+    skipVote: {
+      voteCount: skipVoteCount,
+      requiredVotes: calculateRequiredSkipVotes(activeParticipantCount),
+      participantHasVoted: participantSkipVote !== null,
+      isAvailable:
+        participantId !== undefined && party.status === "ACTIVE" && currentTrackId !== null,
+    },
     lastSyncedAt: party.playbackState.lastSpotifySyncAt?.toISOString() ?? null,
     serverTimestamp: party.playbackState.lastSpotifySyncAt?.getTime() ?? Date.now(),
   };
@@ -550,7 +918,7 @@ export const getParticipantPlayback = async (participantId: string, partyId: str
     throw new AppError(403, "FORBIDDEN", "Tu n’appartiens pas à cette soirée.");
   }
 
-  return loadPlaybackSnapshot(partyId);
+  return loadPlaybackSnapshot(partyId, participantId);
 };
 
 export const getAdminPlayback = async (adminId: string, partyId: string) => {
@@ -638,34 +1006,51 @@ export const resumePartyPlayback = async (adminId: string, partyId: string) => {
   return loadPlaybackSnapshot(partyId);
 };
 
-export const skipPartyPlayback = async (adminId: string, partyId: string) => {
-  const party = await getControllableParty(adminId, partyId);
-  if (party.status !== "ACTIVE") {
-    throw new AppError(409, "PLAYBACK_NOT_READY", "La soirée n’est pas encore lancée.");
+const skipToNextApplicationTrack = async (
+  partyId: string,
+  actor: ImmediatePlaybackActor,
+  expectedCurrentTrackId?: string,
+) => {
+  const party = await resolvePlaybackTargetParty(partyId);
+  if (party === null || party.activePlaylistId === null || party.selectedDeviceId === null) {
+    throw new AppError(409, "PLAYBACK_NOT_READY", "La lecture Spotify n’est pas prête.");
   }
-  await skipSpotifyPlayback(adminId, party.selectedDeviceId);
 
-  const currentTrackId = party.playbackState?.currentTrackId;
-  if (currentTrackId !== null && currentTrackId !== undefined) {
+  const nextTrack = await getPreparedOrReserveNextTrack(
+    party.id,
+    party.activePlaylistId,
+    party.scheduledPlaylistId,
+  );
+  if (nextTrack !== null) {
+    return startTrackImmediately(party.id, nextTrack.id, actor, expectedCurrentTrackId);
+  }
+
+  const playback = await prisma.playbackState.findUniqueOrThrow({
+    where: { partyId },
+    select: { currentTrackId: true },
+  });
+  if (expectedCurrentTrackId !== undefined && playback.currentTrackId !== expectedCurrentTrackId) {
+    return false;
+  }
+
+  await skipSpotifyPlayback(party.adminId, party.selectedDeviceId);
+  if (playback.currentTrackId !== null) {
     const now = new Date();
     await prisma.$transaction([
       prisma.playlistTrack.updateMany({
-        where: {
-          id: currentTrackId,
-          status: "PLAYING",
-        },
-        data: {
-          status: "SKIPPED",
-          playedAt: now,
-        },
+        where: { id: playback.currentTrackId, status: "PLAYING" },
+        data: { status: "SKIPPED", playedAt: now },
       }),
+      prisma.trackSkipVote.deleteMany({ where: { trackId: playback.currentTrackId } }),
       prisma.playbackState.update({
         where: { partyId },
         data: {
           currentTrackId: null,
           spotifyTrackId: null,
           progressMs: 0,
+          durationMs: 0,
           isPlaying: true,
+          lastSpotifySyncAt: now,
         },
       }),
       prisma.party.update({
@@ -674,17 +1059,55 @@ export const skipPartyPlayback = async (adminId: string, partyId: string) => {
           stateVersion: { increment: 1 },
           auditLogs: {
             create: {
-              actorType: "ADMIN",
-              adminActorId: adminId,
-              action: "playback.skipped",
-              entityType: "Party",
-              entityId: partyId,
+              actorType: actor.actorType,
+              ...(actor.adminActorId === undefined ? {} : { adminActorId: actor.adminActorId }),
+              ...(actor.participantActorId === undefined
+                ? {}
+                : { participantActorId: actor.participantActorId }),
+              action: actor.action,
+              entityType: "PlaylistTrack",
+              entityId: playback.currentTrackId,
             },
           },
         },
       }),
     ]);
   }
+  void publishPartyResync(partyId, ["party", "tracks", "playback", "flash"]);
+  return true;
+};
+
+export const startFlashTrackImmediately = (partyId: string, trackId: string) =>
+  startTrackImmediately(partyId, trackId, {
+    action: "flash.playback-started",
+    actorType: "SYSTEM",
+  });
+
+export const skipPartyPlaybackAfterVote = (
+  partyId: string,
+  currentTrackId: string,
+  participantId: string,
+) =>
+  skipToNextApplicationTrack(
+    partyId,
+    {
+      action: "playback.skipped-by-vote",
+      actorType: "PARTICIPANT",
+      participantActorId: participantId,
+    },
+    currentTrackId,
+  );
+
+export const skipPartyPlayback = async (adminId: string, partyId: string) => {
+  const party = await getControllableParty(adminId, partyId);
+  if (party.status !== "ACTIVE") {
+    throw new AppError(409, "PLAYBACK_NOT_READY", "La soirée n’est pas encore lancée.");
+  }
+  await skipToNextApplicationTrack(partyId, {
+    action: "playback.skipped",
+    actorType: "ADMIN",
+    adminActorId: adminId,
+  });
 
   return loadPlaybackSnapshot(partyId);
 };

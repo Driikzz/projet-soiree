@@ -331,7 +331,7 @@ Les événements ciblés sont `party:participant-joined`, `party:participant-lef
 `party:settings-updated`, `party:ended`, `playlist:created`, `playlist:updated`,
 `playlist:activated`, `playlist:scheduled`, `playlist:vote-updated`, `track:added`,
 `track:removed`, `track:vote-updated`, `track:selected`, `track:playing`, `track:played`,
-`playback:updated`, `reward:assigned` et `reward:used`.
+`playback:updated`, `playback:skip-vote-updated`, `reward:assigned` et `reward:used`.
 
 `state:resync-required` fournit une liste fermée parmi `party`, `participants`, `playlists`,
 `tracks`, `playback`, `rewards` et `flash`. Toutes les notifications utilisent :
@@ -349,8 +349,8 @@ Les événements ciblés sont `party:participant-joined`, `party:participant-lef
 
 La Musique Flash est une opportunité limitée dans le temps attribuée à un participant actif. Le
 morceau choisi ne consomme pas son quota, mais conserve les règles de durée, de contenu explicite,
-de doublon et de rejeu récent. Il reste dans la file SongFest jusqu’au dernier moment et n’est pas
-envoyé directement dans la file Spotify lors du tirage.
+de doublon et de rejeu récent. Dès que le participant valide son choix, SongFest interrompt le
+morceau courant et démarre directement le morceau Flash sur l’appareil Spotify sélectionné.
 
 ### `GET /api/parties/:partyId/flash`
 
@@ -367,8 +367,8 @@ Seul le participant tiré au sort peut répondre, avant `expiresAt`.
 { "spotifyTrackId": "11dFghVXANMlKmJXsNCbNl" }
 ```
 
-Le morceau est ajouté à la playlist active au moment du tirage avec une priorité Flash. Si un
-prochain titre a déjà été envoyé à Spotify, il occupera le premier emplacement SongFest encore sûr.
+Le morceau est persisté pour l’historique de lecture, mais reste exclu de la liste normale des
+propositions, du quota et des compteurs de contribution du participant.
 
 ### `POST /api/admin/parties/:partyId/flash/trigger`
 
@@ -389,6 +389,15 @@ Annule le tour courant. Un morceau déjà transmis à Spotify ne peut plus être
 Retourne au participant de la soirée le morceau SongFest courant, le prochain morceau réservé,
 l’ambiance active ou programmée, la progression persistée et le timestamp de la dernière
 synchronisation Spotify.
+
+SongFest conserve au maximum un prochain morceau dans la file Spotify et le prépare pendant la
+dernière minute du titre courant. Une ambiance programmée reste prioritaire. Sinon, tous les titres
+en attente de l’ambiance active sont joués avant qu’une autre playlist soit choisie. Quand elle est
+épuisée, la prochaine playlist contenant des titres est automatiquement programmée selon l’ordre de
+création des playlists, avec retour au début après la dernière.
+
+La réponse contient aussi `skipVote` avec le nombre de votes, le seuil de majorité stricte, le vote
+du participant courant et la disponibilité de l’action.
 
 Le navigateur calcule la progression courante avec :
 
@@ -413,6 +422,16 @@ Ces routes exigent une origine autorisée, la session administrateur et `X-CSRF-
 limitées à 30 commandes par minute et nécessitent une playlist active ainsi qu’un appareil Spotify
 sélectionné. `start` passe la soirée à `ACTIVE`; les trois autres commandes refusent une soirée non
 active.
+
+### Vote collectif pour passer
+
+- `POST /api/parties/:partyId/playback/skip-vote`
+- `DELETE /api/parties/:partyId/playback/skip-vote`
+
+Ces routes exigent une session participante active, l’origine autorisée et `X-CSRF-Token`. Un seul
+vote est conservé par participant et morceau. Le morceau est passé dès que le nombre de votes est
+strictement supérieur à la moitié des participants actifs non bloqués. Les compteurs sont diffusés
+avec `playback:skip-vote-updated`.
 
 ## Administration et récompenses
 

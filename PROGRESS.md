@@ -128,7 +128,8 @@
 - Sélection via la fonction métier déterministe déjà testée : DOUBLE_TRACK, priorité, votes,
   équité, artistes récents et ancienneté.
 - Réservation atomique d’un seul prochain morceau dans la file SongFest.
-- Envoi Spotify repoussé aux 30 dernières secondes pour laisser les votes évoluer.
+- Envoi Spotify repoussé à la dernière minute pour conserver plusieurs tentatives avant la fin du
+  morceau tout en laissant les votes évoluer.
 - Démarrage direct du premier morceau lorsqu’aucune lecture Spotify n’existe.
 - Libération de la réservation après une erreur Spotify.
 - Activation de l’ambiance programmée lors du changement de morceau, jamais au milieu.
@@ -255,7 +256,7 @@
 - L’adaptateur Socket.IO en mémoire correspond au déploiement MVP à une seule instance API.
 - Le client demande une resynchronisation toutes les 60 secondes en plus du réabonnement.
 - L’orchestrateur de lecture reste dans le processus API pour le MVP mono-instance.
-- Le prochain morceau n’est envoyé à Spotify que dans les 30 dernières secondes.
+- Un seul prochain morceau est envoyé à Spotify pendant la dernière minute.
 - Spotify ne permet pas de retirer un morceau de sa file par l’API ; le passage manuel reste le
   filet de sécurité d’un changement d’ambiance très tardif.
 - Les récompenses restent des objets explicites, sans moteur générique de règles : chaque effet du
@@ -328,23 +329,46 @@ checklist de `docs/PARTY_RUNBOOK.md` avec l’appareil de diffusion.
 - Tirage aléatoire équitable excluant les gagnants récents tant que le groupe n’a pas tourné.
 - Expiration automatique sans action sur le morceau Spotify en cours.
 - Soumission Flash hors quota avec toutes les validations musicales existantes.
-- Réservation du prochain emplacement SongFest sans remplissage anticipé de la file Spotify.
+- Démarrage immédiat du morceau Flash avec interruption du morceau en cours via Spotify.
+- Les morceaux Flash sont exclus du quota, de la liste des propositions et des compteurs de
+  contribution du participant.
+- Le bouton administrateur « Passer » sélectionne et démarre directement le prochain morceau
+  SongFest au lieu de dépendre uniquement de la file Spotify.
+- Vote collectif de skip persistant, unique par participant et par morceau.
+- Majorité stricte calculée sur les participants actifs non bloqués :
+  `floor(participantsActifs / 2) + 1`.
+- Bouton invité « Voter pour passer » avec compteur, retrait du vote et état temps réel.
+- Événement Socket.IO ciblé `playback:skip-vote-updated` et resynchronisation après changement de
+  morceau.
+- Continuité renforcée : le prochain titre est préparé pendant la dernière minute, avec jusqu’à
+  quatre tentatives au rythme de synchronisation par défaut.
+- Tous les morceaux `PENDING` de l’ambiance active restent prioritaires tant qu’aucune autre
+  ambiance n’a été programmée.
+- Quand la playlist active est épuisée, la prochaine playlist non vide est programmée
+  automatiquement dans l’ordre de création, avec parcours cyclique.
+- Une playlist programmée mais vide est ignorée afin d’éviter une coupure inutile.
 - Événements Socket.IO `flash:started`, `flash:submitted`, `flash:expired`,
   `flash:cancelled` et `flash:played`.
 - Commandes administrateur pour tirer immédiatement ou annuler un tour.
 - Réglages administrateur : activation, intervalle et temps de réponse.
 - Tests métier du tirage, sécurité HTTP, interface Flash et invalidation temps réel.
 - Migration appliquée avec succès sur PostgreSQL de test et parcours d’intégration validé.
-- 87 tests unitaires/composants et 1 parcours PostgreSQL validés.
+- 99 tests unitaires/composants et 1 parcours PostgreSQL validés.
 
 ### Décisions
 
 - La Musique Flash est un concept métier dédié, pas une récompense.
 - L’intervalle par défaut est de 60 minutes et le délai de réponse de 120 secondes.
 - Un choix Flash ne consomme pas le quota, mais respecte durée, explicite, doublons et rejeu récent.
-- Si Spotify possède déjà un morceau réservé, le titre Flash prend le premier emplacement SongFest
-  encore modifiable.
+- Un choix Flash utilise la commande de lecture directe Spotify afin de devenir immédiatement le
+  morceau courant. Un morceau SongFest déjà réservé est remis en attente.
 - L’expiration abandonne uniquement l’opportunité Flash ; elle ne passe jamais le morceau en cours.
+- Un vote de skip ne peut viser que le morceau SongFest courant. Les votes sont supprimés dès que
+  ce morceau est terminé ou passé.
+- La majorité est volontairement stricte : pour 4 participants actifs, 3 votes sont nécessaires ;
+  pour 5 participants, 3 votes suffisent.
+- Une ambiance choisie explicitement reste prioritaire si elle contient un morceau. Sans choix
+  explicite, l’ordre de création des playlists définit la suite automatique.
 
 ### Commandes après mise à jour
 
@@ -352,6 +376,8 @@ checklist de `docs/PARTY_RUNBOOK.md` avec l’appareil de diffusion.
 npm run db:generate
 npm run db:migrate
 npm run dev
+npm test
+npm run test:integration
 ```
 
 ### Prochaine étape

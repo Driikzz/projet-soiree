@@ -9,6 +9,7 @@ contraintes PostgreSQL qui ne sont pas représentables directement dans Prisma.
 - Un pseudo normalisé unique par soirée.
 - Un titre Spotify unique par playlist.
 - Un vote unique par participant et morceau.
+- Un vote de skip unique par participant et morceau en cours.
 - Un seul vote de playlist actif par participant.
 - Une seule soirée `ACTIVE` par administrateur et compte Spotify.
 - Une session appartient exactement à un administrateur ou à un participant.
@@ -33,6 +34,10 @@ plusieurs types d’acteurs.
 `PlaybackState` mémorise le morceau applicatif courant, celui déjà envoyé à Spotify et l’éventuel
 second morceau verrouillé par `DOUBLE_TRACK`. La file complète reste dans `PlaylistTrack`.
 
+`TrackSkipVote` conserve les votes temporaires pour passer le morceau courant. Les votes sont
+supprimés quand ce morceau se termine ou est passé, et le seuil est recalculé depuis les
+participants actifs non bloqués.
+
 ## Musique Flash
 
 `FlashTurn` conserve le participant tiré au sort, la playlist active au moment du tirage, le délai
@@ -42,8 +47,9 @@ de réponse et l’éventuel morceau choisi. Ses états sont `ACTIVE`, `SUBMITTE
 `PartySettings` contient l’activation, l’intervalle, le temps de réponse et le prochain horaire
 persisté. Cette date permet de reprendre la planification après un redémarrage de l’API.
 
-Un morceau Flash ne compte pas dans le quota du participant. Il reçoit une priorité dédiée et peut
-occuper `PlaybackState.lockedNextTrackId` lorsqu’aucun enchaînement n’est déjà réservé.
+Un morceau Flash ne compte ni dans le quota, ni dans la liste normale des propositions, ni dans le
+compteur de contribution du participant. Il reçoit une priorité de secours, mais sa soumission
+commande d’abord une lecture Spotify immédiate et marque le morceau précédent comme passé.
 
 ## Suppressions
 

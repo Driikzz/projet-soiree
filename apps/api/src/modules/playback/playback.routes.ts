@@ -7,9 +7,14 @@ import {
   requireAdmin,
   requireAdminCsrf,
   requireParticipant,
+  requireParticipantCsrf,
   requireTrustedOrigin,
 } from "../auth/auth.middleware.js";
-import { publishPartyResync } from "../../socket/realtime-publisher.js";
+import {
+  publishPartyResync,
+  publishPlaybackSkipVoteUpdated,
+} from "../../socket/realtime-publisher.js";
+import { addPlaybackSkipVote, removePlaybackSkipVote } from "./playback-skip-vote.service.js";
 import {
   getAdminPlayback,
   getParticipantPlayback,
@@ -20,6 +25,7 @@ import {
 } from "./playback.service.js";
 
 const playbackControlLimiter = createRateLimiter(60 * 1_000, 30);
+const playbackSkipVoteLimiter = createRateLimiter(60 * 1_000, 20);
 
 export const createPlaybackRouter = () => {
   const router = Router();
@@ -35,6 +41,30 @@ export const createPlaybackRouter = () => {
     const playback = await getAdminPlayback(request.adminAuth!.admin.id, partyId);
     response.json(playback);
   });
+
+  const skipVoteActions = [
+    ["post", addPlaybackSkipVote],
+    ["delete", removePlaybackSkipVote],
+  ] as const;
+  for (const [method, action] of skipVoteActions) {
+    router[method](
+      "/parties/:partyId/playback/skip-vote",
+      requireTrustedOrigin,
+      requireParticipant,
+      requireParticipantCsrf,
+      playbackSkipVoteLimiter,
+      async (request, response) => {
+        const partyId = uuidSchema.parse(request.params.partyId);
+        const result = await action(request.participantAuth!.participant.id, partyId);
+        response.json(result.playback);
+        void publishPlaybackSkipVoteUpdated(partyId, {
+          trackId: result.updatedTrackId,
+          voteCount: result.playback.skipVote.voteCount,
+          requiredVotes: result.playback.skipVote.requiredVotes,
+        });
+      },
+    );
+  }
 
   const controls = [
     ["start", startPartyPlayback],

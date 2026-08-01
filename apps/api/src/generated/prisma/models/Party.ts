@@ -279,6 +279,7 @@ export type PartyWhereInput = {
   playlists?: Prisma.PartyPlaylistListRelationFilter
   participants?: Prisma.ParticipantListRelationFilter
   playlistVotes?: Prisma.PlaylistVoteListRelationFilter
+  trackSkipVotes?: Prisma.TrackSkipVoteListRelationFilter
   rewards?: Prisma.RewardListRelationFilter
   flashTurns?: Prisma.FlashTurnListRelationFilter
   playbackState?: Prisma.XOR<Prisma.PlaybackStateNullableScalarRelationFilter, Prisma.PlaybackStateWhereInput> | null
@@ -305,6 +306,7 @@ export type PartyOrderByWithRelationInput = {
   playlists?: Prisma.PartyPlaylistOrderByRelationAggregateInput
   participants?: Prisma.ParticipantOrderByRelationAggregateInput
   playlistVotes?: Prisma.PlaylistVoteOrderByRelationAggregateInput
+  trackSkipVotes?: Prisma.TrackSkipVoteOrderByRelationAggregateInput
   rewards?: Prisma.RewardOrderByRelationAggregateInput
   flashTurns?: Prisma.FlashTurnOrderByRelationAggregateInput
   playbackState?: Prisma.PlaybackStateOrderByWithRelationInput
@@ -334,6 +336,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   playlists?: Prisma.PartyPlaylistListRelationFilter
   participants?: Prisma.ParticipantListRelationFilter
   playlistVotes?: Prisma.PlaylistVoteListRelationFilter
+  trackSkipVotes?: Prisma.TrackSkipVoteListRelationFilter
   rewards?: Prisma.RewardListRelationFilter
   flashTurns?: Prisma.FlashTurnListRelationFilter
   playbackState?: Prisma.XOR<Prisma.PlaybackStateNullableScalarRelationFilter, Prisma.PlaybackStateWhereInput> | null
@@ -395,6 +398,7 @@ export type PartyCreateInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -418,6 +422,7 @@ export type PartyUncheckedCreateInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -441,6 +446,7 @@ export type PartyUpdateInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -464,6 +470,7 @@ export type PartyUncheckedUpdateInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -769,6 +776,20 @@ export type PartyUncheckedUpdateManyWithoutScheduledPlaylistNestedInput = {
   deleteMany?: Prisma.PartyScalarWhereInput | Prisma.PartyScalarWhereInput[]
 }
 
+export type PartyCreateNestedOneWithoutTrackSkipVotesInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedCreateWithoutTrackSkipVotesInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutTrackSkipVotesInput
+  connect?: Prisma.PartyWhereUniqueInput
+}
+
+export type PartyUpdateOneRequiredWithoutTrackSkipVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.PartyCreateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedCreateWithoutTrackSkipVotesInput>
+  connectOrCreate?: Prisma.PartyCreateOrConnectWithoutTrackSkipVotesInput
+  upsert?: Prisma.PartyUpsertWithoutTrackSkipVotesInput
+  connect?: Prisma.PartyWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PartyUpdateToOneWithWhereWithoutTrackSkipVotesInput, Prisma.PartyUpdateWithoutTrackSkipVotesInput>, Prisma.PartyUncheckedUpdateWithoutTrackSkipVotesInput>
+}
+
 export type PartyCreateNestedOneWithoutPlaylistVotesInput = {
   create?: Prisma.XOR<Prisma.PartyCreateWithoutPlaylistVotesInput, Prisma.PartyUncheckedCreateWithoutPlaylistVotesInput>
   connectOrCreate?: Prisma.PartyCreateOrConnectWithoutPlaylistVotesInput
@@ -857,6 +878,7 @@ export type PartyCreateWithoutAdminInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -879,6 +901,7 @@ export type PartyUncheckedCreateWithoutAdminInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -945,6 +968,7 @@ export type PartyCreateWithoutSettingsInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -967,6 +991,7 @@ export type PartyUncheckedCreateWithoutSettingsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1005,6 +1030,7 @@ export type PartyUpdateWithoutSettingsInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1027,6 +1053,7 @@ export type PartyUncheckedUpdateWithoutSettingsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -1049,6 +1076,7 @@ export type PartyCreateWithoutParticipantsInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1071,6 +1099,7 @@ export type PartyUncheckedCreateWithoutParticipantsInput = {
   settings?: Prisma.PartySettingsUncheckedCreateNestedOneWithoutPartyInput
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1109,6 +1138,7 @@ export type PartyUpdateWithoutParticipantsInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1131,6 +1161,7 @@ export type PartyUncheckedUpdateWithoutParticipantsInput = {
   settings?: Prisma.PartySettingsUncheckedUpdateOneWithoutPartyNestedInput
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -1153,6 +1184,7 @@ export type PartyCreateWithoutPlaylistsInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1175,6 +1207,7 @@ export type PartyUncheckedCreateWithoutPlaylistsInput = {
   settings?: Prisma.PartySettingsUncheckedCreateNestedOneWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1202,6 +1235,7 @@ export type PartyCreateWithoutActivePlaylistInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1224,6 +1258,7 @@ export type PartyUncheckedCreateWithoutActivePlaylistInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1256,6 +1291,7 @@ export type PartyCreateWithoutScheduledPlaylistInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1278,6 +1314,7 @@ export type PartyUncheckedCreateWithoutScheduledPlaylistInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1321,6 +1358,7 @@ export type PartyUpdateWithoutPlaylistsInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1343,6 +1381,7 @@ export type PartyUncheckedUpdateWithoutPlaylistsInput = {
   settings?: Prisma.PartySettingsUncheckedUpdateOneWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -1381,6 +1420,114 @@ export type PartyUpdateManyWithWhereWithoutScheduledPlaylistInput = {
   data: Prisma.XOR<Prisma.PartyUpdateManyMutationInput, Prisma.PartyUncheckedUpdateManyWithoutScheduledPlaylistInput>
 }
 
+export type PartyCreateWithoutTrackSkipVotesInput = {
+  id?: string
+  name: string
+  code: string
+  status?: $Enums.PartyStatus
+  selectedDeviceId?: string | null
+  stateVersion?: number
+  createdAt?: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
+  activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
+  scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
+  playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
+  participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
+  playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
+  flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
+  playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
+  auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPartyInput
+}
+
+export type PartyUncheckedCreateWithoutTrackSkipVotesInput = {
+  id?: string
+  adminId: string
+  name: string
+  code: string
+  status?: $Enums.PartyStatus
+  activePlaylistId?: string | null
+  scheduledPlaylistId?: string | null
+  selectedDeviceId?: string | null
+  stateVersion?: number
+  createdAt?: Date | string
+  startedAt?: Date | string | null
+  endedAt?: Date | string | null
+  settings?: Prisma.PartySettingsUncheckedCreateNestedOneWithoutPartyInput
+  playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
+  participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
+  playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
+  flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
+  playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
+  auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPartyInput
+}
+
+export type PartyCreateOrConnectWithoutTrackSkipVotesInput = {
+  where: Prisma.PartyWhereUniqueInput
+  create: Prisma.XOR<Prisma.PartyCreateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedCreateWithoutTrackSkipVotesInput>
+}
+
+export type PartyUpsertWithoutTrackSkipVotesInput = {
+  update: Prisma.XOR<Prisma.PartyUpdateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedUpdateWithoutTrackSkipVotesInput>
+  create: Prisma.XOR<Prisma.PartyCreateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedCreateWithoutTrackSkipVotesInput>
+  where?: Prisma.PartyWhereInput
+}
+
+export type PartyUpdateToOneWithWhereWithoutTrackSkipVotesInput = {
+  where?: Prisma.PartyWhereInput
+  data: Prisma.XOR<Prisma.PartyUpdateWithoutTrackSkipVotesInput, Prisma.PartyUncheckedUpdateWithoutTrackSkipVotesInput>
+}
+
+export type PartyUpdateWithoutTrackSkipVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
+  selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
+  activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
+  scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
+  playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
+  participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
+  playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
+  flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
+  playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
+  auditLogs?: Prisma.AuditLogUpdateManyWithoutPartyNestedInput
+}
+
+export type PartyUncheckedUpdateWithoutTrackSkipVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
+  activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  settings?: Prisma.PartySettingsUncheckedUpdateOneWithoutPartyNestedInput
+  playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
+  participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
+  playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
+  flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
+  playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
+  auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPartyNestedInput
+}
+
 export type PartyCreateWithoutPlaylistVotesInput = {
   id?: string
   name: string
@@ -1397,6 +1544,7 @@ export type PartyCreateWithoutPlaylistVotesInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1419,6 +1567,7 @@ export type PartyUncheckedCreateWithoutPlaylistVotesInput = {
   settings?: Prisma.PartySettingsUncheckedCreateNestedOneWithoutPartyInput
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1457,6 +1606,7 @@ export type PartyUpdateWithoutPlaylistVotesInput = {
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1479,6 +1629,7 @@ export type PartyUncheckedUpdateWithoutPlaylistVotesInput = {
   settings?: Prisma.PartySettingsUncheckedUpdateOneWithoutPartyNestedInput
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -1502,6 +1653,7 @@ export type PartyCreateWithoutRewardsInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPartyInput
@@ -1524,6 +1676,7 @@ export type PartyUncheckedCreateWithoutRewardsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPartyInput
@@ -1562,6 +1715,7 @@ export type PartyUpdateWithoutRewardsInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPartyNestedInput
@@ -1584,6 +1738,7 @@ export type PartyUncheckedUpdateWithoutRewardsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPartyNestedInput
@@ -1606,6 +1761,7 @@ export type PartyCreateWithoutFlashTurnsInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPartyInput
@@ -1628,6 +1784,7 @@ export type PartyUncheckedCreateWithoutFlashTurnsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPartyInput
@@ -1666,6 +1823,7 @@ export type PartyUpdateWithoutFlashTurnsInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPartyNestedInput
@@ -1688,6 +1846,7 @@ export type PartyUncheckedUpdateWithoutFlashTurnsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPartyNestedInput
@@ -1710,6 +1869,7 @@ export type PartyCreateWithoutPlaybackStateInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   auditLogs?: Prisma.AuditLogCreateNestedManyWithoutPartyInput
@@ -1732,6 +1892,7 @@ export type PartyUncheckedCreateWithoutPlaybackStateInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   auditLogs?: Prisma.AuditLogUncheckedCreateNestedManyWithoutPartyInput
@@ -1770,6 +1931,7 @@ export type PartyUpdateWithoutPlaybackStateInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUpdateManyWithoutPartyNestedInput
@@ -1792,6 +1954,7 @@ export type PartyUncheckedUpdateWithoutPlaybackStateInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   auditLogs?: Prisma.AuditLogUncheckedUpdateManyWithoutPartyNestedInput
@@ -1814,6 +1977,7 @@ export type PartyCreateWithoutAuditLogsInput = {
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateCreateNestedOneWithoutPartyInput
@@ -1836,6 +2000,7 @@ export type PartyUncheckedCreateWithoutAuditLogsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedCreateNestedManyWithoutPartyInput
   participants?: Prisma.ParticipantUncheckedCreateNestedManyWithoutPartyInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedCreateNestedManyWithoutPartyInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedCreateNestedManyWithoutPartyInput
   rewards?: Prisma.RewardUncheckedCreateNestedManyWithoutPartyInput
   flashTurns?: Prisma.FlashTurnUncheckedCreateNestedManyWithoutPartyInput
   playbackState?: Prisma.PlaybackStateUncheckedCreateNestedOneWithoutPartyInput
@@ -1874,6 +2039,7 @@ export type PartyUpdateWithoutAuditLogsInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1896,6 +2062,7 @@ export type PartyUncheckedUpdateWithoutAuditLogsInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -1931,6 +2098,7 @@ export type PartyUpdateWithoutAdminInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -1953,6 +2121,7 @@ export type PartyUncheckedUpdateWithoutAdminInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -2017,6 +2186,7 @@ export type PartyUpdateWithoutActivePlaylistInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -2039,6 +2209,7 @@ export type PartyUncheckedUpdateWithoutActivePlaylistInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -2075,6 +2246,7 @@ export type PartyUpdateWithoutScheduledPlaylistInput = {
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUpdateOneWithoutPartyNestedInput
@@ -2097,6 +2269,7 @@ export type PartyUncheckedUpdateWithoutScheduledPlaylistInput = {
   playlists?: Prisma.PartyPlaylistUncheckedUpdateManyWithoutPartyNestedInput
   participants?: Prisma.ParticipantUncheckedUpdateManyWithoutPartyNestedInput
   playlistVotes?: Prisma.PlaylistVoteUncheckedUpdateManyWithoutPartyNestedInput
+  trackSkipVotes?: Prisma.TrackSkipVoteUncheckedUpdateManyWithoutPartyNestedInput
   rewards?: Prisma.RewardUncheckedUpdateManyWithoutPartyNestedInput
   flashTurns?: Prisma.FlashTurnUncheckedUpdateManyWithoutPartyNestedInput
   playbackState?: Prisma.PlaybackStateUncheckedUpdateOneWithoutPartyNestedInput
@@ -2126,6 +2299,7 @@ export type PartyCountOutputType = {
   playlists: number
   participants: number
   playlistVotes: number
+  trackSkipVotes: number
   rewards: number
   flashTurns: number
   auditLogs: number
@@ -2135,6 +2309,7 @@ export type PartyCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   playlists?: boolean | PartyCountOutputTypeCountPlaylistsArgs
   participants?: boolean | PartyCountOutputTypeCountParticipantsArgs
   playlistVotes?: boolean | PartyCountOutputTypeCountPlaylistVotesArgs
+  trackSkipVotes?: boolean | PartyCountOutputTypeCountTrackSkipVotesArgs
   rewards?: boolean | PartyCountOutputTypeCountRewardsArgs
   flashTurns?: boolean | PartyCountOutputTypeCountFlashTurnsArgs
   auditLogs?: boolean | PartyCountOutputTypeCountAuditLogsArgs
@@ -2169,6 +2344,13 @@ export type PartyCountOutputTypeCountParticipantsArgs<ExtArgs extends runtime.Ty
  */
 export type PartyCountOutputTypeCountPlaylistVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.PlaylistVoteWhereInput
+}
+
+/**
+ * PartyCountOutputType without action
+ */
+export type PartyCountOutputTypeCountTrackSkipVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrackSkipVoteWhereInput
 }
 
 /**
@@ -2213,6 +2395,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   playlists?: boolean | Prisma.Party$playlistsArgs<ExtArgs>
   participants?: boolean | Prisma.Party$participantsArgs<ExtArgs>
   playlistVotes?: boolean | Prisma.Party$playlistVotesArgs<ExtArgs>
+  trackSkipVotes?: boolean | Prisma.Party$trackSkipVotesArgs<ExtArgs>
   rewards?: boolean | Prisma.Party$rewardsArgs<ExtArgs>
   flashTurns?: boolean | Prisma.Party$flashTurnsArgs<ExtArgs>
   playbackState?: boolean | Prisma.Party$playbackStateArgs<ExtArgs>
@@ -2280,6 +2463,7 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   playlists?: boolean | Prisma.Party$playlistsArgs<ExtArgs>
   participants?: boolean | Prisma.Party$participantsArgs<ExtArgs>
   playlistVotes?: boolean | Prisma.Party$playlistVotesArgs<ExtArgs>
+  trackSkipVotes?: boolean | Prisma.Party$trackSkipVotesArgs<ExtArgs>
   rewards?: boolean | Prisma.Party$rewardsArgs<ExtArgs>
   flashTurns?: boolean | Prisma.Party$flashTurnsArgs<ExtArgs>
   playbackState?: boolean | Prisma.Party$playbackStateArgs<ExtArgs>
@@ -2307,6 +2491,7 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     playlists: Prisma.$PartyPlaylistPayload<ExtArgs>[]
     participants: Prisma.$ParticipantPayload<ExtArgs>[]
     playlistVotes: Prisma.$PlaylistVotePayload<ExtArgs>[]
+    trackSkipVotes: Prisma.$TrackSkipVotePayload<ExtArgs>[]
     rewards: Prisma.$RewardPayload<ExtArgs>[]
     flashTurns: Prisma.$FlashTurnPayload<ExtArgs>[]
     playbackState: Prisma.$PlaybackStatePayload<ExtArgs> | null
@@ -2726,6 +2911,7 @@ export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Ty
   playlists<T extends Prisma.Party$playlistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$playlistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartyPlaylistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   participants<T extends Prisma.Party$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   playlistVotes<T extends Prisma.Party$playlistVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$playlistVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trackSkipVotes<T extends Prisma.Party$trackSkipVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$trackSkipVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrackSkipVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   rewards<T extends Prisma.Party$rewardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$rewardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   flashTurns<T extends Prisma.Party$flashTurnsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$flashTurnsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FlashTurnPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   playbackState<T extends Prisma.Party$playbackStateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$playbackStateArgs<ExtArgs>>): Prisma.Prisma__PlaybackStateClient<runtime.Types.Result.GetResult<Prisma.$PlaybackStatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3293,6 +3479,30 @@ export type Party$playlistVotesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.PlaylistVoteScalarFieldEnum | Prisma.PlaylistVoteScalarFieldEnum[]
+}
+
+/**
+ * Party.trackSkipVotes
+ */
+export type Party$trackSkipVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrackSkipVote
+   */
+  select?: Prisma.TrackSkipVoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrackSkipVote
+   */
+  omit?: Prisma.TrackSkipVoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrackSkipVoteInclude<ExtArgs> | null
+  where?: Prisma.TrackSkipVoteWhereInput
+  orderBy?: Prisma.TrackSkipVoteOrderByWithRelationInput | Prisma.TrackSkipVoteOrderByWithRelationInput[]
+  cursor?: Prisma.TrackSkipVoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrackSkipVoteScalarFieldEnum | Prisma.TrackSkipVoteScalarFieldEnum[]
 }
 
 /**

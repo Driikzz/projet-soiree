@@ -529,6 +529,60 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 
+.skip-vote-panel {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem;
+  border: 1px solid #344649;
+  border-radius: 0.9rem;
+  background: #111c1f;
+}
+
+.skip-vote-panel > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.skip-vote-panel span {
+  color: #a8b5b1;
+  font-size: 0.82rem;
+}
+
+.skip-vote-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #55706d;
+  border-radius: 0.75rem;
+  background: #1d2d30;
+  color: #f4f2ea;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.skip-vote-button:hover:not(:disabled),
+.skip-vote-button.voted {
+  border-color: #d3a95f;
+  background: #332b1d;
+}
+
+.skip-vote-button > span {
+  color: #f4f2ea;
+  font-variant-numeric: tabular-nums;
+}
+
+.skip-vote-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .playback-waiting {
   grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
@@ -558,6 +612,16 @@ h1 {
 
   .now-playing-cover {
     width: 4.75rem;
+  }
+
+  .skip-vote-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .skip-vote-button {
+    justify-content: center;
+    width: 100%;
   }
 }
 

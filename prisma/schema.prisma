@@ -105,6 +105,7 @@ model Party {
   playlists           PartyPlaylist[] @relation("PartyPlaylists")
   participants        Participant[]
   playlistVotes       PlaylistVote[]
+  trackSkipVotes      TrackSkipVote[]
   rewards             Reward[]
   flashTurns          FlashTurn[]
   playbackState       PlaybackState?
@@ -148,6 +149,7 @@ model Participant {
   party              Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
   proposedTracks     PlaylistTrack[]
   trackVotes         TrackVote[]
+  trackSkipVotes     TrackSkipVote[]
   playlistVote       PlaylistVote?
   rewards            Reward[]
   flashTurns         FlashTurn[]
@@ -215,6 +217,7 @@ model PlaylistTrack {
   proposedBy              Participant?    @relation(fields: [proposedByParticipantId], references: [id], onDelete: SetNull)
   reward                  Reward?         @relation(fields: [rewardId], references: [id], onDelete: SetNull)
   votes                   TrackVote[]
+  skipVotes               TrackSkipVote[]
   currentInPlaybackStates PlaybackState[] @relation("CurrentPlaybackTrack")
   queuedInPlaybackStates  PlaybackState[] @relation("QueuedPlaybackTrack")
   lockedInPlaybackStates  PlaybackState[] @relation("LockedPlaybackTrack")
@@ -235,6 +238,21 @@ model TrackVote {
   participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
   @@unique([trackId, participantId])
+  @@index([participantId, createdAt])
+}
+
+model TrackSkipVote {
+  id            String        @id @default(uuid()) @db.Uuid
+  partyId       String        @db.Uuid
+  trackId       String        @db.Uuid
+  participantId String        @db.Uuid
+  createdAt     DateTime      @default(now())
+  party         Party         @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  track         PlaylistTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([trackId, participantId])
+  @@index([partyId, trackId])
   @@index([participantId, createdAt])
 }
 

@@ -50,6 +50,7 @@ export const bindRealtimeListeners = (
   socket.on("track:playing", handleTrackChange);
   socket.on("track:played", handleTrackChange);
   socket.on("playback:updated", handlePlaybackChange);
+  socket.on("playback:skip-vote-updated", handlePlaybackChange);
   socket.on("reward:assigned", handleRewardChange);
   socket.on("reward:used", handleRewardChange);
   socket.on("flash:started", handleFlashChange);
@@ -77,6 +78,7 @@ export const bindRealtimeListeners = (
     socket.off("track:playing", handleTrackChange);
     socket.off("track:played", handleTrackChange);
     socket.off("playback:updated", handlePlaybackChange);
+    socket.off("playback:skip-vote-updated", handlePlaybackChange);
     socket.off("reward:assigned", handleRewardChange);
     socket.off("reward:used", handleRewardChange);
     socket.off("flash:started", handleFlashChange);

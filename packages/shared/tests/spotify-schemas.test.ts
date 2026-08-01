@@ -48,6 +48,12 @@ describe("Spotify schemas", () => {
         progressMs: -1,
         durationMs: 0,
         isPlaying: false,
+        skipVote: {
+          voteCount: 0,
+          requiredVotes: 1,
+          participantHasVoted: false,
+          isAvailable: false,
+        },
         lastSyncedAt: null,
         serverTimestamp: Date.now(),
       }).success,

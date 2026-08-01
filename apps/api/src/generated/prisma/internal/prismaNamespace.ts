@@ -398,6 +398,7 @@ export const ModelName = {
   PartyPlaylist: 'PartyPlaylist',
   PlaylistTrack: 'PlaylistTrack',
   TrackVote: 'TrackVote',
+  TrackSkipVote: 'TrackSkipVote',
   PlaylistVote: 'PlaylistVote',
   Reward: 'Reward',
   FlashTurn: 'FlashTurn',
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "admin" | "spotifyConnection" | "party" | "partySettings" | "participant" | "partyPlaylist" | "playlistTrack" | "trackVote" | "playlistVote" | "reward" | "flashTurn" | "playbackState" | "session" | "auditLog"
+    modelProps: "admin" | "spotifyConnection" | "party" | "partySettings" | "participant" | "partyPlaylist" | "playlistTrack" | "trackVote" | "trackSkipVote" | "playlistVote" | "reward" | "flashTurn" | "playbackState" | "session" | "auditLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1012,6 +1013,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.TrackVoteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.TrackVoteCountAggregateOutputType> | number
+        }
+      }
+    }
+    TrackSkipVote: {
+      payload: Prisma.$TrackSkipVotePayload<ExtArgs>
+      fields: Prisma.TrackSkipVoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TrackSkipVoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TrackSkipVoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        findFirst: {
+          args: Prisma.TrackSkipVoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TrackSkipVoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        findMany: {
+          args: Prisma.TrackSkipVoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>[]
+        }
+        create: {
+          args: Prisma.TrackSkipVoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        createMany: {
+          args: Prisma.TrackSkipVoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TrackSkipVoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>[]
+        }
+        delete: {
+          args: Prisma.TrackSkipVoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        update: {
+          args: Prisma.TrackSkipVoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        deleteMany: {
+          args: Prisma.TrackSkipVoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TrackSkipVoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TrackSkipVoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>[]
+        }
+        upsert: {
+          args: Prisma.TrackSkipVoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrackSkipVotePayload>
+        }
+        aggregate: {
+          args: Prisma.TrackSkipVoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrackSkipVote>
+        }
+        groupBy: {
+          args: Prisma.TrackSkipVoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrackSkipVoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TrackSkipVoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrackSkipVoteCountAggregateOutputType> | number
         }
       }
     }
@@ -1642,6 +1717,17 @@ export const TrackVoteScalarFieldEnum = {
 export type TrackVoteScalarFieldEnum = (typeof TrackVoteScalarFieldEnum)[keyof typeof TrackVoteScalarFieldEnum]
 
 
+export const TrackSkipVoteScalarFieldEnum = {
+  id: 'id',
+  partyId: 'partyId',
+  trackId: 'trackId',
+  participantId: 'participantId',
+  createdAt: 'createdAt'
+} as const
+
+export type TrackSkipVoteScalarFieldEnum = (typeof TrackSkipVoteScalarFieldEnum)[keyof typeof TrackSkipVoteScalarFieldEnum]
+
+
 export const PlaylistVoteScalarFieldEnum = {
   id: 'id',
   partyId: 'partyId',
@@ -2054,6 +2140,7 @@ export type GlobalOmitConfig = {
   partyPlaylist?: Prisma.PartyPlaylistOmit
   playlistTrack?: Prisma.PlaylistTrackOmit
   trackVote?: Prisma.TrackVoteOmit
+  trackSkipVote?: Prisma.TrackSkipVoteOmit
   playlistVote?: Prisma.PlaylistVoteOmit
   reward?: Prisma.RewardOmit
   flashTurn?: Prisma.FlashTurnOmit

@@ -32,6 +32,7 @@ const playlistSelect = {
       tracks: {
         where: {
           status: { not: "REMOVED" },
+          flashTurn: { is: null },
         },
       },
       playlistVotes: true,
@@ -67,6 +68,7 @@ const getContributorCounts = async (playlistIds: string[]) => {
       playlistId: { in: playlistIds },
       proposedByParticipantId: { not: null },
       status: { not: "REMOVED" },
+      flashTurn: { is: null },
     },
   });
 
@@ -89,6 +91,7 @@ const getParticipantTrackCounts = async (playlistIds: string[], participantId: s
       playlistId: { in: playlistIds },
       proposedByParticipantId: participantId,
       status: { not: "REMOVED" },
+      flashTurn: { is: null },
     },
     _count: { _all: true },
   });
@@ -119,6 +122,7 @@ const getExtraTrackQuotas = async (
         proposedByParticipantId: participantId,
         status: { not: "REMOVED" },
         reward: { type: "EXTRA_TRACK" },
+        flashTurn: { is: null },
       },
       _count: { _all: true },
     }),

@@ -137,6 +137,7 @@ export const listPlaylistTracks = async (participantId: string, playlistId: stri
       where: {
         playlistId,
         status: { not: "REMOVED" },
+        flashTurn: { is: null },
       },
       orderBy: { createdAt: "asc" },
       select: playlistTrackSelect,

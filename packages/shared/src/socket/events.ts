@@ -27,6 +27,12 @@ export interface VoteUpdate extends EntityReference {
   voteCount: number;
 }
 
+export interface PlaybackSkipVoteUpdate {
+  trackId: string;
+  voteCount: number;
+  requiredVotes: number;
+}
+
 export const realtimeResourceSchema = z.enum([
   "party",
   "participants",
@@ -74,6 +80,7 @@ export interface ServerToClientEvents {
   "track:playing": (event: SocketEventEnvelope<EntityReference>) => void;
   "track:played": (event: SocketEventEnvelope<EntityReference>) => void;
   "playback:updated": (event: SocketEventEnvelope<PlaybackUpdate>) => void;
+  "playback:skip-vote-updated": (event: SocketEventEnvelope<PlaybackSkipVoteUpdate>) => void;
   "reward:assigned": (
     event: SocketEventEnvelope<EntityReference & { participantId: string }>,
   ) => void;

@@ -58,6 +58,11 @@ export type PlaylistTrack = Prisma.PlaylistTrackModel
  */
 export type TrackVote = Prisma.TrackVoteModel
 /**
+ * Model TrackSkipVote
+ *
+ */
+export type TrackSkipVote = Prisma.TrackSkipVoteModel
+/**
  * Model PlaylistVote
  * 
  */

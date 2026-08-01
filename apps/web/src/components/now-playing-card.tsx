@@ -1,7 +1,11 @@
-import { MusicNotes } from "@phosphor-icons/react";
+import { MusicNotes, SkipForward } from "@phosphor-icons/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 import type { PartyPlayback } from "@songfest/shared";
+
+import { FormError } from "./form-error";
+import { addPlaybackSkipVote, removePlaybackSkipVote } from "../lib/api/playback";
 
 const formatDuration = (durationMs: number) => {
   const totalSeconds = Math.max(0, Math.floor(durationMs / 1_000));
@@ -24,7 +28,54 @@ const usePlaybackProgress = (playback: PartyPlayback) => {
   return Math.min(playback.durationMs, playback.progressMs + elapsed);
 };
 
-export function NowPlayingCard({ playback }: { playback: PartyPlayback }) {
+function SkipVoteControl({ partyId, playback }: { partyId: string; playback: PartyPlayback }) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: () =>
+      playback.skipVote.participantHasVoted
+        ? removePlaybackSkipVote(partyId)
+        : addPlaybackSkipVote(partyId),
+    onSuccess: (updatedPlayback) => {
+      queryClient.setQueryData(["party-playback", partyId], updatedPlayback);
+    },
+  });
+  const missingVotes = Math.max(0, playback.skipVote.requiredVotes - playback.skipVote.voteCount);
+
+  return (
+    <div className="skip-vote-panel">
+      <div>
+        <strong>Ce son ne passe pas ?</strong>
+        <span>
+          {missingVotes === 0
+            ? "Passage au morceau suivant…"
+            : `${missingVotes} vote${missingVotes === 1 ? "" : "s"} encore pour le passer.`}
+        </span>
+      </div>
+      <button
+        type="button"
+        className={`skip-vote-button${playback.skipVote.participantHasVoted ? " voted" : ""}`}
+        aria-pressed={playback.skipVote.participantHasVoted}
+        disabled={mutation.isPending}
+        onClick={() => mutation.mutate()}
+      >
+        <SkipForward aria-hidden="true" weight="fill" />
+        {playback.skipVote.participantHasVoted ? "Vote ajouté" : "Voter pour passer"}
+        <span>
+          {playback.skipVote.voteCount}/{playback.skipVote.requiredVotes}
+        </span>
+      </button>
+      <FormError message={mutation.error instanceof Error ? mutation.error.message : undefined} />
+    </div>
+  );
+}
+
+export function NowPlayingCard({
+  playback,
+  partyId,
+}: {
+  playback: PartyPlayback;
+  partyId?: string;
+}) {
   const progressMs = usePlaybackProgress(playback);
   const progressPercent =
     playback.durationMs === 0 ? 0 : Math.min(100, (progressMs / playback.durationMs) * 100);
@@ -83,6 +134,9 @@ export function NowPlayingCard({ playback }: { playback: PartyPlayback }) {
           <span>{formatDuration(playback.durationMs)}</span>
         </div>
       </div>
+      {partyId !== undefined && playback.skipVote.isAvailable && (
+        <SkipVoteControl partyId={partyId} playback={playback} />
+      )}
     </section>
   );
 }

@@ -93,7 +93,7 @@ export const getAdminDashboard = async (
         _count: {
           select: {
             proposedTracks: {
-              where: { status: { not: "REMOVED" } },
+              where: { status: { not: "REMOVED" }, flashTurn: { is: null } },
             },
           },
         },

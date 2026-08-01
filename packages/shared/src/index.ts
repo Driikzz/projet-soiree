@@ -3,6 +3,7 @@ export * from "./domain/playlist-change.js";
 export * from "./domain/quota.js";
 export * from "./domain/select-flash-participant.js";
 export * from "./domain/select-next-track.js";
+export * from "./domain/skip-vote.js";
 export * from "./domain/track-eligibility.js";
 export * from "./errors/codes.js";
 export * from "./schemas/auth.js";

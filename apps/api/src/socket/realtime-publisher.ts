@@ -2,6 +2,7 @@ import type {
   FlashTurn,
   PartySettings,
   PlaybackUpdate,
+  PlaybackSkipVoteUpdate,
   RealtimeResource,
   Reward,
 } from "@songfest/shared";
@@ -235,6 +236,21 @@ export const publishPlaylistVoteUpdated = (
     { playlistId, event: "playlist:vote-updated" },
   );
 
+export const publishPlaylistScheduled = (playlistId: string): Promise<void> =>
+  runPublish(
+    async () => {
+      const context = await getPlaylistContext(playlistId);
+      if (context === null || socketServer === undefined) {
+        return;
+      }
+
+      socketServer
+        .to(getPartyRoom(context.partyId))
+        .emit("playlist:scheduled", createEnvelope(context, { id: playlistId }));
+    },
+    { playlistId, event: "playlist:scheduled" },
+  );
+
 export const publishTrackSelected = (trackId: string): Promise<void> =>
   runPublish(
     async () => {
@@ -293,6 +309,24 @@ export const publishPlaybackUpdated = (partyId: string, playback: PlaybackUpdate
         .emit("playback:updated", createEnvelope(context, playback));
     },
     { partyId, event: "playback:updated" },
+  );
+
+export const publishPlaybackSkipVoteUpdated = (
+  partyId: string,
+  vote: PlaybackSkipVoteUpdate,
+): Promise<void> =>
+  runPublish(
+    async () => {
+      const context = await getPartyContext(partyId);
+      if (context === null || socketServer === undefined) {
+        return;
+      }
+
+      socketServer
+        .to(getPartyRoom(partyId))
+        .emit("playback:skip-vote-updated", createEnvelope(context, vote));
+    },
+    { partyId, trackId: vote.trackId, event: "playback:skip-vote-updated" },
   );
 
 export const publishAdminNotification = (

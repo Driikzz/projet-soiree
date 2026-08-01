@@ -36,8 +36,10 @@ MVP mono-instance et évite l’ajout prématuré d’une file de jobs.
 
 PostgreSQL conserve la file SongFest : morceau courant, morceau réservé et verrou DOUBLE_TRACK.
 Spotify ne reçoit jamais la liste complète. Le prochain morceau est sélectionné dans l’ambiance
-programmée, sinon dans l’ambiance active, puis envoyé seulement dans les 30 dernières secondes du
-titre courant.
+programmée, sinon dans l’ambiance active, puis envoyé pendant la dernière minute du titre courant.
+Cette avance laisse plusieurs tentatives au cycle de synchronisation sans remplir Spotify avec plus
+d’un titre. Quand l’ambiance active est épuisée, SongFest programme automatiquement la prochaine
+playlist contenant encore un morceau, dans l’ordre de création et de façon cyclique.
 
 Les statuts suivent les observations réelles de Spotify :
 

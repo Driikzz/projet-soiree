@@ -218,7 +218,9 @@ export function GuestPartyPage() {
       <FormError
         message={playbackQuery.error instanceof Error ? playbackQuery.error.message : undefined}
       />
-      {playbackQuery.data !== undefined && <NowPlayingCard playback={playbackQuery.data} />}
+      {playbackQuery.data !== undefined && (
+        <NowPlayingCard playback={playbackQuery.data} partyId={session.party.id} />
+      )}
 
       <section className="guest-action-panel" aria-labelledby="guest-actions-title">
         <div>

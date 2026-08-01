@@ -51,6 +51,12 @@ export const partyPlaybackSchema = z.object({
   progressMs: z.number().int().nonnegative(),
   durationMs: z.number().int().nonnegative(),
   isPlaying: z.boolean(),
+  skipVote: z.object({
+    voteCount: z.number().int().nonnegative(),
+    requiredVotes: z.number().int().positive(),
+    participantHasVoted: z.boolean(),
+    isAvailable: z.boolean(),
+  }),
   lastSyncedAt: z.string().datetime().nullable(),
   serverTimestamp: z.number().int().nonnegative(),
 });

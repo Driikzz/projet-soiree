@@ -10,6 +10,7 @@ import {
 
 import { createApp } from "../../src/app.js";
 import { prisma } from "../../src/lib/prisma.js";
+import { resolvePlaybackTargetParty } from "../../src/modules/playback/playback.service.js";
 
 const adminPassword = "integration-password-2026";
 const webOrigin = "http://127.0.0.1:5173";
@@ -205,6 +206,31 @@ describe("PostgreSQL party journey", () => {
       }),
     ).toBe(1);
 
+    const flashTrack = await prisma.playlistTrack.create({
+      data: {
+        playlistId: playlist.id,
+        proposedByParticipantId: participantSession.participant.id,
+        spotifyTrackId: "integration-flash-track",
+        spotifyUri: "spotify:track:integration-flash-track",
+        spotifyUrl: "https://open.spotify.com/track/integration-flash-track",
+        title: "Morceau Flash d’intégration",
+        artistNames: ["SongFest Flash"],
+        spotifyArtistIds: ["integration-flash-artist"],
+        durationMs: 170_000,
+      },
+    });
+    await prisma.flashTurn.create({
+      data: {
+        partyId: party.id,
+        playlistId: playlist.id,
+        participantId: participantSession.participant.id,
+        trackId: flashTrack.id,
+        status: "SUBMITTED",
+        expiresAt: new Date(Date.now() + 120_000),
+        submittedAt: new Date(),
+      },
+    });
+
     await participantAgent
       .get(`/api/parties/${party.id}/playlists`)
       .expect(200)
@@ -216,5 +242,110 @@ describe("PostgreSQL party journey", () => {
           remainingTrackQuota: 4,
         });
       });
+
+    await adminAgent
+      .get(`/api/admin/parties/${party.id}/dashboard`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.participants[0]).toMatchObject({ contributionCount: 1 });
+      });
+
+    await prisma.participant.create({
+      data: {
+        partyId: party.id,
+        nickname: "Morgan",
+        normalizedNickname: "morgan",
+        avatarSeed: "morgan",
+      },
+    });
+    await prisma.party.update({
+      where: { id: party.id },
+      data: { status: "ACTIVE", startedAt: new Date() },
+    });
+    await prisma.playlistTrack.update({
+      where: { id: track.id },
+      data: { status: "PLAYING", playingAt: new Date() },
+    });
+    await prisma.playbackState.update({
+      where: { partyId: party.id },
+      data: {
+        currentTrackId: track.id,
+        spotifyTrackId: track.spotifyTrackId,
+        durationMs: track.durationMs,
+        isPlaying: true,
+      },
+    });
+
+    const skipVoteRequest = () =>
+      participantAgent
+        .post(`/api/parties/${party.id}/playback/skip-vote`)
+        .set("Origin", webOrigin)
+        .set("X-CSRF-Token", participantCsrf);
+
+    await skipVoteRequest()
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.skipVote).toEqual({
+          voteCount: 1,
+          requiredVotes: 2,
+          participantHasVoted: true,
+          isAvailable: true,
+        });
+      });
+    await skipVoteRequest().expect(200);
+    expect(await prisma.trackSkipVote.count({ where: { trackId: track.id } })).toBe(1);
+
+    await participantAgent
+      .delete(`/api/parties/${party.id}/playback/skip-vote`)
+      .set("Origin", webOrigin)
+      .set("X-CSRF-Token", participantCsrf)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.skipVote.voteCount).toBe(0);
+      });
+
+    const [emptyPlaylist, nextPlaylist] = await Promise.all([
+      prisma.partyPlaylist.create({
+        data: {
+          partyId: party.id,
+          name: "Ambiance vide",
+          visualKey: "midnight",
+        },
+      }),
+      prisma.partyPlaylist.create({
+        data: {
+          partyId: party.id,
+          name: "Ambiance suivante",
+          visualKey: "electric",
+        },
+      }),
+    ]);
+    await prisma.playlistTrack.updateMany({
+      where: { playlistId: playlist.id },
+      data: { status: "PLAYED", playedAt: new Date() },
+    });
+    await prisma.playlistTrack.create({
+      data: {
+        playlistId: nextPlaylist.id,
+        spotifyTrackId: "integration-next-playlist-track",
+        spotifyUri: "spotify:track:integration-next-playlist-track",
+        spotifyUrl: "https://open.spotify.com/track/integration-next-playlist-track",
+        title: "Morceau de l’ambiance suivante",
+        artistNames: ["SongFest Continuity"],
+        spotifyArtistIds: ["integration-continuity-artist"],
+        durationMs: 190_000,
+      },
+    });
+
+    const playbackTarget = await resolvePlaybackTargetParty(party.id);
+
+    expect(emptyPlaylist.id).not.toBe(nextPlaylist.id);
+    expect(playbackTarget?.scheduledPlaylistId).toBe(nextPlaylist.id);
+    expect(
+      await prisma.party.findUnique({
+        where: { id: party.id },
+        select: { scheduledPlaylistId: true },
+      }),
+    ).toEqual({ scheduledPlaylistId: nextPlaylist.id });
   });
 });

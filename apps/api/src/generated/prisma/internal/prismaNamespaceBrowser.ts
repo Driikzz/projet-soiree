@@ -57,6 +57,7 @@ export const ModelName = {
   PartyPlaylist: 'PartyPlaylist',
   PlaylistTrack: 'PlaylistTrack',
   TrackVote: 'TrackVote',
+  TrackSkipVote: 'TrackSkipVote',
   PlaylistVote: 'PlaylistVote',
   Reward: 'Reward',
   FlashTurn: 'FlashTurn',
@@ -223,6 +224,17 @@ export const TrackVoteScalarFieldEnum = {
 } as const
 
 export type TrackVoteScalarFieldEnum = (typeof TrackVoteScalarFieldEnum)[keyof typeof TrackVoteScalarFieldEnum]
+
+
+export const TrackSkipVoteScalarFieldEnum = {
+  id: 'id',
+  partyId: 'partyId',
+  trackId: 'trackId',
+  participantId: 'participantId',
+  createdAt: 'createdAt'
+} as const
+
+export type TrackSkipVoteScalarFieldEnum = (typeof TrackSkipVoteScalarFieldEnum)[keyof typeof TrackSkipVoteScalarFieldEnum]
 
 
 export const PlaylistVoteScalarFieldEnum = {

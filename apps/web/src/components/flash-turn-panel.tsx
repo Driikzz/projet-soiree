@@ -114,14 +114,14 @@ export function FlashTurnPanel({
           <div>
             <strong>{turn.track.title}</strong>
             <span>{turn.track.artistNames.join(", ")}</span>
-            <small>Réservé pour le prochain emplacement SongFest</small>
+            <small>Lecture Flash lancée immédiatement</small>
           </div>
         </article>
       ) : flash.isCurrentParticipant && !hasExpiredLocally ? (
         <>
           <p className="flash-explanation">
-            Tu as été tiré au sort. Ton choix ne consomme pas ton quota et sera joué au prochain
-            emplacement disponible.
+            Tu as été tiré au sort. Ton choix ne consomme pas ton quota : il coupe le morceau en
+            cours et démarre immédiatement.
           </p>
           <SpotifySearch
             partyId={partyId}
@@ -131,14 +131,15 @@ export function FlashTurnPanel({
             existingTrackIds={existingTrackIds}
             title="Choisis ton son Flash"
             description="Les règles de durée, de doublon et de contenu explicite restent actives."
+            successMessage={(trackTitle) => `${trackTitle} démarre en Musique Flash.`}
             addTrack={(spotifyTrackId) => submitParticipantFlashTrack(partyId, { spotifyTrackId })}
           />
         </>
       ) : (
         <p className="flash-waiting-copy">
           <UserFocus aria-hidden="true" />
-          La playlist continue normalement pendant son choix. Si le délai expire, le tour sera
-          simplement ignoré.
+          La playlist continue pendant son choix. Dès qu’il valide, son morceau démarre
+          immédiatement. Si le délai expire, le tour est ignoré.
         </p>
       )}
     </section>

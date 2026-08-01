@@ -23,6 +23,7 @@ interface SpotifySearchProps {
   description?: string;
   addTrack?: (spotifyTrackId: string) => Promise<{ track: { title: string } }>;
   onTrackAdded?: () => void | Promise<void>;
+  successMessage?: (trackTitle: string) => string;
 }
 
 export function SpotifySearch({
@@ -35,6 +36,7 @@ export function SpotifySearch({
   description = "Recherche dans Spotify. Aucun compte n’est nécessaire pour proposer un titre.",
   addTrack,
   onTrackAdded,
+  successMessage,
 }: SpotifySearchProps) {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -64,7 +66,9 @@ export function SpotifySearch({
           })
         : addTrack(spotifyTrackId),
     onSuccess: async ({ track }) => {
-      setAnnouncement(`${track.title} a été ajouté à la playlist.`);
+      setAnnouncement(
+        successMessage?.(track.title) ?? `${track.title} a été ajouté à la playlist.`,
+      );
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] }),
         queryClient.invalidateQueries({ queryKey: ["participant-playlists", partyId] }),

@@ -25,13 +25,15 @@ meilleur prochain morceau et appliquer les changements d’ambiance à la fin d�
 - La sélection respecte DOUBLE_TRACK, priorité, votes, équité, artistes récents et ancienneté.
 - Le prochain titre est réservé atomiquement en passant de `PENDING` à `SELECTED`.
 - Un seul titre SongFest peut être `queuedTrackId`.
-- Spotify ne reçoit le prochain titre que pendant les 30 dernières secondes.
+- Spotify ne reçoit qu’un seul prochain titre, préparé pendant la dernière minute.
 - Une absence de lecture démarre directement le morceau sélectionné.
 - Une erreur Spotify libère la réservation et permet une nouvelle tentative.
 - Un titre réellement observé dans Spotify passe à `PLAYING`.
 - Le titre précédent passe à `PLAYED` lorsque Spotify change de morceau.
 - Une ambiance programmée devient active uniquement après la fin du morceau, ou immédiatement si
   aucune lecture n’est en cours.
+- Une playlist épuisée programme automatiquement la prochaine playlist non vide dans l’ordre de
+  création, avec retour au début de la liste après la dernière.
 - La progression invitée est calculée localement à partir du timestamp serveur.
 - Les contrôles administrateur exigent une session, un cookie CSRF et un appareil sélectionné.
 
@@ -40,8 +42,9 @@ meilleur prochain morceau et appliquer les changements d’ambiance à la fin d�
 - Première observation Spotify sans faux changement de morceau.
 - Changement et fin de morceau détectés.
 - File vide démarrée immédiatement.
-- Envoi différé jusqu’aux 30 dernières secondes.
-- Interdiction de réserver un second morceau.
+- Envoi différé jusqu’à la dernière minute et interdiction de réserver un deuxième titre.
+- Maintien de la playlist active tant qu’elle contient des morceaux en attente.
+- Bascule cyclique vers la prochaine playlist non vide lorsque l’ambiance active est épuisée.
 - Priorités, votes, équité et DOUBLE_TRACK via les tests métier existants.
 - Contrat de lecture refusant une progression négative.
 - Carte de lecture et barre de progression accessibles.

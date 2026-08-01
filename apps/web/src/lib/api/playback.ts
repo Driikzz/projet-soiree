@@ -19,3 +19,15 @@ export const controlPartyPlayback = (partyId: string, control: PlaybackControl) 
     method: "POST",
     csrfCookie: "songfest_admin_csrf",
   });
+
+export const addPlaybackSkipVote = (partyId: string) =>
+  apiRequest<PartyPlayback>(`/api/parties/${partyId}/playback/skip-vote`, {
+    method: "POST",
+    csrfCookie: "songfest_guest_csrf",
+  });
+
+export const removePlaybackSkipVote = (partyId: string) =>
+  apiRequest<PartyPlayback>(`/api/parties/${partyId}/playback/skip-vote`, {
+    method: "DELETE",
+    csrfCookie: "songfest_guest_csrf",
+  });

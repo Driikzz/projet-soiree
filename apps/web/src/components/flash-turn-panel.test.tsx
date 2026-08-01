@@ -57,6 +57,6 @@ describe("FlashTurnPanel", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Camille choisit le prochain son" })).toBeVisible();
-    expect(screen.getByText(/La playlist continue normalement/)).toBeVisible();
+    expect(screen.getByText(/La playlist continue pendant son choix/)).toBeVisible();
   });
 });

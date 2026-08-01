@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
 
 import type { PartyPlayback } from "@songfest/shared";
@@ -33,6 +34,12 @@ const playback: PartyPlayback = {
   progressMs: 60_000,
   durationMs: 320_000,
   isPlaying: false,
+  skipVote: {
+    voteCount: 2,
+    requiredVotes: 4,
+    participantHasVoted: false,
+    isAvailable: true,
+  },
   lastSyncedAt: "2026-07-27T20:01:00.000Z",
   serverTimestamp: 1_785_180_060_000,
 };
@@ -61,5 +68,18 @@ describe("NowPlayingCard", () => {
     );
 
     expect(screen.getByText("One More Time est prêt à démarrer.")).toBeInTheDocument();
+  });
+
+  it("shows a clear collective skip vote for participants", () => {
+    const queryClient = new QueryClient();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <NowPlayingCard playback={playback} partyId="party-id" />
+      </QueryClientProvider>,
+    );
+
+    expect(screen.getByRole("button", { name: /Voter pour passer/ })).toBeVisible();
+    expect(screen.getByText("2 votes encore pour le passer.")).toBeVisible();
+    expect(screen.getByText("2/4")).toBeVisible();
   });
 });

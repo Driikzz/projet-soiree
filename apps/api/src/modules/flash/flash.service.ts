@@ -16,7 +16,9 @@ import {
   publishFlashPlayed,
   publishFlashStarted,
   publishFlashSubmitted,
+  publishAdminNotification,
 } from "../../socket/realtime-publisher.js";
+import { startFlashTrackImmediately } from "../playback/playback.service.js";
 import { addFlashTrack } from "../tracks/track.service.js";
 
 const flashTurnSelect = {
@@ -421,6 +423,15 @@ export const submitParticipantFlashTrack = async (
 ) => {
   await assertParticipantAccess(participantId, partyId);
   const result = await addFlashTrack(participantId, partyId, input.spotifyTrackId);
+  try {
+    await startFlashTrackImmediately(partyId, result.track.id);
+  } catch {
+    void publishAdminNotification(
+      partyId,
+      "FLASH_PLAYBACK_FAILED",
+      "La Musique Flash a été enregistrée, mais Spotify n’a pas pu la démarrer immédiatement.",
+    );
+  }
   const state = await loadFlashState(partyId, participantId);
   if (state.turn !== null) {
     void publishFlashSubmitted(state.turn);
