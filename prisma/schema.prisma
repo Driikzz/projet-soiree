@@ -1,0 +1,353 @@
+generator client {
+  provider   = "prisma-client"
+  output     = "../apps/api/src/generated/prisma"
+  engineType = "client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PartyStatus {
+  DRAFT
+  OPEN
+  ACTIVE
+  ENDED
+}
+
+enum TrackStatus {
+  PENDING
+  SELECTED
+  QUEUED
+  PLAYING
+  PLAYED
+  SKIPPED
+  REMOVED
+}
+
+enum RewardType {
+  EXTRA_TRACK
+  PRIORITY_TRACK
+  DOUBLE_TRACK
+  CHOOSE_NEXT_PLAYLIST
+}
+
+enum RewardStatus {
+  AVAILABLE
+  CONSUMED
+  REVOKED
+}
+
+enum FlashTurnStatus {
+  ACTIVE
+  SUBMITTED
+  EXPIRED
+  CANCELLED
+  PLAYED
+}
+
+enum SessionActorType {
+  ADMIN
+  PARTICIPANT
+}
+
+enum AuditActorType {
+  SYSTEM
+  ADMIN
+  PARTICIPANT
+}
+
+model Admin {
+  id                String             @id @default(uuid()) @db.Uuid
+  username          String             @unique @db.VarChar(64)
+  passwordHash      String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  spotifyConnection SpotifyConnection?
+  parties           Party[]
+  sessions          Session[]
+  assignedRewards   Reward[]           @relation("RewardAssignedBy")
+  auditLogs         AuditLog[]         @relation("AuditAdminActor")
+}
+
+model SpotifyConnection {
+  id                    String   @id @default(uuid()) @db.Uuid
+  adminId               String   @unique @db.Uuid
+  spotifyAccountId      String   @unique @db.VarChar(128)
+  accessTokenEncrypted  String?
+  refreshTokenEncrypted String
+  accessTokenExpiresAt  DateTime
+  refreshTokenExpiresAt DateTime
+  scopes                String[] @default([])
+  connectedAt           DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  admin                 Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+}
+
+model Party {
+  id                  String          @id @default(uuid()) @db.Uuid
+  adminId             String          @db.Uuid
+  name                String          @db.VarChar(120)
+  code                String          @unique @db.Char(6)
+  status              PartyStatus     @default(DRAFT)
+  activePlaylistId    String?         @db.Uuid
+  scheduledPlaylistId String?         @db.Uuid
+  selectedDeviceId    String?         @db.VarChar(255)
+  stateVersion        Int             @default(0)
+  createdAt           DateTime        @default(now())
+  startedAt           DateTime?
+  endedAt             DateTime?
+  admin               Admin           @relation(fields: [adminId], references: [id], onDelete: Restrict)
+  settings            PartySettings?
+  activePlaylist      PartyPlaylist?  @relation("ActivePartyPlaylist", fields: [activePlaylistId], references: [id], onDelete: SetNull)
+  scheduledPlaylist   PartyPlaylist?  @relation("ScheduledPartyPlaylist", fields: [scheduledPlaylistId], references: [id], onDelete: SetNull)
+  playlists           PartyPlaylist[] @relation("PartyPlaylists")
+  participants        Participant[]
+  playlistVotes       PlaylistVote[]
+  rewards             Reward[]
+  flashTurns          FlashTurn[]
+  playbackState       PlaybackState?
+  auditLogs           AuditLog[]
+
+  @@index([adminId, status])
+  @@index([code, status])
+}
+
+model PartySettings {
+  id                            String    @id @default(uuid()) @db.Uuid
+  partyId                       String    @unique @db.Uuid
+  defaultTrackQuota             Int       @default(5)
+  maxTrackDurationMs            Int       @default(480000)
+  replayBlockMinutes            Int       @default(180)
+  minimumPlaylistVotes          Int       @default(4)
+  minimumPlaylistVotePercentage Int       @default(40)
+  playlistLockMinutes           Int       @default(15)
+  playlistVotesEnabled          Boolean   @default(true)
+  playlistChangeLockedByAdmin   Boolean   @default(false)
+  flashModeEnabled              Boolean   @default(true)
+  flashIntervalMinutes          Int       @default(60)
+  flashSelectionWindowSeconds   Int       @default(120)
+  nextFlashTurnAt               DateTime?
+  createdAt                     DateTime  @default(now())
+  updatedAt                     DateTime  @updatedAt
+  party                         Party     @relation(fields: [partyId], references: [id], onDelete: Cascade)
+}
+
+model Participant {
+  id                 String          @id @default(uuid()) @db.Uuid
+  partyId            String          @db.Uuid
+  nickname           String          @db.VarChar(40)
+  normalizedNickname String          @db.VarChar(40)
+  avatarSeed         String          @db.VarChar(64)
+  joinedAt           DateTime        @default(now())
+  lastSeenAt         DateTime        @default(now())
+  isActive           Boolean         @default(true)
+  isBlocked          Boolean         @default(false)
+  blockedAt          DateTime?
+  party              Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  proposedTracks     PlaylistTrack[]
+  trackVotes         TrackVote[]
+  playlistVote       PlaylistVote?
+  rewards            Reward[]
+  flashTurns         FlashTurn[]
+  sessions           Session[]
+  auditLogs          AuditLog[]      @relation("AuditParticipantActor")
+
+  @@unique([partyId, normalizedNickname])
+  @@index([partyId, isActive, isBlocked])
+  @@index([partyId, lastSeenAt])
+}
+
+model PartyPlaylist {
+  id                     String          @id @default(uuid()) @db.Uuid
+  partyId                String          @db.Uuid
+  name                   String          @db.VarChar(80)
+  description            String?         @db.VarChar(500)
+  visualKey              String          @db.VarChar(40)
+  quotaPerParticipant    Int             @default(5)
+  isOpen                 Boolean         @default(true)
+  trackVotesEnabled      Boolean         @default(true)
+  explicitContentAllowed Boolean         @default(false)
+  activatedAt            DateTime?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  party                  Party           @relation("PartyPlaylists", fields: [partyId], references: [id], onDelete: Cascade)
+  activeForParties       Party[]         @relation("ActivePartyPlaylist")
+  scheduledForParties    Party[]         @relation("ScheduledPartyPlaylist")
+  tracks                 PlaylistTrack[]
+  playlistVotes          PlaylistVote[]
+  flashTurns             FlashTurn[]
+
+  @@unique([partyId, name])
+  @@index([partyId, isOpen])
+}
+
+model PlaylistTrack {
+  id                      String          @id @default(uuid()) @db.Uuid
+  playlistId              String          @db.Uuid
+  proposedByParticipantId String?         @db.Uuid
+  rewardId                String?         @db.Uuid
+  spotifyTrackId          String          @db.VarChar(64)
+  spotifyUri              String          @db.VarChar(128)
+  spotifyUrl              String          @db.VarChar(500)
+  title                   String          @db.VarChar(300)
+  artistNames             String[]
+  spotifyArtistIds        String[]
+  coverUrl                String?         @db.VarChar(500)
+  durationMs              Int
+  isExplicit              Boolean         @default(false)
+  status                  TrackStatus     @default(PENDING)
+  voteCount               Int             @default(0)
+  priorityLevel           Int             @default(0)
+  sequenceGroupId         String?         @db.Uuid
+  sequencePosition        Int?
+  isBannedForParty        Boolean         @default(false)
+  selectedAt              DateTime?
+  queuedAt                DateTime?
+  playingAt               DateTime?
+  playedAt                DateTime?
+  removedAt               DateTime?
+  removedReason           String?         @db.VarChar(300)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  playlist                PartyPlaylist   @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  proposedBy              Participant?    @relation(fields: [proposedByParticipantId], references: [id], onDelete: SetNull)
+  reward                  Reward?         @relation(fields: [rewardId], references: [id], onDelete: SetNull)
+  votes                   TrackVote[]
+  currentInPlaybackStates PlaybackState[] @relation("CurrentPlaybackTrack")
+  queuedInPlaybackStates  PlaybackState[] @relation("QueuedPlaybackTrack")
+  lockedInPlaybackStates  PlaybackState[] @relation("LockedPlaybackTrack")
+  flashTurn               FlashTurn?
+
+  @@unique([playlistId, spotifyTrackId])
+  @@index([playlistId, status, createdAt])
+  @@index([proposedByParticipantId, playlistId])
+  @@index([sequenceGroupId, sequencePosition])
+}
+
+model TrackVote {
+  id            String        @id @default(uuid()) @db.Uuid
+  trackId       String        @db.Uuid
+  participantId String        @db.Uuid
+  createdAt     DateTime      @default(now())
+  track         PlaylistTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([trackId, participantId])
+  @@index([participantId, createdAt])
+}
+
+model PlaylistVote {
+  id            String        @id @default(uuid()) @db.Uuid
+  partyId       String        @db.Uuid
+  playlistId    String        @db.Uuid
+  participantId String        @unique @db.Uuid
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  party         Party         @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  playlist      PartyPlaylist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([partyId, participantId])
+  @@index([partyId, playlistId])
+}
+
+model Reward {
+  id             String          @id @default(uuid()) @db.Uuid
+  partyId        String          @db.Uuid
+  participantId  String          @db.Uuid
+  assignedById   String          @db.Uuid
+  type           RewardType
+  status         RewardStatus    @default(AVAILABLE)
+  usesGranted    Int             @default(1)
+  usesRemaining  Int             @default(1)
+  assignedAt     DateTime        @default(now())
+  lastUsedAt     DateTime?
+  consumedAt     DateTime?
+  revokedAt      DateTime?
+  party          Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  participant    Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  assignedBy     Admin           @relation("RewardAssignedBy", fields: [assignedById], references: [id], onDelete: Restrict)
+  affectedTracks PlaylistTrack[]
+
+  @@index([participantId, status])
+  @@index([partyId, assignedAt])
+}
+
+model FlashTurn {
+  id            String          @id @default(uuid()) @db.Uuid
+  partyId       String          @db.Uuid
+  participantId String          @db.Uuid
+  playlistId    String          @db.Uuid
+  trackId       String?         @unique @db.Uuid
+  status        FlashTurnStatus @default(ACTIVE)
+  startedAt     DateTime        @default(now())
+  expiresAt     DateTime
+  submittedAt   DateTime?
+  resolvedAt    DateTime?
+  party         Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  participant   Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  playlist      PartyPlaylist   @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  track         PlaylistTrack?  @relation(fields: [trackId], references: [id], onDelete: SetNull)
+
+  @@index([partyId, status, startedAt])
+  @@index([participantId, startedAt])
+}
+
+model PlaybackState {
+  id                 String         @id @default(uuid()) @db.Uuid
+  partyId            String         @unique @db.Uuid
+  currentTrackId     String?        @db.Uuid
+  queuedTrackId      String?        @db.Uuid
+  lockedNextTrackId  String?        @db.Uuid
+  spotifyTrackId     String?        @db.VarChar(64)
+  progressMs         Int            @default(0)
+  durationMs         Int            @default(0)
+  isPlaying          Boolean        @default(false)
+  lastSpotifySyncAt  DateTime?
+  lastQueueCommandAt DateTime?
+  updatedAt          DateTime       @updatedAt
+  party              Party          @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  currentTrack       PlaylistTrack? @relation("CurrentPlaybackTrack", fields: [currentTrackId], references: [id], onDelete: SetNull)
+  queuedTrack        PlaylistTrack? @relation("QueuedPlaybackTrack", fields: [queuedTrackId], references: [id], onDelete: SetNull)
+  lockedNextTrack    PlaylistTrack? @relation("LockedPlaybackTrack", fields: [lockedNextTrackId], references: [id], onDelete: SetNull)
+}
+
+model Session {
+  id            String           @id @default(uuid()) @db.Uuid
+  tokenHash     String           @unique @db.Char(64)
+  csrfTokenHash String           @db.Char(64)
+  actorType     SessionActorType
+  adminId       String?          @db.Uuid
+  participantId String?          @db.Uuid
+  expiresAt     DateTime
+  lastSeenAt    DateTime         @default(now())
+  revokedAt     DateTime?
+  createdAt     DateTime         @default(now())
+  admin         Admin?           @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  participant   Participant?     @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([actorType, expiresAt])
+  @@index([participantId, revokedAt])
+  @@index([adminId, revokedAt])
+}
+
+model AuditLog {
+  id                 String         @id @default(uuid()) @db.Uuid
+  partyId            String?        @db.Uuid
+  actorType          AuditActorType
+  adminActorId       String?        @db.Uuid
+  participantActorId String?        @db.Uuid
+  action             String         @db.VarChar(100)
+  entityType         String         @db.VarChar(80)
+  entityId           String?        @db.Uuid
+  metadata           Json?
+  createdAt          DateTime       @default(now())
+  party              Party?         @relation(fields: [partyId], references: [id], onDelete: SetNull)
+  adminActor         Admin?         @relation("AuditAdminActor", fields: [adminActorId], references: [id], onDelete: SetNull)
+  participantActor   Participant?   @relation("AuditParticipantActor", fields: [participantActorId], references: [id], onDelete: SetNull)
+
+  @@index([partyId, createdAt])
+  @@index([actorType, createdAt])
+}

@@ -1,0 +1,36 @@
+import { Gauge, MusicNotes, SpeakerHigh, UsersThree } from "@phosphor-icons/react";
+import { Link, NavLink } from "react-router-dom";
+
+const getNavClassName = ({ isActive }: { isActive: boolean }) =>
+  `admin-party-nav-link${isActive ? " active" : ""}`;
+
+export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyName: string }) {
+  return (
+    <header className="admin-toolbar">
+      <div className="admin-toolbar-brand">
+        <Link className="brand-link" to="/">
+          SongFest
+        </Link>
+        <span>{partyName}</span>
+      </div>
+      <nav className="admin-party-nav" aria-label="Navigation organisateur">
+        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/dashboard`}>
+          <Gauge aria-hidden="true" />
+          Pilotage
+        </NavLink>
+        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/playlists`}>
+          <MusicNotes aria-hidden="true" />
+          Playlists
+        </NavLink>
+        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/spotify`}>
+          <SpeakerHigh aria-hidden="true" />
+          Spotify
+        </NavLink>
+        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/share`}>
+          <UsersThree aria-hidden="true" />
+          Inviter
+        </NavLink>
+      </nav>
+    </header>
+  );
+}

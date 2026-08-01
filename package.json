@@ -1,0 +1,43 @@
+{
+  "name": "songfest",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Collaborative music management for private parties",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @songfest/shared && npm run build --workspace @songfest/api && npm run build --workspace @songfest/web",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "prisma db seed",
+    "db:validate": "prisma validate",
+    "dev": "npm run build --workspace @songfest/shared && concurrently --names api,web --prefix-colors cyan,green \"npm run dev --workspace @songfest/api\" \"npm run dev --workspace @songfest/web\"",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "npm run test --workspaces --if-present",
+    "test:integration": "sh scripts/test-integration.sh",
+    "check:release": "sh scripts/check-release.sh",
+    "typecheck": "npm run build --workspace @songfest/shared && npm run typecheck --workspace @songfest/api && npm run typecheck --workspace @songfest/web && tsc -p tsconfig.tools.json --noEmit"
+  },
+  "engines": {
+    "node": "^22.13.0 || >=24.0.0",
+    "npm": ">=10.0.0"
+  },
+  "packageManager": "npm@10.9.2",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "concurrently": "^10.0.4",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.8.0",
+    "prettier": "^3.9.6",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0"
+  }
+}

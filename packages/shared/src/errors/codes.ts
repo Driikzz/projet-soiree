@@ -1,0 +1,60 @@
+import { z } from "zod";
+
+export const errorCodeSchema = z.enum([
+  "VALIDATION_ERROR",
+  "INVALID_CREDENTIALS",
+  "AUTHENTICATION_REQUIRED",
+  "INVALID_CSRF_TOKEN",
+  "FORBIDDEN",
+  "ROUTE_NOT_FOUND",
+  "PARTY_NOT_FOUND",
+  "PARTY_NOT_OPEN",
+  "PARTY_CODE_UNAVAILABLE",
+  "NICKNAME_TAKEN",
+  "PARTICIPANT_BLOCKED",
+  "PARTICIPANT_NOT_FOUND",
+  "PLAYLIST_NOT_FOUND",
+  "PLAYLIST_NAME_TAKEN",
+  "PLAYLIST_NOT_EMPTY",
+  "PLAYLIST_LOCKED",
+  "TRACK_QUOTA_REACHED",
+  "TRACK_ALREADY_EXISTS",
+  "TRACK_RECENTLY_PLAYED",
+  "TRACK_BANNED",
+  "TRACK_TOO_LONG",
+  "TRACK_EXPLICIT_NOT_ALLOWED",
+  "TRACK_NOT_FOUND",
+  "TRACK_NOT_VOTABLE",
+  "TRACK_NOT_REMOVABLE",
+  "TRACK_VOTES_DISABLED",
+  "PLAYLIST_CHANGE_LOCKED",
+  "PLAYLIST_VOTES_DISABLED",
+  "INSUFFICIENT_PLAYLIST_VOTES",
+  "SPOTIFY_DEVICE_UNAVAILABLE",
+  "SPOTIFY_AUTH_REQUIRED",
+  "SPOTIFY_CONFIGURATION_REQUIRED",
+  "SPOTIFY_OAUTH_FAILED",
+  "SPOTIFY_QUOTA_EXCEEDED",
+  "SPOTIFY_REQUEST_FAILED",
+  "PLAYBACK_NOT_READY",
+  "REWARD_NOT_FOUND",
+  "REWARD_NOT_AVAILABLE",
+  "FLASH_TURN_NOT_ACTIVE",
+  "FLASH_TURN_EXPIRED",
+  "FLASH_TURN_ALREADY_PENDING",
+  "RATE_LIMITED",
+  "INTERNAL_ERROR",
+]);
+
+export type ErrorCode = z.infer<typeof errorCodeSchema>;
+
+export const publicErrorSchema = z.object({
+  error: z.object({
+    code: errorCodeSchema,
+    message: z.string(),
+    requestId: z.string(),
+    details: z.record(z.string(), z.unknown()).optional(),
+  }),
+});
+
+export type PublicError = z.infer<typeof publicErrorSchema>;
