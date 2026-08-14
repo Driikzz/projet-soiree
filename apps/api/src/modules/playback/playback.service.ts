@@ -6,6 +6,7 @@ import {
 } from "@songfest/shared";
 
 import { AppError } from "../../errors/app-error.js";
+import { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma.js";
 import {
   publishAdminNotification,
@@ -26,6 +27,7 @@ import {
   startSpotifyTrack,
 } from "../spotify/spotify.service.js";
 import { playlistTrackSelect, toPlaylistTrack } from "../tracks/track.service.js";
+import { closeParty } from "../parties/party-lifecycle.service.js";
 import {
   didObservedTrackChange,
   selectPlaybackTargetPlaylist,
@@ -308,6 +310,7 @@ const reconcileObservedPlayback = async (partyId: string, observed: ObservedPlay
         durationMs: observed.durationMs,
         isPlaying: observed.isPlaying,
         lastSpotifySyncAt: now,
+        ...(observed.isPlaying ? { lastPlaybackActivityAt: now } : {}),
       },
     });
 
@@ -687,6 +690,7 @@ const startTrackImmediately = async (
           durationMs: track.durationMs,
           isPlaying: true,
           lastSpotifySyncAt: now,
+          lastPlaybackActivityAt: now,
         },
       });
       await transaction.party.update({
@@ -933,7 +937,33 @@ export const getAdminPlayback = async (adminId: string, partyId: string) => {
   return loadPlaybackSnapshot(partyId);
 };
 
-export const startPartyPlayback = async (adminId: string, partyId: string) => {
+interface StartPartyPlaybackOptions {
+  closeExistingParty: boolean;
+}
+
+const throwActivePartyConflict = async (adminId: string, partyId: string): Promise<never> => {
+  const activeParty = await prisma.party.findFirst({
+    where: { adminId, status: "ACTIVE", id: { not: partyId } },
+    select: { id: true, name: true },
+  });
+
+  throw new AppError(
+    409,
+    "ACTIVE_PARTY_CONFLICT",
+    activeParty === null
+      ? "Une autre soirée vient d’être lancée. Réessaie."
+      : `La soirée « ${activeParty.name} » est encore active.`,
+    activeParty === null
+      ? undefined
+      : { activePartyId: activeParty.id, activePartyName: activeParty.name },
+  );
+};
+
+export const startPartyPlayback = async (
+  adminId: string,
+  partyId: string,
+  { closeExistingParty }: StartPartyPlaybackOptions = { closeExistingParty: false },
+) => {
   const party = await getControllableParty(adminId, partyId);
   if (party.status === "ENDED") {
     throw new AppError(409, "PLAYBACK_NOT_READY", "Cette soirée est terminée.");
@@ -943,23 +973,50 @@ export const startPartyPlayback = async (adminId: string, partyId: string) => {
   }
 
   if (party.status !== "ACTIVE") {
-    await prisma.party.update({
-      where: { id: partyId },
-      data: {
-        status: "ACTIVE",
-        startedAt: new Date(),
-        stateVersion: { increment: 1 },
-        auditLogs: {
-          create: {
-            actorType: "ADMIN",
-            adminActorId: adminId,
-            action: "playback.started",
-            entityType: "Party",
-            entityId: partyId,
+    const activeParty = await prisma.party.findFirst({
+      where: { adminId, status: "ACTIVE", id: { not: partyId } },
+      select: { id: true, name: true },
+    });
+    if (activeParty !== null && !closeExistingParty) {
+      throw new AppError(
+        409,
+        "ACTIVE_PARTY_CONFLICT",
+        `La soirée « ${activeParty.name} » est encore active.`,
+        { activePartyId: activeParty.id, activePartyName: activeParty.name },
+      );
+    }
+    if (activeParty !== null) {
+      await closeParty(activeParty.id, {
+        actorType: "SYSTEM",
+        reason: "REPLACED_BY_NEW_PARTY",
+      });
+    }
+
+    try {
+      await prisma.party.update({
+        where: { id: partyId },
+        data: {
+          status: "ACTIVE",
+          startedAt: new Date(),
+          endedAt: null,
+          stateVersion: { increment: 1 },
+          auditLogs: {
+            create: {
+              actorType: "ADMIN",
+              adminActorId: adminId,
+              action: "playback.started",
+              entityType: "Party",
+              entityId: partyId,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (error: unknown) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        await throwActivePartyConflict(adminId, partyId);
+      }
+      throw error;
+    }
   }
 
   try {
@@ -999,9 +1056,10 @@ export const resumePartyPlayback = async (adminId: string, partyId: string) => {
     throw new AppError(409, "PLAYBACK_NOT_READY", "La soirée n’est pas encore lancée.");
   }
   await resumeSpotifyPlayback(adminId, party.selectedDeviceId);
+  const now = new Date();
   await prisma.playbackState.update({
     where: { partyId },
-    data: { isPlaying: true, lastSpotifySyncAt: new Date() },
+    data: { isPlaying: true, lastSpotifySyncAt: now, lastPlaybackActivityAt: now },
   });
   return loadPlaybackSnapshot(partyId);
 };
@@ -1051,6 +1109,7 @@ const skipToNextApplicationTrack = async (
           durationMs: 0,
           isPlaying: true,
           lastSpotifySyncAt: now,
+          lastPlaybackActivityAt: now,
         },
       }),
       prisma.party.update({

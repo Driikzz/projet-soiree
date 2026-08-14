@@ -36,6 +36,9 @@ httpServer.listen(env.PORT, env.HOST, () => {
     {
       host: env.HOST,
       port: env.PORT,
+      webOrigin: env.WEB_ORIGIN,
+      spotifyRedirectUri: env.SPOTIFY_REDIRECT_URI ?? null,
+      trustProxy: env.TRUST_PROXY,
     },
     "SongFest API is ready",
   );

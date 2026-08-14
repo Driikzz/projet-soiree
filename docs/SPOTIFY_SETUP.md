@@ -51,12 +51,13 @@ décodée ne contient pas exactement 32 octets.
 
 Le MVP demande uniquement :
 
+- `user-read-private` (lecture de l’identifiant stable renvoyé par `GET /me`)
 - `user-read-playback-state`
 - `user-read-currently-playing`
 - `user-modify-playback-state`
 
-Ils couvrent les appareils, le morceau courant et les commandes de lecture prévues. Aucun scope
-de bibliothèque, de profil privé ou d’adresse e-mail n’est demandé.
+Ils couvrent l’association du compte, les appareils, le morceau courant et les commandes de
+lecture prévues. Aucun scope de bibliothèque ou d’adresse e-mail n’est demandé.
 
 ## Parcours de connexion
 
@@ -87,8 +88,8 @@ Spotify d’un invité ou d’un autre organisateur.
 ## Limites de développement
 
 - Les commandes du player nécessitent Spotify Premium.
-- En mode développement, l’application et ses utilisateurs autorisés restent soumis aux limites du
-  Dashboard Spotify.
+- En mode développement, le propriétaire de l’application doit avoir Premium et chaque compte de
+  test doit être ajouté dans `Users Management` du Dashboard Spotify.
 - La recherche est volontairement limitée à 10 titres par appel.
 - Les réponses `429` sont converties en erreurs compréhensibles ; `QUOTA_EXCEEDED` est distingué
   d’un ralentissement temporaire.

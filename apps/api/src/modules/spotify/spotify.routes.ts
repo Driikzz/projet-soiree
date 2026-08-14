@@ -40,10 +40,30 @@ const oauthCallbackQuerySchema = z.object({
 
 const searchLimiter = createRateLimiter(60 * 1_000, 30);
 
-const spotifyRedirect = (status: "connected" | "denied" | "error", partyId: string) => {
+const spotifyRedirect = (
+  status: "connected" | "denied" | "error",
+  partyId: string,
+  reason?: string,
+) => {
   const redirect = new URL(`/organizer/parties/${partyId}/spotify`, env.WEB_ORIGIN);
   redirect.searchParams.set("spotify", status);
+  if (reason !== undefined) {
+    redirect.searchParams.set("reason", reason);
+  }
   return redirect.toString();
+};
+
+const getOAuthFailureReason = (error: unknown) => {
+  if (error instanceof Error && "code" in error) {
+    const code = String(error.code);
+    if (code === "SPOTIFY_AUTH_REQUIRED") {
+      return "callback";
+    }
+    if (code === "SPOTIFY_REQUEST_FAILED") {
+      return "unavailable";
+    }
+  }
+  return "oauth";
 };
 
 export const createSpotifyRouter = () => {
@@ -95,11 +115,14 @@ export const createSpotifyRouter = () => {
       logger.warn(
         {
           errorCode: error instanceof Error && "code" in error ? String(error.code) : "unknown",
+          errorMessage: error instanceof Error ? error.message : "unknown",
+          errorDetails: error instanceof Error && "details" in error ? error.details : undefined,
           adminId: request.adminAuth!.admin.id,
+          redirectUri: env.SPOTIFY_REDIRECT_URI,
         },
         "Spotify OAuth callback failed",
       );
-      response.redirect(spotifyRedirect("error", partyId));
+      response.redirect(spotifyRedirect("error", partyId, getOAuthFailureReason(error)));
     }
   });
 

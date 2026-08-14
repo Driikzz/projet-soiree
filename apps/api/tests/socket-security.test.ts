@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
+import { env } from "../src/config/env.js";
 import { getPartyRoom } from "../src/socket/party-room.js";
-import { parseCookieHeader } from "../src/socket/socket-auth.js";
+import { isTrustedSocketOrigin, parseCookieHeader } from "../src/socket/socket-auth.js";
 import { consumeSocketAction } from "../src/socket/socket-rate-limit.js";
 
 describe("socket security helpers", () => {
@@ -19,6 +20,12 @@ describe("socket security helpers", () => {
     expect(getPartyRoom("550e8400-e29b-41d4-a716-446655440000")).toBe(
       "party:550e8400-e29b-41d4-a716-446655440000",
     );
+  });
+
+  it("accepts the configured socket origin with harmless URL formatting", () => {
+    expect(isTrustedSocketOrigin(`${env.WEB_ORIGIN}/`)).toBe(true);
+    expect(isTrustedSocketOrigin("not-a-url")).toBe(false);
+    expect(isTrustedSocketOrigin("https://example.invalid")).toBe(false);
   });
 
   it("limits repeated socket actions inside the rolling window", () => {

@@ -11,9 +11,7 @@ import {
 import { createRateLimiter } from "../../middleware/rate-limit.js";
 import { validateBody } from "../../middleware/validate.js";
 import {
-  disconnectPartyParticipantSockets,
   disconnectParticipantSockets,
-  publishPartyEnded,
   publishPartyResync,
   publishPartySettingsUpdated,
   publishRewardAssigned,
@@ -143,9 +141,6 @@ export const createAdminDashboardRouter = () => {
       const partyId = uuidSchema.parse(request.params.partyId);
       const party = await endParty(request.adminAuth!.admin.id, partyId);
       response.json({ party: { id: party.id, endedAt: party.endedAt.toISOString() } });
-      void publishPartyEnded(partyId, party.endedAt).finally(() => {
-        disconnectPartyParticipantSockets(partyId);
-      });
     },
   );
 

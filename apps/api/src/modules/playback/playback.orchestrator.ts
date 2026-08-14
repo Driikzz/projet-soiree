@@ -1,6 +1,7 @@
 import { logger } from "../../lib/logger.js";
 import { prisma } from "../../lib/prisma.js";
 import { synchronizeFlashTurnsForParty } from "../flash/flash.service.js";
+import { closeInactiveParties } from "../parties/party-lifecycle.service.js";
 import { synchronizePartyPlayback } from "./playback.service.js";
 
 let playbackTimer: NodeJS.Timeout | undefined;
@@ -15,6 +16,7 @@ const reportCycleFailure = (error: unknown) => {
 };
 
 const synchronizeActiveParties = async () => {
+  await closeInactiveParties();
   const parties = await prisma.party.findMany({
     where: {
       status: "ACTIVE",

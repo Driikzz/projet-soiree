@@ -1,8 +1,9 @@
 import { Router } from "express";
 
-import { uuidSchema } from "@songfest/shared";
+import { startPlaybackRequestSchema, uuidSchema } from "@songfest/shared";
 
 import { createRateLimiter } from "../../middleware/rate-limit.js";
+import { validateBody } from "../../middleware/validate.js";
 import {
   requireAdmin,
   requireAdminCsrf,
@@ -66,8 +67,22 @@ export const createPlaybackRouter = () => {
     );
   }
 
+  router.post(
+    "/organizer/parties/:partyId/playback/start",
+    requireTrustedOrigin,
+    requireAdmin,
+    requireAdminCsrf,
+    playbackControlLimiter,
+    validateBody(startPlaybackRequestSchema),
+    async (request, response) => {
+      const partyId = uuidSchema.parse(request.params.partyId);
+      const playback = await startPartyPlayback(request.adminAuth!.admin.id, partyId, request.body);
+      response.json(playback);
+      void publishPartyResync(partyId, ["party", "playlists", "tracks", "playback"]);
+    },
+  );
+
   const controls = [
-    ["start", startPartyPlayback],
     ["pause", pausePartyPlayback],
     ["resume", resumePartyPlayback],
     ["skip", skipPartyPlayback],

@@ -14,9 +14,14 @@ export const getAdminPlayback = (partyId: string, signal?: AbortSignal) =>
 
 type PlaybackControl = "start" | "pause" | "resume" | "skip";
 
-export const controlPartyPlayback = (partyId: string, control: PlaybackControl) =>
+export const controlPartyPlayback = (
+  partyId: string,
+  control: PlaybackControl,
+  closeExistingParty = false,
+) =>
   apiRequest<PartyPlayback>(`/api/organizer/parties/${partyId}/playback/${control}`, {
     method: "POST",
+    body: control === "start" ? { closeExistingParty } : undefined,
     csrfCookie: "songfest_admin_csrf",
   });
 

@@ -318,22 +318,25 @@ model FlashTurn {
 }
 
 model PlaybackState {
-  id                 String         @id @default(uuid()) @db.Uuid
-  partyId            String         @unique @db.Uuid
-  currentTrackId     String?        @db.Uuid
-  queuedTrackId      String?        @db.Uuid
-  lockedNextTrackId  String?        @db.Uuid
-  spotifyTrackId     String?        @db.VarChar(64)
-  progressMs         Int            @default(0)
-  durationMs         Int            @default(0)
-  isPlaying          Boolean        @default(false)
-  lastSpotifySyncAt  DateTime?
-  lastQueueCommandAt DateTime?
-  updatedAt          DateTime       @updatedAt
-  party              Party          @relation(fields: [partyId], references: [id], onDelete: Cascade)
-  currentTrack       PlaylistTrack? @relation("CurrentPlaybackTrack", fields: [currentTrackId], references: [id], onDelete: SetNull)
-  queuedTrack        PlaylistTrack? @relation("QueuedPlaybackTrack", fields: [queuedTrackId], references: [id], onDelete: SetNull)
-  lockedNextTrack    PlaylistTrack? @relation("LockedPlaybackTrack", fields: [lockedNextTrackId], references: [id], onDelete: SetNull)
+  id                     String         @id @default(uuid()) @db.Uuid
+  partyId                String         @unique @db.Uuid
+  currentTrackId         String?        @db.Uuid
+  queuedTrackId          String?        @db.Uuid
+  lockedNextTrackId      String?        @db.Uuid
+  spotifyTrackId         String?        @db.VarChar(64)
+  progressMs             Int            @default(0)
+  durationMs             Int            @default(0)
+  isPlaying              Boolean        @default(false)
+  lastSpotifySyncAt      DateTime?
+  lastPlaybackActivityAt DateTime?
+  lastQueueCommandAt     DateTime?
+  updatedAt              DateTime       @updatedAt
+  party                  Party          @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  currentTrack           PlaylistTrack? @relation("CurrentPlaybackTrack", fields: [currentTrackId], references: [id], onDelete: SetNull)
+  queuedTrack            PlaylistTrack? @relation("QueuedPlaybackTrack", fields: [queuedTrackId], references: [id], onDelete: SetNull)
+  lockedNextTrack        PlaylistTrack? @relation("LockedPlaybackTrack", fields: [lockedNextTrackId], references: [id], onDelete: SetNull)
+
+  @@index([lastPlaybackActivityAt])
 }
 
 model Session {

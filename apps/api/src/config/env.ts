@@ -19,7 +19,11 @@ const environmentSchema = z
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
     HOST: z.string().min(1).default("0.0.0.0"),
     PORT: z.coerce.number().int().min(1).max(65_535).default(3000),
-    WEB_ORIGIN: z.string().url().default("http://127.0.0.1:5173"),
+    WEB_ORIGIN: z
+      .string()
+      .url()
+      .default("http://127.0.0.1:5173")
+      .transform((value) => new URL(value).origin),
     DATABASE_URL: z
       .string()
       .url()
@@ -72,6 +76,24 @@ const environmentSchema = z
           code: "custom",
           path: ["SPOTIFY_TOKEN_ENCRYPTION_KEY"],
           message: "must be a base64-encoded 32-byte key",
+        });
+      }
+    }
+
+    if (value.SPOTIFY_REDIRECT_URI !== undefined) {
+      const redirectUri = new URL(value.SPOTIFY_REDIRECT_URI);
+      if (redirectUri.origin !== value.WEB_ORIGIN) {
+        context.addIssue({
+          code: "custom",
+          path: ["SPOTIFY_REDIRECT_URI"],
+          message: "must use the same origin as WEB_ORIGIN",
+        });
+      }
+      if (redirectUri.pathname !== "/api/spotify/callback") {
+        context.addIssue({
+          code: "custom",
+          path: ["SPOTIFY_REDIRECT_URI"],
+          message: "must end with /api/spotify/callback",
         });
       }
     }

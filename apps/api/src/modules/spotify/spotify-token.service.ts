@@ -53,11 +53,22 @@ const requestToken = async (body: URLSearchParams) => {
       throw new AppError(
         401,
         "SPOTIFY_AUTH_REQUIRED",
-        "La connexion Spotify a expiré. Reconnecte le compte.",
+        "Spotify a refusé le code OAuth. Vérifie l’URL de callback puis reconnecte le compte.",
+        {
+          spotifyError: errorName,
+          ...(spotifyError.success && spotifyError.data.error_description !== undefined
+            ? { spotifyDescription: spotifyError.data.error_description }
+            : {}),
+        },
       );
     }
 
-    throw new AppError(502, "SPOTIFY_OAUTH_FAILED", "Spotify a refusé l’authentification.");
+    throw new AppError(502, "SPOTIFY_OAUTH_FAILED", "Spotify a refusé l’authentification.", {
+      ...(errorName === undefined ? {} : { spotifyError: errorName }),
+      ...(spotifyError.success && spotifyError.data.error_description !== undefined
+        ? { spotifyDescription: spotifyError.data.error_description }
+        : {}),
+    });
   }
 
   const parsedToken = spotifyTokenResponseSchema.safeParse(payload);
@@ -114,6 +125,7 @@ export const exchangeSpotifyAuthorizationCode = async (adminId: string, code: st
       "Spotify n’a pas fourni de jeton de renouvellement.",
     );
   }
+  const refreshToken = token.refresh_token;
 
   const scopes = token.scope.split(" ").filter(Boolean);
   const missingScope = SPOTIFY_SCOPES.find((scope) => !scopes.includes(scope));
@@ -130,13 +142,16 @@ export const exchangeSpotifyAuthorizationCode = async (adminId: string, code: st
   const accessTokenExpiresAt = new Date(now.getTime() + token.expires_in * 1_000);
   const refreshTokenExpiresAt = createRefreshTokenExpiry(now);
 
-  await prisma.$transaction([
-    prisma.spotifyConnection.upsert({
+  await prisma.$transaction(async (transaction) => {
+    await transaction.spotifyConnection.deleteMany({
+      where: { spotifyAccountId, adminId: { not: adminId } },
+    });
+    await transaction.spotifyConnection.upsert({
       where: { adminId },
       update: {
         spotifyAccountId,
         accessTokenEncrypted: encryptToken(token.access_token, configuration.encryptionKey),
-        refreshTokenEncrypted: encryptToken(token.refresh_token, configuration.encryptionKey),
+        refreshTokenEncrypted: encryptToken(refreshToken, configuration.encryptionKey),
         accessTokenExpiresAt,
         refreshTokenExpiresAt,
         scopes,
@@ -146,21 +161,21 @@ export const exchangeSpotifyAuthorizationCode = async (adminId: string, code: st
         adminId,
         spotifyAccountId,
         accessTokenEncrypted: encryptToken(token.access_token, configuration.encryptionKey),
-        refreshTokenEncrypted: encryptToken(token.refresh_token, configuration.encryptionKey),
+        refreshTokenEncrypted: encryptToken(refreshToken, configuration.encryptionKey),
         accessTokenExpiresAt,
         refreshTokenExpiresAt,
         scopes,
       },
-    }),
-    prisma.auditLog.create({
+    });
+    await transaction.auditLog.create({
       data: {
         actorType: "ADMIN",
         adminActorId: adminId,
         action: "spotify.connected",
         entityType: "SpotifyConnection",
       },
-    }),
-  ]);
+    });
+  });
 };
 
 const refreshSpotifyAccessToken = async (adminId: string) => {
@@ -257,6 +272,7 @@ export const getSpotifyConnectionStatus = async (adminId: string) => {
     return {
       isConfigured: false,
       isConnected: false,
+      redirectUri: null,
       connectedAt: null,
       refreshTokenExpiresAt: null,
       scopes: [],
@@ -275,6 +291,7 @@ export const getSpotifyConnectionStatus = async (adminId: string) => {
   return {
     isConfigured: true,
     isConnected: connection !== null && connection.refreshTokenExpiresAt.getTime() > Date.now(),
+    redirectUri: getSpotifyConfiguration().redirectUri,
     connectedAt: connection?.connectedAt.toISOString() ?? null,
     refreshTokenExpiresAt: connection?.refreshTokenExpiresAt.toISOString() ?? null,
     scopes: connection?.scopes ?? [],

@@ -7,6 +7,7 @@ import { playlistTrackSchema } from "./tracks.js";
 export const spotifyConnectionStatusSchema = z.object({
   isConfigured: z.boolean(),
   isConnected: z.boolean(),
+  redirectUri: z.string().url().nullable(),
   connectedAt: z.string().datetime().nullable(),
   refreshTokenExpiresAt: z.string().datetime().nullable(),
   scopes: z.array(z.string()),
@@ -18,6 +19,10 @@ export const spotifyAuthorizationResponseSchema = z.object({
 
 export const spotifyConnectRequestSchema = z.object({
   partyId: uuidSchema,
+});
+
+export const startPlaybackRequestSchema = z.object({
+  closeExistingParty: z.boolean().default(false),
 });
 
 export const spotifyDeviceSchema = z.object({

@@ -12,6 +12,7 @@ import QRCode from "qrcode";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+import { AdminPartyNav } from "../components/admin-party-nav";
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
 import { getAdminParty, openParty } from "../lib/api/parties";
@@ -104,14 +105,13 @@ export function SharePartyPage() {
 
   return (
     <main className="page-shell share-shell">
-      <header className="topbar">
-        <Link className="brand-link" to="/">
-          SongFest
-        </Link>
+      <AdminPartyNav partyId={partyId} partyName={party.name} />
+
+      <div className="share-party-status">
         <span className={`status-badge ${isOpen ? "status-open" : ""}`}>
           {isOpen ? "Entrées ouvertes" : "Brouillon"}
         </span>
-      </header>
+      </div>
 
       <div className="share-grid">
         <section className="share-copy" aria-labelledby="share-title">

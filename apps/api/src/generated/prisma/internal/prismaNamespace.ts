@@ -1787,6 +1787,7 @@ export const PlaybackStateScalarFieldEnum = {
   durationMs: 'durationMs',
   isPlaying: 'isPlaying',
   lastSpotifySyncAt: 'lastSpotifySyncAt',
+  lastPlaybackActivityAt: 'lastPlaybackActivityAt',
   lastQueueCommandAt: 'lastQueueCommandAt',
   updatedAt: 'updatedAt'
 } as const

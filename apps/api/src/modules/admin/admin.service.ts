@@ -11,6 +11,7 @@ import { prisma } from "../../lib/prisma.js";
 import { playlistTrackSelect, toPlaylistTrack } from "../tracks/track.service.js";
 import { toReward } from "../rewards/reward.service.js";
 import { getAdminFlashState } from "../flash/flash.service.js";
+import { closeParty } from "../parties/party-lifecycle.service.js";
 
 const toPartySettings = (settings: {
   defaultTrackQuota: number;
@@ -439,55 +440,6 @@ export const forceTrack = async (adminId: string, partyId: string, trackId: stri
 
 export const endParty = async (adminId: string, partyId: string) => {
   const party = await getOwnedParty(adminId, partyId);
-  if (party.status === "ENDED") {
-    return { id: partyId, endedAt: party.endedAt ?? new Date() };
-  }
-
-  const endedAt = new Date();
-  await prisma.$transaction([
-    prisma.session.updateMany({
-      where: {
-        participant: { partyId },
-        revokedAt: null,
-      },
-      data: { revokedAt: endedAt },
-    }),
-    prisma.participant.updateMany({
-      where: { partyId, isActive: true },
-      data: { isActive: false, lastSeenAt: endedAt },
-    }),
-    prisma.flashTurn.updateMany({
-      where: {
-        partyId,
-        status: { in: ["ACTIVE", "SUBMITTED"] },
-      },
-      data: {
-        status: "CANCELLED",
-        resolvedAt: endedAt,
-      },
-    }),
-    prisma.partySettings.update({
-      where: { partyId },
-      data: { nextFlashTurnAt: null },
-    }),
-    prisma.party.update({
-      where: { id: partyId },
-      data: {
-        status: "ENDED",
-        endedAt,
-        stateVersion: { increment: 1 },
-        auditLogs: {
-          create: {
-            actorType: "ADMIN",
-            adminActorId: adminId,
-            action: "party.ended",
-            entityType: "Party",
-            entityId: partyId,
-          },
-        },
-      },
-    }),
-  ]);
-
-  return { id: partyId, endedAt };
+  const result = await closeParty(partyId, { actorType: "ADMIN", adminActorId: adminId });
+  return result ?? { id: partyId, endedAt: party.endedAt ?? new Date(), closed: false };
 };

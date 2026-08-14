@@ -86,7 +86,14 @@ export const createSocketServer = (httpServer: HttpServer): SongFestSocketServer
       methods: ["GET", "POST"],
     },
     allowRequest: (request, callback) => {
-      callback(null, isTrustedSocketOrigin(request.headers.origin));
+      const allowed = isTrustedSocketOrigin(request.headers.origin);
+      if (!allowed) {
+        logger.warn(
+          { requestOrigin: request.headers.origin, expectedOrigin: env.WEB_ORIGIN },
+          "Socket origin rejected",
+        );
+      }
+      callback(null, allowed);
     },
     maxHttpBufferSize: 10_000,
   });

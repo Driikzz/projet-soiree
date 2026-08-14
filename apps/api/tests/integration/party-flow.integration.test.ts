@@ -10,6 +10,10 @@ import {
 
 import { createApp } from "../../src/app.js";
 import { prisma } from "../../src/lib/prisma.js";
+import {
+  closeInactiveParties,
+  PARTY_INACTIVITY_TIMEOUT_MS,
+} from "../../src/modules/parties/party-lifecycle.service.js";
 import { resolvePlaybackTargetParty } from "../../src/modules/playback/playback.service.js";
 
 const adminPassword = "integration-password-2026";
@@ -376,5 +380,54 @@ describe("PostgreSQL party journey", () => {
         select: { scheduledPlaylistId: true },
       }),
     ).toEqual({ scheduledPlaylistId: nextPlaylist.id });
+
+    const secondPartyResponse = await adminAgent
+      .post("/api/organizer/parties")
+      .set("Origin", webOrigin)
+      .set("X-CSRF-Token", adminCsrf)
+      .send({ name: "Deuxième soirée" })
+      .expect(201);
+    const secondParty = partySummarySchema.parse(secondPartyResponse.body.party);
+    await adminAgent
+      .post(`/api/organizer/parties/${secondParty.id}/open`)
+      .set("Origin", webOrigin)
+      .set("X-CSRF-Token", adminCsrf)
+      .expect(200);
+    const secondPlaylist = await prisma.partyPlaylist.create({
+      data: { partyId: secondParty.id, name: "Deuxième ambiance", visualKey: "sunset" },
+    });
+    await prisma.party.update({
+      where: { id: secondParty.id },
+      data: { activePlaylistId: secondPlaylist.id, selectedDeviceId: "integration-device" },
+    });
+
+    await adminAgent
+      .post(`/api/organizer/parties/${secondParty.id}/playback/start`)
+      .set("Origin", webOrigin)
+      .set("X-CSRF-Token", adminCsrf)
+      .send({ closeExistingParty: false })
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body.error).toMatchObject({
+          code: "ACTIVE_PARTY_CONFLICT",
+          details: { activePartyId: party.id },
+        });
+      });
+
+    const now = new Date();
+    const inactiveAt = new Date(now.getTime() - PARTY_INACTIVITY_TIMEOUT_MS);
+    await prisma.party.update({
+      where: { id: party.id },
+      data: { startedAt: inactiveAt },
+    });
+    await prisma.playbackState.update({
+      where: { partyId: party.id },
+      data: { lastPlaybackActivityAt: inactiveAt },
+    });
+
+    expect(await closeInactiveParties(now)).toBe(1);
+    expect(
+      await prisma.party.findUnique({ where: { id: party.id }, select: { status: true } }),
+    ).toEqual({ status: "ENDED" });
   });
 });

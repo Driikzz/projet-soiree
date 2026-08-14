@@ -5,6 +5,7 @@ export class ApiError extends Error {
     public readonly code: PublicError["error"]["code"],
     message: string,
     public readonly status: number,
+    public readonly details?: PublicError["error"]["details"],
   ) {
     super(message);
     this.name = "ApiError";
@@ -50,7 +51,12 @@ export const apiRequest = async <ResponseBody>(
   const payload = (await response.json()) as ResponseBody | PublicError;
   if (!response.ok) {
     const publicError = payload as PublicError;
-    throw new ApiError(publicError.error.code, publicError.error.message, response.status);
+    throw new ApiError(
+      publicError.error.code,
+      publicError.error.message,
+      response.status,
+      publicError.error.details,
+    );
   }
 
   return payload as ResponseBody;

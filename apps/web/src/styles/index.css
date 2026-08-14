@@ -791,20 +791,52 @@ h1 {
 }
 
 .admin-toolbar {
+  position: sticky;
+  z-index: 6;
+  top: 0.75rem;
   display: grid;
   gap: 1rem;
+  border: 1px solid #2f4245;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  background: rgb(16 23 25 / 94%);
+  box-shadow: 0 1rem 3rem rgb(3 12 14 / 24%);
+  backdrop-filter: blur(16px);
 }
 
 .admin-toolbar-brand {
   display: grid;
-  gap: 0.15rem;
+  gap: 0.45rem;
+}
+
+.admin-party-back {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 0.35rem;
+  color: #8ee2d3;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.admin-party-back svg {
+  flex: none;
+  font-size: 0.95rem;
+}
+
+.admin-toolbar-context {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 0.6rem;
 }
 
 .admin-toolbar-brand .brand-link {
   margin: 0;
 }
 
-.admin-toolbar-brand span {
+.admin-toolbar-context span {
   overflow: hidden;
   max-width: 18rem;
   color: #83928e;
@@ -812,6 +844,12 @@ h1 {
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.share-party-status {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
 }
 
 .admin-party-nav {

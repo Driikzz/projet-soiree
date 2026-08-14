@@ -13,6 +13,10 @@ describe("AdminPartyNav", () => {
     );
 
     expect(screen.getByRole("navigation", { name: "Navigation organisateur" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Toutes mes soirées" })).toHaveAttribute(
+      "href",
+      "/parties",
+    );
     expect(screen.getByRole("link", { name: "Playlists" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByText("Anniversaire de Léa")).toBeInTheDocument();
   });

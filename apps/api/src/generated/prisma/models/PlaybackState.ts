@@ -47,6 +47,7 @@ export type PlaybackStateMinAggregateOutputType = {
   durationMs: number | null
   isPlaying: boolean | null
   lastSpotifySyncAt: Date | null
+  lastPlaybackActivityAt: Date | null
   lastQueueCommandAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +63,7 @@ export type PlaybackStateMaxAggregateOutputType = {
   durationMs: number | null
   isPlaying: boolean | null
   lastSpotifySyncAt: Date | null
+  lastPlaybackActivityAt: Date | null
   lastQueueCommandAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +79,7 @@ export type PlaybackStateCountAggregateOutputType = {
   durationMs: number
   isPlaying: number
   lastSpotifySyncAt: number
+  lastPlaybackActivityAt: number
   lastQueueCommandAt: number
   updatedAt: number
   _all: number
@@ -104,6 +107,7 @@ export type PlaybackStateMinAggregateInputType = {
   durationMs?: true
   isPlaying?: true
   lastSpotifySyncAt?: true
+  lastPlaybackActivityAt?: true
   lastQueueCommandAt?: true
   updatedAt?: true
 }
@@ -119,6 +123,7 @@ export type PlaybackStateMaxAggregateInputType = {
   durationMs?: true
   isPlaying?: true
   lastSpotifySyncAt?: true
+  lastPlaybackActivityAt?: true
   lastQueueCommandAt?: true
   updatedAt?: true
 }
@@ -134,6 +139,7 @@ export type PlaybackStateCountAggregateInputType = {
   durationMs?: true
   isPlaying?: true
   lastSpotifySyncAt?: true
+  lastPlaybackActivityAt?: true
   lastQueueCommandAt?: true
   updatedAt?: true
   _all?: true
@@ -236,6 +242,7 @@ export type PlaybackStateGroupByOutputType = {
   durationMs: number
   isPlaying: boolean
   lastSpotifySyncAt: Date | null
+  lastPlaybackActivityAt: Date | null
   lastQueueCommandAt: Date | null
   updatedAt: Date
   _count: PlaybackStateCountAggregateOutputType | null
@@ -274,6 +281,7 @@ export type PlaybackStateWhereInput = {
   durationMs?: Prisma.IntFilter<"PlaybackState"> | number
   isPlaying?: Prisma.BoolFilter<"PlaybackState"> | boolean
   lastSpotifySyncAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
+  lastPlaybackActivityAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   lastQueueCommandAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"PlaybackState"> | Date | string
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -293,6 +301,7 @@ export type PlaybackStateOrderByWithRelationInput = {
   durationMs?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
   lastSpotifySyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastPlaybackActivityAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastQueueCommandAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   party?: Prisma.PartyOrderByWithRelationInput
@@ -315,6 +324,7 @@ export type PlaybackStateWhereUniqueInput = Prisma.AtLeast<{
   durationMs?: Prisma.IntFilter<"PlaybackState"> | number
   isPlaying?: Prisma.BoolFilter<"PlaybackState"> | boolean
   lastSpotifySyncAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
+  lastPlaybackActivityAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   lastQueueCommandAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"PlaybackState"> | Date | string
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
@@ -334,6 +344,7 @@ export type PlaybackStateOrderByWithAggregationInput = {
   durationMs?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
   lastSpotifySyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastPlaybackActivityAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastQueueCommandAt?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.PlaybackStateCountOrderByAggregateInput
@@ -357,6 +368,7 @@ export type PlaybackStateScalarWhereWithAggregatesInput = {
   durationMs?: Prisma.IntWithAggregatesFilter<"PlaybackState"> | number
   isPlaying?: Prisma.BoolWithAggregatesFilter<"PlaybackState"> | boolean
   lastSpotifySyncAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PlaybackState"> | Date | string | null
+  lastPlaybackActivityAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PlaybackState"> | Date | string | null
   lastQueueCommandAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PlaybackState"> | Date | string | null
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PlaybackState"> | Date | string
 }
@@ -368,6 +380,7 @@ export type PlaybackStateCreateInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
   party: Prisma.PartyCreateNestedOneWithoutPlaybackStateInput
@@ -387,6 +400,7 @@ export type PlaybackStateUncheckedCreateInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -398,6 +412,7 @@ export type PlaybackStateUpdateInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneRequiredWithoutPlaybackStateNestedInput
@@ -417,6 +432,7 @@ export type PlaybackStateUncheckedUpdateInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -432,6 +448,7 @@ export type PlaybackStateCreateManyInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -443,6 +460,7 @@ export type PlaybackStateUpdateManyMutationInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -458,6 +476,7 @@ export type PlaybackStateUncheckedUpdateManyInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -488,6 +507,7 @@ export type PlaybackStateCountOrderByAggregateInput = {
   durationMs?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
   lastSpotifySyncAt?: Prisma.SortOrder
+  lastPlaybackActivityAt?: Prisma.SortOrder
   lastQueueCommandAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -508,6 +528,7 @@ export type PlaybackStateMaxOrderByAggregateInput = {
   durationMs?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
   lastSpotifySyncAt?: Prisma.SortOrder
+  lastPlaybackActivityAt?: Prisma.SortOrder
   lastQueueCommandAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -523,6 +544,7 @@ export type PlaybackStateMinOrderByAggregateInput = {
   durationMs?: Prisma.SortOrder
   isPlaying?: Prisma.SortOrder
   lastSpotifySyncAt?: Prisma.SortOrder
+  lastPlaybackActivityAt?: Prisma.SortOrder
   lastQueueCommandAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -697,6 +719,7 @@ export type PlaybackStateCreateWithoutPartyInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
   currentTrack?: Prisma.PlaylistTrackCreateNestedOneWithoutCurrentInPlaybackStatesInput
@@ -714,6 +737,7 @@ export type PlaybackStateUncheckedCreateWithoutPartyInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -741,6 +765,7 @@ export type PlaybackStateUpdateWithoutPartyInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   currentTrack?: Prisma.PlaylistTrackUpdateOneWithoutCurrentInPlaybackStatesNestedInput
@@ -758,6 +783,7 @@ export type PlaybackStateUncheckedUpdateWithoutPartyInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -769,6 +795,7 @@ export type PlaybackStateCreateWithoutCurrentTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
   party: Prisma.PartyCreateNestedOneWithoutPlaybackStateInput
@@ -786,6 +813,7 @@ export type PlaybackStateUncheckedCreateWithoutCurrentTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -807,6 +835,7 @@ export type PlaybackStateCreateWithoutQueuedTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
   party: Prisma.PartyCreateNestedOneWithoutPlaybackStateInput
@@ -824,6 +853,7 @@ export type PlaybackStateUncheckedCreateWithoutQueuedTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -845,6 +875,7 @@ export type PlaybackStateCreateWithoutLockedNextTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
   party: Prisma.PartyCreateNestedOneWithoutPlaybackStateInput
@@ -862,6 +893,7 @@ export type PlaybackStateUncheckedCreateWithoutLockedNextTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -906,6 +938,7 @@ export type PlaybackStateScalarWhereInput = {
   durationMs?: Prisma.IntFilter<"PlaybackState"> | number
   isPlaying?: Prisma.BoolFilter<"PlaybackState"> | boolean
   lastSpotifySyncAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
+  lastPlaybackActivityAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   lastQueueCommandAt?: Prisma.DateTimeNullableFilter<"PlaybackState"> | Date | string | null
   updatedAt?: Prisma.DateTimeFilter<"PlaybackState"> | Date | string
 }
@@ -952,6 +985,7 @@ export type PlaybackStateCreateManyCurrentTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -966,6 +1000,7 @@ export type PlaybackStateCreateManyQueuedTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -980,6 +1015,7 @@ export type PlaybackStateCreateManyLockedNextTrackInput = {
   durationMs?: number
   isPlaying?: boolean
   lastSpotifySyncAt?: Date | string | null
+  lastPlaybackActivityAt?: Date | string | null
   lastQueueCommandAt?: Date | string | null
   updatedAt?: Date | string
 }
@@ -991,6 +1027,7 @@ export type PlaybackStateUpdateWithoutCurrentTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneRequiredWithoutPlaybackStateNestedInput
@@ -1008,6 +1045,7 @@ export type PlaybackStateUncheckedUpdateWithoutCurrentTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1022,6 +1060,7 @@ export type PlaybackStateUncheckedUpdateManyWithoutCurrentTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1033,6 +1072,7 @@ export type PlaybackStateUpdateWithoutQueuedTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneRequiredWithoutPlaybackStateNestedInput
@@ -1050,6 +1090,7 @@ export type PlaybackStateUncheckedUpdateWithoutQueuedTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1064,6 +1105,7 @@ export type PlaybackStateUncheckedUpdateManyWithoutQueuedTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1075,6 +1117,7 @@ export type PlaybackStateUpdateWithoutLockedNextTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneRequiredWithoutPlaybackStateNestedInput
@@ -1092,6 +1135,7 @@ export type PlaybackStateUncheckedUpdateWithoutLockedNextTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1106,6 +1150,7 @@ export type PlaybackStateUncheckedUpdateManyWithoutLockedNextTrackInput = {
   durationMs?: Prisma.IntFieldUpdateOperationsInput | number
   isPlaying?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastSpotifySyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastPlaybackActivityAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastQueueCommandAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1123,6 +1168,7 @@ export type PlaybackStateSelect<ExtArgs extends runtime.Types.Extensions.Interna
   durationMs?: boolean
   isPlaying?: boolean
   lastSpotifySyncAt?: boolean
+  lastPlaybackActivityAt?: boolean
   lastQueueCommandAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1142,6 +1188,7 @@ export type PlaybackStateSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   durationMs?: boolean
   isPlaying?: boolean
   lastSpotifySyncAt?: boolean
+  lastPlaybackActivityAt?: boolean
   lastQueueCommandAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1161,6 +1208,7 @@ export type PlaybackStateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   durationMs?: boolean
   isPlaying?: boolean
   lastSpotifySyncAt?: boolean
+  lastPlaybackActivityAt?: boolean
   lastQueueCommandAt?: boolean
   updatedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
@@ -1180,11 +1228,12 @@ export type PlaybackStateSelectScalar = {
   durationMs?: boolean
   isPlaying?: boolean
   lastSpotifySyncAt?: boolean
+  lastPlaybackActivityAt?: boolean
   lastQueueCommandAt?: boolean
   updatedAt?: boolean
 }
 
-export type PlaybackStateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partyId" | "currentTrackId" | "queuedTrackId" | "lockedNextTrackId" | "spotifyTrackId" | "progressMs" | "durationMs" | "isPlaying" | "lastSpotifySyncAt" | "lastQueueCommandAt" | "updatedAt", ExtArgs["result"]["playbackState"]>
+export type PlaybackStateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partyId" | "currentTrackId" | "queuedTrackId" | "lockedNextTrackId" | "spotifyTrackId" | "progressMs" | "durationMs" | "isPlaying" | "lastSpotifySyncAt" | "lastPlaybackActivityAt" | "lastQueueCommandAt" | "updatedAt", ExtArgs["result"]["playbackState"]>
 export type PlaybackStateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   currentTrack?: boolean | Prisma.PlaybackState$currentTrackArgs<ExtArgs>
@@ -1223,6 +1272,7 @@ export type $PlaybackStatePayload<ExtArgs extends runtime.Types.Extensions.Inter
     durationMs: number
     isPlaying: boolean
     lastSpotifySyncAt: Date | null
+    lastPlaybackActivityAt: Date | null
     lastQueueCommandAt: Date | null
     updatedAt: Date
   }, ExtArgs["result"]["playbackState"]>
@@ -1662,6 +1712,7 @@ export interface PlaybackStateFieldRefs {
   readonly durationMs: Prisma.FieldRef<"PlaybackState", 'Int'>
   readonly isPlaying: Prisma.FieldRef<"PlaybackState", 'Boolean'>
   readonly lastSpotifySyncAt: Prisma.FieldRef<"PlaybackState", 'DateTime'>
+  readonly lastPlaybackActivityAt: Prisma.FieldRef<"PlaybackState", 'DateTime'>
   readonly lastQueueCommandAt: Prisma.FieldRef<"PlaybackState", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"PlaybackState", 'DateTime'>
 }

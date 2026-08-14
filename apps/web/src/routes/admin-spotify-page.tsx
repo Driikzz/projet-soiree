@@ -18,6 +18,7 @@ import type { SpotifyDevice } from "@songfest/shared";
 import { AdminPartyNav } from "../components/admin-party-nav";
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
+import { ApiError } from "../lib/api/client";
 import { getAdminParty } from "../lib/api/parties";
 import { controlPartyPlayback, getAdminPlayback } from "../lib/api/playback";
 import {
@@ -90,9 +91,23 @@ export function AdminSpotifyPage() {
       ]);
     },
   });
+  const runPlaybackControl = async (control: "start" | "pause" | "resume" | "skip") => {
+    try {
+      return await controlPartyPlayback(partyId, control);
+    } catch (error: unknown) {
+      if (
+        control === "start" &&
+        error instanceof ApiError &&
+        error.code === "ACTIVE_PARTY_CONFLICT" &&
+        window.confirm(`${error.message}\n\nClôturer cette ancienne soirée et lancer celle-ci ?`)
+      ) {
+        return controlPartyPlayback(partyId, "start", true);
+      }
+      throw error;
+    }
+  };
   const playbackControlMutation = useMutation({
-    mutationFn: (control: "start" | "pause" | "resume" | "skip") =>
-      controlPartyPlayback(partyId, control),
+    mutationFn: runPlaybackControl,
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["party-playback", partyId] }),
@@ -127,6 +142,13 @@ export function AdminSpotifyPage() {
   }
 
   const oauthStatus = searchParams.get("spotify");
+  const oauthFailureReason = searchParams.get("reason");
+  const oauthFailureMessage =
+    oauthFailureReason === "callback"
+      ? `Le callback OAuth a été refusé. Vérifie que ${status.redirectUri ?? "l’URL de callback"} est déclaré à l’identique dans Spotify.`
+      : oauthFailureReason === "unavailable"
+        ? "Spotify est momentanément inaccessible. Réessaie dans quelques instants."
+        : "Spotify a refusé l’autorisation. Vérifie le compte Premium et son ajout aux utilisateurs autorisés de l’application Spotify.";
 
   return (
     <main className="page-shell spotify-shell">
@@ -160,7 +182,7 @@ export function AdminSpotifyPage() {
       {oauthStatus === "error" && (
         <div className="locked-playlist-note spotify-notice" role="alert">
           <WarningCircle aria-hidden="true" weight="fill" />
-          Spotify n’a pas pu finaliser la connexion. Vérifie la configuration puis réessaie.
+          {oauthFailureMessage}
         </div>
       )}
 

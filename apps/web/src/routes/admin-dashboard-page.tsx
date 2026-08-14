@@ -30,6 +30,7 @@ import {
   updateAdminPartySettings,
 } from "../lib/api/admin";
 import { getAdminParty } from "../lib/api/parties";
+import { ApiError } from "../lib/api/client";
 import { cancelAdminFlashTurn, triggerAdminFlashTurn } from "../lib/api/flash";
 import { controlPartyPlayback, getAdminPlayback } from "../lib/api/playback";
 import { getAdminPlaylists } from "../lib/api/playlists";
@@ -98,9 +99,23 @@ export function AdminDashboardPage() {
     mutationFn: (trackId: string) => forceAdminTrack(partyId, trackId),
     onSuccess: refreshDashboard,
   });
+  const runPlaybackControl = async (control: "start" | "pause" | "resume" | "skip") => {
+    try {
+      return await controlPartyPlayback(partyId, control);
+    } catch (error: unknown) {
+      if (
+        control === "start" &&
+        error instanceof ApiError &&
+        error.code === "ACTIVE_PARTY_CONFLICT" &&
+        window.confirm(`${error.message}\n\nClôturer cette ancienne soirée et lancer celle-ci ?`)
+      ) {
+        return controlPartyPlayback(partyId, "start", true);
+      }
+      throw error;
+    }
+  };
   const playbackMutation = useMutation({
-    mutationFn: (control: "start" | "pause" | "resume" | "skip") =>
-      controlPartyPlayback(partyId, control),
+    mutationFn: runPlaybackControl,
     onSuccess: refreshDashboard,
   });
   const endMutation = useMutation({

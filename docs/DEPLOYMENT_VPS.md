@@ -103,6 +103,35 @@ Le second endpoint ne devient vert que lorsque PostgreSQL répond. Vérifie auss
 administrateur, le callback Spotify, la liste des appareils et une connexion Socket.IO depuis le
 navigateur.
 
+### Variante Tailscale Funnel
+
+Avec Funnel, Caddy n’est pas nécessaire. Publie directement le port web configuré :
+
+```sh
+sudo tailscale funnel --https=443 off
+sudo tailscale funnel --bg http://127.0.0.1:8082
+sudo tailscale funnel status
+```
+
+Pour `ov-5b7e2c.tail67b4b3.ts.net`, la configuration doit contenir exactement :
+
+```dotenv
+PUBLIC_ORIGIN=https://ov-5b7e2c.tail67b4b3.ts.net
+SPOTIFY_REDIRECT_URI=https://ov-5b7e2c.tail67b4b3.ts.net/api/spotify/callback
+WEB_PORT=8082
+TRUST_PROXY=2
+```
+
+Après un redémarrage, vérifie les valeurs réellement reçues par l’API :
+
+```sh
+sudo docker compose exec api printenv WEB_ORIGIN SPOTIFY_REDIRECT_URI TRUST_PROXY
+sudo docker compose logs --tail=100 api
+```
+
+Un `Socket origin rejected` indique que `WEB_ORIGIN` ne correspond pas au domaine affiché dans le
+navigateur.
+
 ## 6. Sauvegardes
 
 Sauvegarde la base avant chaque mise à jour et au minimum après une soirée importante :
@@ -154,3 +183,7 @@ migration a effectivement rendu les données incompatibles.
 
 Ne lance pas plusieurs réplicas API sans ajouter un verrou distribué pour la lecture et un
 adaptateur Socket.IO partagé.
+
+Une seule soirée peut piloter un même compte Spotify à la fois. Si une autre soirée du même
+propriétaire est active, l’interface propose de la clôturer avant de lancer la nouvelle. Une soirée
+active sans lecture observée pendant deux heures est clôturée automatiquement.

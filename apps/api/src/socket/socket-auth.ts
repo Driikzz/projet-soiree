@@ -28,7 +28,17 @@ export const parseCookieHeader = (header: string | undefined): ReadonlyMap<strin
   return cookies;
 };
 
-export const isTrustedSocketOrigin = (origin: string | undefined) => origin === env.WEB_ORIGIN;
+export const isTrustedSocketOrigin = (origin: string | undefined) => {
+  if (origin === undefined) {
+    return false;
+  }
+
+  try {
+    return new URL(origin).origin === env.WEB_ORIGIN;
+  } catch {
+    return false;
+  }
+};
 
 export const loadSocketIdentity = async (
   cookieHeader: string | undefined,

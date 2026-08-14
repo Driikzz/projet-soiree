@@ -14,12 +14,20 @@ import { hashOpaqueToken, tokenMatchesHash } from "./session-crypto.js";
 export const requireTrustedOrigin: RequestHandler = (request, _response, next) => {
   const origin = request.get("origin");
 
-  if (origin !== env.WEB_ORIGIN) {
+  if (origin === undefined || safeOrigin(origin) !== env.WEB_ORIGIN) {
     next(new AppError(403, "FORBIDDEN", "Origine de la requête refusée."));
     return;
   }
 
   next();
+};
+
+const safeOrigin = (value: string) => {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
 };
 
 export const requireAdmin: RequestHandler = async (request, _response, next) => {
