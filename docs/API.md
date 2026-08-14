@@ -463,6 +463,7 @@ Modifie un ou plusieurs réglages de la soirée. Un corps vide ou une clé incon
 ```json
 {
   "defaultTrackQuota": 5,
+  "flameBudgetPerParticipant": 5,
   "minimumPlaylistVotes": 4,
   "minimumPlaylistVotePercentage": 40,
   "playlistLockMinutes": 15,

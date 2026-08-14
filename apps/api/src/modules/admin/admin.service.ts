@@ -16,6 +16,7 @@ import { clearParticipantTrackVotes } from "../votes/track-vote.service.js";
 
 const toPartySettings = (settings: {
   defaultTrackQuota: number;
+  flameBudgetPerParticipant: number;
   maxTrackDurationMs: number;
   replayBlockMinutes: number;
   minimumPlaylistVotes: number;
@@ -44,6 +45,7 @@ const getOwnedParty = async (adminId: string, partyId: string) => {
       settings: {
         select: {
           defaultTrackQuota: true,
+          flameBudgetPerParticipant: true,
           maxTrackDurationMs: true,
           replayBlockMinutes: true,
           minimumPlaylistVotes: true,
@@ -212,6 +214,9 @@ export const updatePartySettings = async (
     ...(input.defaultTrackQuota === undefined
       ? {}
       : { defaultTrackQuota: input.defaultTrackQuota }),
+    ...(input.flameBudgetPerParticipant === undefined
+      ? {}
+      : { flameBudgetPerParticipant: input.flameBudgetPerParticipant }),
     ...(input.maxTrackDurationMs === undefined
       ? {}
       : { maxTrackDurationMs: input.maxTrackDurationMs }),
@@ -256,6 +261,7 @@ export const updatePartySettings = async (
       data: updateData,
       select: {
         defaultTrackQuota: true,
+        flameBudgetPerParticipant: true,
         maxTrackDurationMs: true,
         replayBlockMinutes: true,
         minimumPlaylistVotes: true,

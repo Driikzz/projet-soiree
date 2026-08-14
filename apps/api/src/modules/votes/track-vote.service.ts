@@ -42,6 +42,11 @@ const getVotableTrack = async (
               id: true,
               status: true,
               activePlaylistId: true,
+              settings: {
+                select: {
+                  flameBudgetPerParticipant: true,
+                },
+              },
               _count: {
                 select: {
                   participants: {
@@ -87,6 +92,7 @@ const getFlameBudget = async (
   transaction: Prisma.TransactionClient,
   participantId: string,
   playlistId: string,
+  totalFlames: number,
 ): Promise<TrackFlameBudget> => {
   const aggregate = await transaction.trackVote.aggregate({
     where: {
@@ -98,9 +104,9 @@ const getFlameBudget = async (
   const used = aggregate._sum.weight ?? 0;
 
   return {
-    total: TRACK_FLAME_BUDGET,
+    total: totalFlames,
     used,
-    remaining: Math.max(0, TRACK_FLAME_BUDGET - used),
+    remaining: Math.max(0, totalFlames - used),
     maxPerTrack: MAX_FLAMES_PER_TRACK,
   };
 };
@@ -184,7 +190,14 @@ export const addTrackVote = async (
       },
       select: { id: true, weight: true },
     });
-    const flameBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
+    const totalFlames =
+      track.playlist.party.settings?.flameBudgetPerParticipant ?? TRACK_FLAME_BUDGET;
+    const flameBudget = await getFlameBudget(
+      transaction,
+      participantId,
+      track.playlist.id,
+      totalFlames,
+    );
 
     if (existingVote?.weight === MAX_FLAMES_PER_TRACK) {
       throw new AppError(
@@ -225,7 +238,12 @@ export const addTrackVote = async (
     });
 
     const metrics = await synchronizeTrackVoteMetrics(transaction, trackId);
-    const updatedBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
+    const updatedBudget = await getFlameBudget(
+      transaction,
+      participantId,
+      track.playlist.id,
+      totalFlames,
+    );
 
     return {
       trackId,
@@ -272,7 +290,12 @@ export const removeTrackVote = async (
     }
 
     const metrics = await synchronizeTrackVoteMetrics(transaction, trackId);
-    const flameBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
+    const flameBudget = await getFlameBudget(
+      transaction,
+      participantId,
+      track.playlist.id,
+      track.playlist.party.settings?.flameBudgetPerParticipant ?? TRACK_FLAME_BUDGET,
+    );
 
     return {
       trackId,

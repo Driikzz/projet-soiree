@@ -133,6 +133,7 @@ export const PartySettingsScalarFieldEnum = {
   id: 'id',
   partyId: 'partyId',
   defaultTrackQuota: 'defaultTrackQuota',
+  flameBudgetPerParticipant: 'flameBudgetPerParticipant',
   maxTrackDurationMs: 'maxTrackDurationMs',
   replayBlockMinutes: 'replayBlockMinutes',
   minimumPlaylistVotes: 'minimumPlaylistVotes',

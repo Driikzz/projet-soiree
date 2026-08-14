@@ -216,6 +216,23 @@ describe("PostgreSQL party journey", () => {
       },
     });
 
+    await adminAgent
+      .get(`/api/organizer/parties/${party.id}/dashboard`)
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.settings.flameBudgetPerParticipant).toBe(5);
+      });
+
+    await adminAgent
+      .patch(`/api/organizer/parties/${party.id}/settings`)
+      .set("Origin", webOrigin)
+      .set("X-CSRF-Token", adminCsrf)
+      .send({ flameBudgetPerParticipant: 7 })
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.settings.flameBudgetPerParticipant).toBe(7);
+      });
+
     const voteRequest = () =>
       participantAgent
         .post(`/api/tracks/${track.id}/votes`)
@@ -230,7 +247,7 @@ describe("PostgreSQL party journey", () => {
           participantHasVoted: true,
           participantFlameCount: 1,
           voteScore: 80,
-          flameBudget: { remaining: 4 },
+          flameBudget: { total: 7, remaining: 6 },
         });
       });
     await voteRequest()
@@ -241,7 +258,7 @@ describe("PostgreSQL party journey", () => {
           participantHasVoted: true,
           participantFlameCount: 2,
           voteScore: 90,
-          flameBudget: { remaining: 3 },
+          flameBudget: { total: 7, remaining: 5 },
         });
       });
     await voteRequest()
@@ -251,7 +268,7 @@ describe("PostgreSQL party journey", () => {
           voteCount: 3,
           participantFlameCount: 3,
           voteScore: 100,
-          flameBudget: { remaining: 2 },
+          flameBudget: { total: 7, remaining: 4 },
         });
       });
     await voteRequest()

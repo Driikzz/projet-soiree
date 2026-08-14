@@ -11,6 +11,7 @@ d’accès au serveur pendant la soirée.
 - Reconnecter Spotify si l’autorisation a expiré.
 - Préparer l’appareil de diffusion, son chargeur et une connexion réseau stable.
 - Créer les ambiances, régler leurs quotas et contrôler le contenu explicite.
+- Régler le nombre de flammes disponibles par participant ; la valeur par défaut est `5`.
 - Choisir une playlist initiale et tester une lecture avec un morceau non important.
 
 ## Une heure avant

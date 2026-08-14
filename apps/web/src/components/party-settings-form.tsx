@@ -30,6 +30,7 @@ export function PartySettingsForm({
     resolver: zodResolver(updatePartySettingsRequestSchema),
     defaultValues: {
       defaultTrackQuota: settings.defaultTrackQuota,
+      flameBudgetPerParticipant: settings.flameBudgetPerParticipant,
       maxTrackDurationMs: settings.maxTrackDurationMs,
       replayBlockMinutes: settings.replayBlockMinutes,
       minimumPlaylistVotes: settings.minimumPlaylistVotes,
@@ -53,6 +54,15 @@ export function PartySettingsForm({
             min={0}
             max={50}
             {...register("defaultTrackQuota", { valueAsNumber: true })}
+          />
+        </label>
+        <label>
+          Flammes par participant
+          <input
+            type="number"
+            min={1}
+            max={50}
+            {...register("flameBudgetPerParticipant", { valueAsNumber: true })}
           />
         </label>
         <label>

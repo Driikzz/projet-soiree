@@ -121,6 +121,11 @@ const getParticipantPlaylist = async (participantId: string, playlistId: string)
         select: {
           adminId: true,
           status: true,
+          settings: {
+            select: {
+              flameBudgetPerParticipant: true,
+            },
+          },
           _count: {
             select: {
               participants: {
@@ -181,9 +186,12 @@ export const listPlaylistTracks = async (participantId: string, playlistId: stri
     0,
   );
   const flameBudget: TrackFlameBudget = {
-    total: TRACK_FLAME_BUDGET,
+    total: playlist.party.settings?.flameBudgetPerParticipant ?? TRACK_FLAME_BUDGET,
     used: usedFlames,
-    remaining: Math.max(0, TRACK_FLAME_BUDGET - usedFlames),
+    remaining: Math.max(
+      0,
+      (playlist.party.settings?.flameBudgetPerParticipant ?? TRACK_FLAME_BUDGET) - usedFlames,
+    ),
     maxPerTrack: MAX_FLAMES_PER_TRACK,
   };
 

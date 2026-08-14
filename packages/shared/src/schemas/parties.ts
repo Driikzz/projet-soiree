@@ -12,6 +12,7 @@ export const joinPartyRequestSchema = z.object({
 
 export const partySettingsSchema = z.object({
   defaultTrackQuota: z.number().int().min(0).max(50),
+  flameBudgetPerParticipant: z.number().int().min(1).max(50),
   maxTrackDurationMs: z.number().int().min(30_000).max(3_600_000),
   replayBlockMinutes: z.number().int().min(0).max(10_080),
   minimumPlaylistVotes: z.number().int().min(1).max(1_000),

@@ -28,6 +28,7 @@ export type AggregatePartySettings = {
 
 export type PartySettingsAvgAggregateOutputType = {
   defaultTrackQuota: number | null
+  flameBudgetPerParticipant: number | null
   maxTrackDurationMs: number | null
   replayBlockMinutes: number | null
   minimumPlaylistVotes: number | null
@@ -39,6 +40,7 @@ export type PartySettingsAvgAggregateOutputType = {
 
 export type PartySettingsSumAggregateOutputType = {
   defaultTrackQuota: number | null
+  flameBudgetPerParticipant: number | null
   maxTrackDurationMs: number | null
   replayBlockMinutes: number | null
   minimumPlaylistVotes: number | null
@@ -52,6 +54,7 @@ export type PartySettingsMinAggregateOutputType = {
   id: string | null
   partyId: string | null
   defaultTrackQuota: number | null
+  flameBudgetPerParticipant: number | null
   maxTrackDurationMs: number | null
   replayBlockMinutes: number | null
   minimumPlaylistVotes: number | null
@@ -71,6 +74,7 @@ export type PartySettingsMaxAggregateOutputType = {
   id: string | null
   partyId: string | null
   defaultTrackQuota: number | null
+  flameBudgetPerParticipant: number | null
   maxTrackDurationMs: number | null
   replayBlockMinutes: number | null
   minimumPlaylistVotes: number | null
@@ -90,6 +94,7 @@ export type PartySettingsCountAggregateOutputType = {
   id: number
   partyId: number
   defaultTrackQuota: number
+  flameBudgetPerParticipant: number
   maxTrackDurationMs: number
   replayBlockMinutes: number
   minimumPlaylistVotes: number
@@ -109,6 +114,7 @@ export type PartySettingsCountAggregateOutputType = {
 
 export type PartySettingsAvgAggregateInputType = {
   defaultTrackQuota?: true
+  flameBudgetPerParticipant?: true
   maxTrackDurationMs?: true
   replayBlockMinutes?: true
   minimumPlaylistVotes?: true
@@ -120,6 +126,7 @@ export type PartySettingsAvgAggregateInputType = {
 
 export type PartySettingsSumAggregateInputType = {
   defaultTrackQuota?: true
+  flameBudgetPerParticipant?: true
   maxTrackDurationMs?: true
   replayBlockMinutes?: true
   minimumPlaylistVotes?: true
@@ -133,6 +140,7 @@ export type PartySettingsMinAggregateInputType = {
   id?: true
   partyId?: true
   defaultTrackQuota?: true
+  flameBudgetPerParticipant?: true
   maxTrackDurationMs?: true
   replayBlockMinutes?: true
   minimumPlaylistVotes?: true
@@ -152,6 +160,7 @@ export type PartySettingsMaxAggregateInputType = {
   id?: true
   partyId?: true
   defaultTrackQuota?: true
+  flameBudgetPerParticipant?: true
   maxTrackDurationMs?: true
   replayBlockMinutes?: true
   minimumPlaylistVotes?: true
@@ -171,6 +180,7 @@ export type PartySettingsCountAggregateInputType = {
   id?: true
   partyId?: true
   defaultTrackQuota?: true
+  flameBudgetPerParticipant?: true
   maxTrackDurationMs?: true
   replayBlockMinutes?: true
   minimumPlaylistVotes?: true
@@ -277,6 +287,7 @@ export type PartySettingsGroupByOutputType = {
   id: string
   partyId: string
   defaultTrackQuota: number
+  flameBudgetPerParticipant: number
   maxTrackDurationMs: number
   replayBlockMinutes: number
   minimumPlaylistVotes: number
@@ -319,6 +330,7 @@ export type PartySettingsWhereInput = {
   id?: Prisma.UuidFilter<"PartySettings"> | string
   partyId?: Prisma.UuidFilter<"PartySettings"> | string
   defaultTrackQuota?: Prisma.IntFilter<"PartySettings"> | number
+  flameBudgetPerParticipant?: Prisma.IntFilter<"PartySettings"> | number
   maxTrackDurationMs?: Prisma.IntFilter<"PartySettings"> | number
   replayBlockMinutes?: Prisma.IntFilter<"PartySettings"> | number
   minimumPlaylistVotes?: Prisma.IntFilter<"PartySettings"> | number
@@ -339,6 +351,7 @@ export type PartySettingsOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -362,6 +375,7 @@ export type PartySettingsWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PartySettingsWhereInput[]
   NOT?: Prisma.PartySettingsWhereInput | Prisma.PartySettingsWhereInput[]
   defaultTrackQuota?: Prisma.IntFilter<"PartySettings"> | number
+  flameBudgetPerParticipant?: Prisma.IntFilter<"PartySettings"> | number
   maxTrackDurationMs?: Prisma.IntFilter<"PartySettings"> | number
   replayBlockMinutes?: Prisma.IntFilter<"PartySettings"> | number
   minimumPlaylistVotes?: Prisma.IntFilter<"PartySettings"> | number
@@ -382,6 +396,7 @@ export type PartySettingsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -409,6 +424,7 @@ export type PartySettingsScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"PartySettings"> | string
   partyId?: Prisma.UuidWithAggregatesFilter<"PartySettings"> | string
   defaultTrackQuota?: Prisma.IntWithAggregatesFilter<"PartySettings"> | number
+  flameBudgetPerParticipant?: Prisma.IntWithAggregatesFilter<"PartySettings"> | number
   maxTrackDurationMs?: Prisma.IntWithAggregatesFilter<"PartySettings"> | number
   replayBlockMinutes?: Prisma.IntWithAggregatesFilter<"PartySettings"> | number
   minimumPlaylistVotes?: Prisma.IntWithAggregatesFilter<"PartySettings"> | number
@@ -427,6 +443,7 @@ export type PartySettingsScalarWhereWithAggregatesInput = {
 export type PartySettingsCreateInput = {
   id?: string
   defaultTrackQuota?: number
+  flameBudgetPerParticipant?: number
   maxTrackDurationMs?: number
   replayBlockMinutes?: number
   minimumPlaylistVotes?: number
@@ -447,6 +464,7 @@ export type PartySettingsUncheckedCreateInput = {
   id?: string
   partyId: string
   defaultTrackQuota?: number
+  flameBudgetPerParticipant?: number
   maxTrackDurationMs?: number
   replayBlockMinutes?: number
   minimumPlaylistVotes?: number
@@ -465,6 +483,7 @@ export type PartySettingsUncheckedCreateInput = {
 export type PartySettingsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -485,6 +504,7 @@ export type PartySettingsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -504,6 +524,7 @@ export type PartySettingsCreateManyInput = {
   id?: string
   partyId: string
   defaultTrackQuota?: number
+  flameBudgetPerParticipant?: number
   maxTrackDurationMs?: number
   replayBlockMinutes?: number
   minimumPlaylistVotes?: number
@@ -522,6 +543,7 @@ export type PartySettingsCreateManyInput = {
 export type PartySettingsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -541,6 +563,7 @@ export type PartySettingsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partyId?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -565,6 +588,7 @@ export type PartySettingsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -582,6 +606,7 @@ export type PartySettingsCountOrderByAggregateInput = {
 
 export type PartySettingsAvgOrderByAggregateInput = {
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -595,6 +620,7 @@ export type PartySettingsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -614,6 +640,7 @@ export type PartySettingsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partyId?: Prisma.SortOrder
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -631,6 +658,7 @@ export type PartySettingsMinOrderByAggregateInput = {
 
 export type PartySettingsSumOrderByAggregateInput = {
   defaultTrackQuota?: Prisma.SortOrder
+  flameBudgetPerParticipant?: Prisma.SortOrder
   maxTrackDurationMs?: Prisma.SortOrder
   replayBlockMinutes?: Prisma.SortOrder
   minimumPlaylistVotes?: Prisma.SortOrder
@@ -679,6 +707,7 @@ export type BoolFieldUpdateOperationsInput = {
 export type PartySettingsCreateWithoutPartyInput = {
   id?: string
   defaultTrackQuota?: number
+  flameBudgetPerParticipant?: number
   maxTrackDurationMs?: number
   replayBlockMinutes?: number
   minimumPlaylistVotes?: number
@@ -697,6 +726,7 @@ export type PartySettingsCreateWithoutPartyInput = {
 export type PartySettingsUncheckedCreateWithoutPartyInput = {
   id?: string
   defaultTrackQuota?: number
+  flameBudgetPerParticipant?: number
   maxTrackDurationMs?: number
   replayBlockMinutes?: number
   minimumPlaylistVotes?: number
@@ -731,6 +761,7 @@ export type PartySettingsUpdateToOneWithWhereWithoutPartyInput = {
 export type PartySettingsUpdateWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -749,6 +780,7 @@ export type PartySettingsUpdateWithoutPartyInput = {
 export type PartySettingsUncheckedUpdateWithoutPartyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   defaultTrackQuota?: Prisma.IntFieldUpdateOperationsInput | number
+  flameBudgetPerParticipant?: Prisma.IntFieldUpdateOperationsInput | number
   maxTrackDurationMs?: Prisma.IntFieldUpdateOperationsInput | number
   replayBlockMinutes?: Prisma.IntFieldUpdateOperationsInput | number
   minimumPlaylistVotes?: Prisma.IntFieldUpdateOperationsInput | number
@@ -770,6 +802,7 @@ export type PartySettingsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   partyId?: boolean
   defaultTrackQuota?: boolean
+  flameBudgetPerParticipant?: boolean
   maxTrackDurationMs?: boolean
   replayBlockMinutes?: boolean
   minimumPlaylistVotes?: boolean
@@ -790,6 +823,7 @@ export type PartySettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   partyId?: boolean
   defaultTrackQuota?: boolean
+  flameBudgetPerParticipant?: boolean
   maxTrackDurationMs?: boolean
   replayBlockMinutes?: boolean
   minimumPlaylistVotes?: boolean
@@ -810,6 +844,7 @@ export type PartySettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   partyId?: boolean
   defaultTrackQuota?: boolean
+  flameBudgetPerParticipant?: boolean
   maxTrackDurationMs?: boolean
   replayBlockMinutes?: boolean
   minimumPlaylistVotes?: boolean
@@ -830,6 +865,7 @@ export type PartySettingsSelectScalar = {
   id?: boolean
   partyId?: boolean
   defaultTrackQuota?: boolean
+  flameBudgetPerParticipant?: boolean
   maxTrackDurationMs?: boolean
   replayBlockMinutes?: boolean
   minimumPlaylistVotes?: boolean
@@ -845,7 +881,7 @@ export type PartySettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PartySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partyId" | "defaultTrackQuota" | "maxTrackDurationMs" | "replayBlockMinutes" | "minimumPlaylistVotes" | "minimumPlaylistVotePercentage" | "playlistLockMinutes" | "playlistVotesEnabled" | "playlistChangeLockedByAdmin" | "flashModeEnabled" | "flashIntervalMinutes" | "flashSelectionWindowSeconds" | "nextFlashTurnAt" | "createdAt" | "updatedAt", ExtArgs["result"]["partySettings"]>
+export type PartySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partyId" | "defaultTrackQuota" | "flameBudgetPerParticipant" | "maxTrackDurationMs" | "replayBlockMinutes" | "minimumPlaylistVotes" | "minimumPlaylistVotePercentage" | "playlistLockMinutes" | "playlistVotesEnabled" | "playlistChangeLockedByAdmin" | "flashModeEnabled" | "flashIntervalMinutes" | "flashSelectionWindowSeconds" | "nextFlashTurnAt" | "createdAt" | "updatedAt", ExtArgs["result"]["partySettings"]>
 export type PartySettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
 }
@@ -865,6 +901,7 @@ export type $PartySettingsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     partyId: string
     defaultTrackQuota: number
+    flameBudgetPerParticipant: number
     maxTrackDurationMs: number
     replayBlockMinutes: number
     minimumPlaylistVotes: number
@@ -1305,6 +1342,7 @@ export interface PartySettingsFieldRefs {
   readonly id: Prisma.FieldRef<"PartySettings", 'String'>
   readonly partyId: Prisma.FieldRef<"PartySettings", 'String'>
   readonly defaultTrackQuota: Prisma.FieldRef<"PartySettings", 'Int'>
+  readonly flameBudgetPerParticipant: Prisma.FieldRef<"PartySettings", 'Int'>
   readonly maxTrackDurationMs: Prisma.FieldRef<"PartySettings", 'Int'>
   readonly replayBlockMinutes: Prisma.FieldRef<"PartySettings", 'Int'>
   readonly minimumPlaylistVotes: Prisma.FieldRef<"PartySettings", 'Int'>

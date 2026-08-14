@@ -14,6 +14,9 @@ export const bindRealtimeListeners = (
   const handleParticipantChange = (event: { partyId: string }) => {
     onResourcesChanged(event.partyId, ["party", "participants", "tracks"]);
   };
+  const handleSettingsChange = (event: { partyId: string }) => {
+    onResourcesChanged(event.partyId, ["party", "participants", "tracks"]);
+  };
   const handlePlaylistChange = (event: { partyId: string }) => {
     onResourcesChanged(event.partyId, ["party", "playlists", "tracks"]);
   };
@@ -39,7 +42,7 @@ export const bindRealtimeListeners = (
   socket.on("party:joined", handlePartyChange);
   socket.on("party:participant-joined", handleParticipantChange);
   socket.on("party:participant-left", handleParticipantChange);
-  socket.on("party:settings-updated", handlePartyChange);
+  socket.on("party:settings-updated", handleSettingsChange);
   socket.on("party:ended", handlePartyChange);
   socket.on("playlist:created", handlePlaylistChange);
   socket.on("playlist:updated", handlePlaylistChange);
@@ -67,7 +70,7 @@ export const bindRealtimeListeners = (
     socket.off("party:joined", handlePartyChange);
     socket.off("party:participant-joined", handleParticipantChange);
     socket.off("party:participant-left", handleParticipantChange);
-    socket.off("party:settings-updated", handlePartyChange);
+    socket.off("party:settings-updated", handleSettingsChange);
     socket.off("party:ended", handlePartyChange);
     socket.off("playlist:created", handlePlaylistChange);
     socket.off("playlist:updated", handlePlaylistChange);

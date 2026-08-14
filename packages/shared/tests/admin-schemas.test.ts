@@ -38,6 +38,24 @@ describe("admin and reward schemas", () => {
     ).toBe(false);
   });
 
+  it("keeps the participant flame budget within its supported range", () => {
+    expect(
+      updatePartySettingsRequestSchema.safeParse({
+        flameBudgetPerParticipant: 5,
+      }).success,
+    ).toBe(true);
+    expect(
+      updatePartySettingsRequestSchema.safeParse({
+        flameBudgetPerParticipant: 0,
+      }).success,
+    ).toBe(false);
+    expect(
+      updatePartySettingsRequestSchema.safeParse({
+        flameBudgetPerParticipant: 51,
+      }).success,
+    ).toBe(false);
+  });
+
   it("limits reward grants to known types and ten uses", () => {
     expect(
       assignRewardRequestSchema.safeParse({

@@ -123,6 +123,7 @@ model PartySettings {
   id                            String    @id @default(uuid()) @db.Uuid
   partyId                       String    @unique @db.Uuid
   defaultTrackQuota             Int       @default(5)
+  flameBudgetPerParticipant     Int       @default(5)
   maxTrackDurationMs            Int       @default(480000)
   replayBlockMinutes            Int       @default(180)
   minimumPlaylistVotes          Int       @default(4)

@@ -8,6 +8,7 @@ import { PartySettingsForm } from "./party-settings-form";
 
 const settings: PartySettings = {
   defaultTrackQuota: 5,
+  flameBudgetPerParticipant: 5,
   maxTrackDurationMs: 480_000,
   replayBlockMinutes: 180,
   minimumPlaylistVotes: 4,
@@ -29,6 +30,8 @@ describe("PartySettingsForm", () => {
 
     await user.clear(screen.getByRole("spinbutton", { name: "Votes minimum" }));
     await user.type(screen.getByRole("spinbutton", { name: "Votes minimum" }), "6");
+    await user.clear(screen.getByRole("spinbutton", { name: "Flammes par participant" }));
+    await user.type(screen.getByRole("spinbutton", { name: "Flammes par participant" }), "8");
     await user.click(
       screen.getByRole("checkbox", {
         name: "Autoriser les votes de changement d’ambiance",
@@ -40,6 +43,7 @@ describe("PartySettingsForm", () => {
       expect(onSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
           minimumPlaylistVotes: 6,
+          flameBudgetPerParticipant: 8,
           playlistVotesEnabled: false,
         }),
         expect.anything(),
