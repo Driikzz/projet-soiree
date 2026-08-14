@@ -1,37 +1,61 @@
 import { Router } from "express";
 
-import { adminLoginRequestSchema } from "@songfest/shared";
+import { userLoginRequestSchema, userRegistrationRequestSchema } from "@songfest/shared";
 
 import { prisma } from "../../lib/prisma.js";
 import { createRateLimiter } from "../../middleware/rate-limit.js";
 import { validateBody } from "../../middleware/validate.js";
 import { requireAdmin, requireAdminCsrf, requireTrustedOrigin } from "./auth.middleware.js";
-import { authenticateAdmin } from "./auth.service.js";
+import { authenticateUser, registerUser } from "./auth.service.js";
 import { clearSessionCookies, createSession } from "./session.service.js";
 
 const loginLimiter = createRateLimiter(15 * 60 * 1_000, 10);
+const registrationLimiter = createRateLimiter(60 * 60 * 1_000, 5);
 
 export const createAuthRouter = () => {
   const router = Router();
 
   router.post(
+    "/register",
+    requireTrustedOrigin,
+    registrationLimiter,
+    validateBody(userRegistrationRequestSchema),
+    async (request, response) => {
+      const user = await registerUser(request.body);
+      await createSession(response, {
+        actorType: "ADMIN",
+        adminId: user.id,
+      });
+
+      response.status(201).json({ user });
+    },
+  );
+
+  router.post(
     "/login",
     requireTrustedOrigin,
     loginLimiter,
-    validateBody(adminLoginRequestSchema),
+    validateBody(userLoginRequestSchema),
     async (request, response) => {
-      const admin = await authenticateAdmin(request.body.username, request.body.password);
+      const user = await authenticateUser(request.body.identifier, request.body.password);
       await createSession(response, {
         actorType: "ADMIN",
-        adminId: admin.id,
+        adminId: user.id,
       });
 
-      response.json({ admin });
+      response.json({ user });
     },
   );
 
   router.get("/me", requireAdmin, (request, response) => {
-    response.json({ admin: request.adminAuth?.admin });
+    const account = request.adminAuth!.admin;
+    response.json({
+      user: {
+        id: account.id,
+        displayName: account.displayName,
+        email: account.email,
+      },
+    });
   });
 
   router.post(

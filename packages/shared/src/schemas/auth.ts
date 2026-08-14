@@ -2,17 +2,30 @@ import { z } from "zod";
 
 import { uuidSchema } from "./common.js";
 
-export const adminLoginRequestSchema = z.object({
-  username: z.string().trim().min(3).max(64),
+export const userLoginRequestSchema = z.object({
+  identifier: z.string().trim().min(3).max(254),
   password: z.string().min(12).max(256),
 });
 
-export const adminSessionSchema = z.object({
-  admin: z.object({
+export const userRegistrationRequestSchema = z.object({
+  displayName: z.string().trim().min(2).max(80),
+  email: z.string().trim().toLowerCase().email().max(254),
+  password: z.string().min(12).max(256),
+});
+
+export const userSessionSchema = z.object({
+  user: z.object({
     id: uuidSchema,
-    username: z.string(),
+    displayName: z.string(),
+    email: z.string().email().nullable(),
   }),
 });
 
-export type AdminLoginRequest = z.infer<typeof adminLoginRequestSchema>;
-export type AdminSession = z.infer<typeof adminSessionSchema>;
+export const adminLoginRequestSchema = userLoginRequestSchema;
+export const adminSessionSchema = userSessionSchema;
+
+export type UserLoginRequest = z.infer<typeof userLoginRequestSchema>;
+export type UserRegistrationRequest = z.infer<typeof userRegistrationRequestSchema>;
+export type UserSession = z.infer<typeof userSessionSchema>;
+export type AdminLoginRequest = UserLoginRequest;
+export type AdminSession = UserSession;

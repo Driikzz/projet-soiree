@@ -18,14 +18,14 @@ export function CreatePartyPage() {
   const createMutation = useMutation({
     mutationFn: createParty,
     onSuccess: ({ party }) => {
-      void navigate(`/admin/parties/${party.id}/share`);
+      void navigate(`/organizer/parties/${party.id}/share`);
     },
   });
 
   return (
     <main className="page-shell compact-shell">
-      <Link className="brand-link" to="/">
-        SongFest
+      <Link className="brand-link" to="/parties">
+        ← Mes soirées
       </Link>
       <section className="form-card" aria-labelledby="create-title">
         <span className="icon-chip accent-chip">

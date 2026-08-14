@@ -39,7 +39,9 @@ export const requireAdmin: RequestHandler = async (request, _response, next) => 
     select: {
       id: true,
       csrfTokenHash: true,
-      admin: { select: { id: true, username: true } },
+      admin: {
+        select: { id: true, username: true, displayName: true, email: true },
+      },
     },
   });
 

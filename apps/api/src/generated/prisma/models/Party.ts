@@ -272,7 +272,7 @@ export type PartyWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
-  admin?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   settings?: Prisma.XOR<Prisma.PartySettingsNullableScalarRelationFilter, Prisma.PartySettingsWhereInput> | null
   activePlaylist?: Prisma.XOR<Prisma.PartyPlaylistNullableScalarRelationFilter, Prisma.PartyPlaylistWhereInput> | null
   scheduledPlaylist?: Prisma.XOR<Prisma.PartyPlaylistNullableScalarRelationFilter, Prisma.PartyPlaylistWhereInput> | null
@@ -299,7 +299,7 @@ export type PartyOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   endedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  admin?: Prisma.AdminOrderByWithRelationInput
+  admin?: Prisma.UserOrderByWithRelationInput
   settings?: Prisma.PartySettingsOrderByWithRelationInput
   activePlaylist?: Prisma.PartyPlaylistOrderByWithRelationInput
   scheduledPlaylist?: Prisma.PartyPlaylistOrderByWithRelationInput
@@ -329,7 +329,7 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   endedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
-  admin?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   settings?: Prisma.XOR<Prisma.PartySettingsNullableScalarRelationFilter, Prisma.PartySettingsWhereInput> | null
   activePlaylist?: Prisma.XOR<Prisma.PartyPlaylistNullableScalarRelationFilter, Prisma.PartyPlaylistWhereInput> | null
   scheduledPlaylist?: Prisma.XOR<Prisma.PartyPlaylistNullableScalarRelationFilter, Prisma.PartyPlaylistWhereInput> | null
@@ -391,7 +391,7 @@ export type PartyCreateInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -439,7 +439,7 @@ export type PartyUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -962,7 +962,7 @@ export type PartyCreateWithoutSettingsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
@@ -1024,7 +1024,7 @@ export type PartyUpdateWithoutSettingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
@@ -1070,7 +1070,7 @@ export type PartyCreateWithoutParticipantsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1132,7 +1132,7 @@ export type PartyUpdateWithoutParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1178,7 +1178,7 @@ export type PartyCreateWithoutPlaylistsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1229,7 +1229,7 @@ export type PartyCreateWithoutActivePlaylistInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
@@ -1285,7 +1285,7 @@ export type PartyCreateWithoutScheduledPlaylistInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   playlists?: Prisma.PartyPlaylistCreateNestedManyWithoutPartyInput
@@ -1352,7 +1352,7 @@ export type PartyUpdateWithoutPlaylistsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1430,7 +1430,7 @@ export type PartyCreateWithoutTrackSkipVotesInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1492,7 +1492,7 @@ export type PartyUpdateWithoutTrackSkipVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1538,7 +1538,7 @@ export type PartyCreateWithoutPlaylistVotesInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1600,7 +1600,7 @@ export type PartyUpdateWithoutPlaylistVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1646,7 +1646,7 @@ export type PartyCreateWithoutRewardsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1708,7 +1708,7 @@ export type PartyUpdateWithoutRewardsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1754,7 +1754,7 @@ export type PartyCreateWithoutFlashTurnsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1816,7 +1816,7 @@ export type PartyUpdateWithoutFlashTurnsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1862,7 +1862,7 @@ export type PartyCreateWithoutPlaybackStateInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -1924,7 +1924,7 @@ export type PartyUpdateWithoutPlaybackStateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -1970,7 +1970,7 @@ export type PartyCreateWithoutAuditLogsInput = {
   createdAt?: Date | string
   startedAt?: Date | string | null
   endedAt?: Date | string | null
-  admin: Prisma.AdminCreateNestedOneWithoutPartiesInput
+  admin: Prisma.UserCreateNestedOneWithoutPartiesInput
   settings?: Prisma.PartySettingsCreateNestedOneWithoutPartyInput
   activePlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutActiveForPartiesInput
   scheduledPlaylist?: Prisma.PartyPlaylistCreateNestedOneWithoutScheduledForPartiesInput
@@ -2032,7 +2032,7 @@ export type PartyUpdateWithoutAuditLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
@@ -2180,7 +2180,7 @@ export type PartyUpdateWithoutActivePlaylistInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   scheduledPlaylist?: Prisma.PartyPlaylistUpdateOneWithoutScheduledForPartiesNestedInput
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
@@ -2240,7 +2240,7 @@ export type PartyUpdateWithoutScheduledPlaylistInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   endedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  admin?: Prisma.AdminUpdateOneRequiredWithoutPartiesNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutPartiesNestedInput
   settings?: Prisma.PartySettingsUpdateOneWithoutPartyNestedInput
   activePlaylist?: Prisma.PartyPlaylistUpdateOneWithoutActiveForPartiesNestedInput
   playlists?: Prisma.PartyPlaylistUpdateManyWithoutPartyNestedInput
@@ -2388,7 +2388,7 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   settings?: boolean | Prisma.Party$settingsArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
@@ -2416,7 +2416,7 @@ export type PartySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   createdAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
 }, ExtArgs["result"]["party"]>
@@ -2434,7 +2434,7 @@ export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   createdAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
 }, ExtArgs["result"]["party"]>
@@ -2456,7 +2456,7 @@ export type PartySelectScalar = {
 
 export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "adminId" | "name" | "code" | "status" | "activePlaylistId" | "scheduledPlaylistId" | "selectedDeviceId" | "stateVersion" | "createdAt" | "startedAt" | "endedAt", ExtArgs["result"]["party"]>
 export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   settings?: boolean | Prisma.Party$settingsArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
@@ -2471,12 +2471,12 @@ export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   _count?: boolean | Prisma.PartyCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type PartyIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
 }
 export type PartyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   activePlaylist?: boolean | Prisma.Party$activePlaylistArgs<ExtArgs>
   scheduledPlaylist?: boolean | Prisma.Party$scheduledPlaylistArgs<ExtArgs>
 }
@@ -2484,7 +2484,7 @@ export type PartyIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Party"
   objects: {
-    admin: Prisma.$AdminPayload<ExtArgs>
+    admin: Prisma.$UserPayload<ExtArgs>
     settings: Prisma.$PartySettingsPayload<ExtArgs> | null
     activePlaylist: Prisma.$PartyPlaylistPayload<ExtArgs> | null
     scheduledPlaylist: Prisma.$PartyPlaylistPayload<ExtArgs> | null
@@ -2904,7 +2904,7 @@ readonly fields: PartyFieldRefs;
  */
 export interface Prisma__PartyClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  admin<T extends Prisma.AdminDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminDefaultArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  admin<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   settings<T extends Prisma.Party$settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$settingsArgs<ExtArgs>>): Prisma.Prisma__PartySettingsClient<runtime.Types.Result.GetResult<Prisma.$PartySettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   activePlaylist<T extends Prisma.Party$activePlaylistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$activePlaylistArgs<ExtArgs>>): Prisma.Prisma__PartyPlaylistClient<runtime.Types.Result.GetResult<Prisma.$PartyPlaylistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   scheduledPlaylist<T extends Prisma.Party$scheduledPlaylistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Party$scheduledPlaylistArgs<ExtArgs>>): Prisma.Prisma__PartyPlaylistClient<runtime.Types.Result.GetResult<Prisma.$PartyPlaylistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>

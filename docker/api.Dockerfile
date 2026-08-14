@@ -28,8 +28,8 @@ COPY --from=build /app/apps/api/dist ./apps/api/dist
 COPY --from=build /app/apps/api/src/generated/prisma ./apps/api/src/generated/prisma
 COPY --from=build /app/packages/shared/package.json ./packages/shared/package.json
 COPY --from=build /app/packages/shared/dist ./packages/shared/dist
-COPY prisma.config.ts ./
-COPY prisma ./prisma
+COPY --chown=node:node prisma.config.ts ./
+COPY --chown=node:node prisma ./prisma
 
 USER node
 

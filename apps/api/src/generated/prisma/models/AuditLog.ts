@@ -219,7 +219,7 @@ export type AuditLogWhereInput = {
   metadata?: Prisma.JsonNullableFilter<"AuditLog">
   createdAt?: Prisma.DateTimeFilter<"AuditLog"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
-  adminActor?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
+  adminActor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participantActor?: Prisma.XOR<Prisma.ParticipantNullableScalarRelationFilter, Prisma.ParticipantWhereInput> | null
 }
 
@@ -235,7 +235,7 @@ export type AuditLogOrderByWithRelationInput = {
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   party?: Prisma.PartyOrderByWithRelationInput
-  adminActor?: Prisma.AdminOrderByWithRelationInput
+  adminActor?: Prisma.UserOrderByWithRelationInput
   participantActor?: Prisma.ParticipantOrderByWithRelationInput
 }
 
@@ -254,7 +254,7 @@ export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
   metadata?: Prisma.JsonNullableFilter<"AuditLog">
   createdAt?: Prisma.DateTimeFilter<"AuditLog"> | Date | string
   party?: Prisma.XOR<Prisma.PartyNullableScalarRelationFilter, Prisma.PartyWhereInput> | null
-  adminActor?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
+  adminActor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participantActor?: Prisma.XOR<Prisma.ParticipantNullableScalarRelationFilter, Prisma.ParticipantWhereInput> | null
 }, "id">
 
@@ -299,7 +299,7 @@ export type AuditLogCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutAuditLogsInput
-  adminActor?: Prisma.AdminCreateNestedOneWithoutAuditLogsInput
+  adminActor?: Prisma.UserCreateNestedOneWithoutAuditLogsInput
   participantActor?: Prisma.ParticipantCreateNestedOneWithoutAuditLogsInput
 }
 
@@ -325,7 +325,7 @@ export type AuditLogUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutAuditLogsNestedInput
-  adminActor?: Prisma.AdminUpdateOneWithoutAuditLogsNestedInput
+  adminActor?: Prisma.UserUpdateOneWithoutAuditLogsNestedInput
   participantActor?: Prisma.ParticipantUpdateOneWithoutAuditLogsNestedInput
 }
 
@@ -629,7 +629,7 @@ export type AuditLogCreateWithoutPartyInput = {
   entityId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
-  adminActor?: Prisma.AdminCreateNestedOneWithoutAuditLogsInput
+  adminActor?: Prisma.UserCreateNestedOneWithoutAuditLogsInput
   participantActor?: Prisma.ParticipantCreateNestedOneWithoutAuditLogsInput
 }
 
@@ -680,7 +680,7 @@ export type AuditLogCreateWithoutParticipantActorInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   party?: Prisma.PartyCreateNestedOneWithoutAuditLogsInput
-  adminActor?: Prisma.AdminCreateNestedOneWithoutAuditLogsInput
+  adminActor?: Prisma.UserCreateNestedOneWithoutAuditLogsInput
 }
 
 export type AuditLogUncheckedCreateWithoutParticipantActorInput = {
@@ -789,7 +789,7 @@ export type AuditLogUpdateWithoutPartyInput = {
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  adminActor?: Prisma.AdminUpdateOneWithoutAuditLogsNestedInput
+  adminActor?: Prisma.UserUpdateOneWithoutAuditLogsNestedInput
   participantActor?: Prisma.ParticipantUpdateOneWithoutAuditLogsNestedInput
 }
 
@@ -838,7 +838,7 @@ export type AuditLogUpdateWithoutParticipantActorInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   party?: Prisma.PartyUpdateOneWithoutAuditLogsNestedInput
-  adminActor?: Prisma.AdminUpdateOneWithoutAuditLogsNestedInput
+  adminActor?: Prisma.UserUpdateOneWithoutAuditLogsNestedInput
 }
 
 export type AuditLogUncheckedUpdateWithoutParticipantActorInput = {
@@ -949,7 +949,7 @@ export type $AuditLogPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "AuditLog"
   objects: {
     party: Prisma.$PartyPayload<ExtArgs> | null
-    adminActor: Prisma.$AdminPayload<ExtArgs> | null
+    adminActor: Prisma.$UserPayload<ExtArgs> | null
     participantActor: Prisma.$ParticipantPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1358,7 +1358,7 @@ readonly fields: AuditLogFieldRefs;
 export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   party<T extends Prisma.AuditLog$partyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditLog$partyArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  adminActor<T extends Prisma.AuditLog$adminActorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditLog$adminActorArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  adminActor<T extends Prisma.AuditLog$adminActorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditLog$adminActorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participantActor<T extends Prisma.AuditLog$participantActorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditLog$participantActorArgs<ExtArgs>>): Prisma.Prisma__ParticipantClient<runtime.Types.Result.GetResult<Prisma.$ParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1818,18 +1818,18 @@ export type AuditLog$partyArgs<ExtArgs extends runtime.Types.Extensions.Internal
  */
 export type AuditLog$adminActorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Admin
+   * Select specific fields to fetch from the User
    */
-  select?: Prisma.AdminSelect<ExtArgs> | null
+  select?: Prisma.UserSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Admin
+   * Omit specific fields from the User
    */
-  omit?: Prisma.AdminOmit<ExtArgs> | null
+  omit?: Prisma.UserOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AdminInclude<ExtArgs> | null
-  where?: Prisma.AdminWhereInput
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

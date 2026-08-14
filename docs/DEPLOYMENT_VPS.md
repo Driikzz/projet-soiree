@@ -32,8 +32,8 @@ POSTGRES_DB=songfest
 POSTGRES_USER=songfest
 POSTGRES_PASSWORD=un-mot-de-passe-long-et-aleatoire
 SESSION_SECRET=une-valeur-aleatoire-d-au-moins-32-caracteres
-ADMIN_USERNAME=admin
-ADMIN_INITIAL_PASSWORD=un-mot-de-passe-organisateur-unique
+INITIAL_USER_USERNAME=organisateur
+INITIAL_USER_PASSWORD=un-mot-de-passe-organisateur-unique
 SPOTIFY_CLIENT_ID=...
 SPOTIFY_CLIENT_SECRET=...
 SPOTIFY_REDIRECT_URI=https://songfest.example.com/api/spotify/callback
@@ -77,7 +77,7 @@ docker compose up -d --wait
 
 Le service `migrate` applique uniquement les migrations versionnées avec `prisma migrate deploy`.
 Il s’exécute aussi avant chaque démarrage de l’API et peut être rejoué sans modifier une base déjà
-à jour. Le seed met à jour le hash du mot de passe de `ADMIN_USERNAME` et ne crée des données de
+à jour. Le seed met à jour le hash du mot de passe de `INITIAL_USER_USERNAME` et ne crée des données de
 démonstration que si `SEED_DEMO_DATA=true`.
 
 ## 5. Terminer HTTPS avec Caddy

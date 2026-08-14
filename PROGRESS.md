@@ -369,6 +369,9 @@ checklist de `docs/PARTY_RUNBOOK.md` avec l’appareil de diffusion.
   pour 5 participants, 3 votes suffisent.
 - Une ambiance choisie explicitement reste prioritaire si elle contient un morceau. Sans choix
   explicite, l’ordre de création des playlists définit la suite automatique.
+- L’image API attribue explicitement les fichiers Prisma à l’utilisateur `node`, ce qui permet au
+  service de migration de fonctionner même si les fichiers du VPS ont été copiés avec des droits
+  restrictifs.
 
 ### Commandes après mise à jour
 

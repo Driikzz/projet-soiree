@@ -64,9 +64,9 @@ export const createApp = ({ readinessCheck = checkDatabaseReadiness }: AppDepend
   app.use(cookieParser());
 
   app.use("/api/health", createHealthRouter(readinessCheck));
-  app.use("/api/admin/auth", createAuthRouter());
-  app.use("/api/admin", createAdminPlaylistRouter());
-  app.use("/api/admin/parties", createAdminPartyRouter());
+  app.use("/api/auth", createAuthRouter());
+  app.use("/api/organizer", createAdminPlaylistRouter());
+  app.use("/api/organizer/parties", createAdminPartyRouter());
   app.use("/api", createParticipantPlaylistRouter());
   app.use("/api", createSpotifyRouter());
   app.use("/api", createTrackRouter());

@@ -8,7 +8,7 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/Admin.js'
+export type * from './models/User.js'
 export type * from './models/SpotifyConnection.js'
 export type * from './models/Party.js'
 export type * from './models/PartySettings.js'

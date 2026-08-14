@@ -3,6 +3,7 @@ import { z } from "zod";
 export const errorCodeSchema = z.enum([
   "VALIDATION_ERROR",
   "INVALID_CREDENTIALS",
+  "ACCOUNT_ALREADY_EXISTS",
   "AUTHENTICATION_REQUIRED",
   "INVALID_CSRF_TOKEN",
   "FORBIDDEN",

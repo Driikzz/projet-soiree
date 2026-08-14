@@ -8,25 +8,25 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
   return (
     <header className="admin-toolbar">
       <div className="admin-toolbar-brand">
-        <Link className="brand-link" to="/">
+        <Link className="brand-link" to="/parties">
           SongFest
         </Link>
         <span>{partyName}</span>
       </div>
       <nav className="admin-party-nav" aria-label="Navigation organisateur">
-        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/dashboard`}>
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/dashboard`}>
           <Gauge aria-hidden="true" />
           Pilotage
         </NavLink>
-        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/playlists`}>
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/playlists`}>
           <MusicNotes aria-hidden="true" />
           Playlists
         </NavLink>
-        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/spotify`}>
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/spotify`}>
           <SpeakerHigh aria-hidden="true" />
           Spotify
         </NavLink>
-        <NavLink className={getNavClassName} to={`/admin/parties/${partyId}/share`}>
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/share`}>
           <UsersThree aria-hidden="true" />
           Inviter
         </NavLink>

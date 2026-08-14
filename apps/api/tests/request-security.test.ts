@@ -8,9 +8,9 @@ describe("request security", () => {
 
   it("rejects an unsafe request from an unexpected origin", async () => {
     const response = await request(app)
-      .post("/api/admin/auth/login")
+      .post("/api/auth/login")
       .set("Origin", "https://example.invalid")
-      .send({ username: "admin", password: "a-valid-looking-password" })
+      .send({ identifier: "admin", password: "a-valid-looking-password" })
       .expect(403);
 
     expect(response.body.error.code).toBe("FORBIDDEN");
@@ -18,9 +18,9 @@ describe("request security", () => {
 
   it("validates request bodies before authentication logic", async () => {
     const response = await request(app)
-      .post("/api/admin/auth/login")
+      .post("/api/auth/login")
       .set("Origin", "http://127.0.0.1:5173")
-      .send({ username: "a", password: "short" })
+      .send({ identifier: "a", password: "short" })
       .expect(400);
 
     expect(response.body.error).toMatchObject({
@@ -38,7 +38,7 @@ describe("request security", () => {
 
   it("protects the administration dashboard without querying another party", async () => {
     const response = await request(app)
-      .get("/api/admin/parties/550e8400-e29b-41d4-a716-446655440000/dashboard")
+      .get("/api/organizer/parties/550e8400-e29b-41d4-a716-446655440000/dashboard")
       .expect(401);
 
     expect(response.body.error.code).toBe("AUTHENTICATION_REQUIRED");
@@ -46,7 +46,7 @@ describe("request security", () => {
 
   it("rejects reward grants from an untrusted origin before using the session", async () => {
     const response = await request(app)
-      .post("/api/admin/rewards")
+      .post("/api/organizer/rewards")
       .set("Origin", "https://example.invalid")
       .send({
         partyId: "550e8400-e29b-41d4-a716-446655440000",

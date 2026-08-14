@@ -18,13 +18,13 @@ export const submitParticipantFlashTrack = (partyId: string, input: SubmitFlashT
   );
 
 export const triggerAdminFlashTurn = (partyId: string) =>
-  apiRequest<{ flash: FlashState }>(`/api/admin/parties/${partyId}/flash/trigger`, {
+  apiRequest<{ flash: FlashState }>(`/api/organizer/parties/${partyId}/flash/trigger`, {
     method: "POST",
     csrfCookie: "songfest_admin_csrf",
   });
 
 export const cancelAdminFlashTurn = (partyId: string) =>
-  apiRequest<{ flash: FlashState }>(`/api/admin/parties/${partyId}/flash/cancel`, {
+  apiRequest<{ flash: FlashState }>(`/api/organizer/parties/${partyId}/flash/cancel`, {
     method: "POST",
     csrfCookie: "songfest_admin_csrf",
   });

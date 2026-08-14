@@ -49,7 +49,7 @@ export const createFlashRouter = () => {
   );
 
   router.post(
-    "/admin/parties/:partyId/flash/trigger",
+    "/organizer/parties/:partyId/flash/trigger",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -62,7 +62,7 @@ export const createFlashRouter = () => {
   );
 
   router.post(
-    "/admin/parties/:partyId/flash/cancel",
+    "/organizer/parties/:partyId/flash/cancel",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,

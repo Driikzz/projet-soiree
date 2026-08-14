@@ -7,7 +7,7 @@ import { AdminPartyNav } from "./admin-party-nav";
 describe("AdminPartyNav", () => {
   it("identifies the current administration section", () => {
     render(
-      <MemoryRouter initialEntries={["/admin/parties/party-id/playlists"]}>
+      <MemoryRouter initialEntries={["/organizer/parties/party-id/playlists"]}>
         <AdminPartyNav partyId="party-id" partyName="Anniversaire de Léa" />
       </MemoryRouter>,
     );

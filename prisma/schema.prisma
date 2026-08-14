@@ -58,9 +58,11 @@ enum AuditActorType {
   PARTICIPANT
 }
 
-model Admin {
+model User {
   id                String             @id @default(uuid()) @db.Uuid
-  username          String             @unique @db.VarChar(64)
+  username          String?            @unique @db.VarChar(64)
+  email             String?            @unique @db.VarChar(254)
+  displayName       String             @db.VarChar(80)
   passwordHash      String
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
@@ -69,6 +71,8 @@ model Admin {
   sessions          Session[]
   assignedRewards   Reward[]           @relation("RewardAssignedBy")
   auditLogs         AuditLog[]         @relation("AuditAdminActor")
+
+  @@map("Admin")
 }
 
 model SpotifyConnection {
@@ -82,7 +86,7 @@ model SpotifyConnection {
   scopes                String[] @default([])
   connectedAt           DateTime @default(now())
   updatedAt             DateTime @updatedAt
-  admin                 Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  admin                 User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
 }
 
 model Party {
@@ -98,7 +102,7 @@ model Party {
   createdAt           DateTime        @default(now())
   startedAt           DateTime?
   endedAt             DateTime?
-  admin               Admin           @relation(fields: [adminId], references: [id], onDelete: Restrict)
+  admin               User            @relation(fields: [adminId], references: [id], onDelete: Restrict)
   settings            PartySettings?
   activePlaylist      PartyPlaylist?  @relation("ActivePartyPlaylist", fields: [activePlaylistId], references: [id], onDelete: SetNull)
   scheduledPlaylist   PartyPlaylist?  @relation("ScheduledPartyPlaylist", fields: [scheduledPlaylistId], references: [id], onDelete: SetNull)
@@ -286,7 +290,7 @@ model Reward {
   revokedAt      DateTime?
   party          Party           @relation(fields: [partyId], references: [id], onDelete: Cascade)
   participant    Participant     @relation(fields: [participantId], references: [id], onDelete: Cascade)
-  assignedBy     Admin           @relation("RewardAssignedBy", fields: [assignedById], references: [id], onDelete: Restrict)
+  assignedBy     User            @relation("RewardAssignedBy", fields: [assignedById], references: [id], onDelete: Restrict)
   affectedTracks PlaylistTrack[]
 
   @@index([participantId, status])
@@ -343,7 +347,7 @@ model Session {
   lastSeenAt    DateTime         @default(now())
   revokedAt     DateTime?
   createdAt     DateTime         @default(now())
-  admin         Admin?           @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  admin         User?            @relation(fields: [adminId], references: [id], onDelete: Cascade)
   participant   Participant?     @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
   @@index([actorType, expiresAt])
@@ -363,7 +367,7 @@ model AuditLog {
   metadata           Json?
   createdAt          DateTime       @default(now())
   party              Party?         @relation(fields: [partyId], references: [id], onDelete: SetNull)
-  adminActor         Admin?         @relation("AuditAdminActor", fields: [adminActorId], references: [id], onDelete: SetNull)
+  adminActor         User?          @relation("AuditAdminActor", fields: [adminActorId], references: [id], onDelete: SetNull)
   participantActor   Participant?   @relation("AuditParticipantActor", fields: [participantActorId], references: [id], onDelete: SetNull)
 
   @@index([partyId, createdAt])

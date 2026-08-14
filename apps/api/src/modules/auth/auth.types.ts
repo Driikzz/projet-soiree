@@ -3,7 +3,9 @@ export interface AdminAuthentication {
   csrfTokenHash: string;
   admin: {
     id: string;
-    username: string;
+    username: string | null;
+    displayName: string;
+    email: string | null;
   };
 }
 

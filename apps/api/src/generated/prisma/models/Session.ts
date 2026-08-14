@@ -222,7 +222,7 @@ export type SessionWhereInput = {
   lastSeenAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
-  admin?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
+  admin?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participant?: Prisma.XOR<Prisma.ParticipantNullableScalarRelationFilter, Prisma.ParticipantWhereInput> | null
 }
 
@@ -237,7 +237,7 @@ export type SessionOrderByWithRelationInput = {
   lastSeenAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  admin?: Prisma.AdminOrderByWithRelationInput
+  admin?: Prisma.UserOrderByWithRelationInput
   participant?: Prisma.ParticipantOrderByWithRelationInput
 }
 
@@ -255,7 +255,7 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<{
   lastSeenAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
-  admin?: Prisma.XOR<Prisma.AdminNullableScalarRelationFilter, Prisma.AdminWhereInput> | null
+  admin?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participant?: Prisma.XOR<Prisma.ParticipantNullableScalarRelationFilter, Prisma.ParticipantWhereInput> | null
 }, "id" | "tokenHash">
 
@@ -300,7 +300,7 @@ export type SessionCreateInput = {
   lastSeenAt?: Date | string
   revokedAt?: Date | string | null
   createdAt?: Date | string
-  admin?: Prisma.AdminCreateNestedOneWithoutSessionsInput
+  admin?: Prisma.UserCreateNestedOneWithoutSessionsInput
   participant?: Prisma.ParticipantCreateNestedOneWithoutSessionsInput
 }
 
@@ -326,7 +326,7 @@ export type SessionUpdateInput = {
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  admin?: Prisma.AdminUpdateOneWithoutSessionsNestedInput
+  admin?: Prisma.UserUpdateOneWithoutSessionsNestedInput
   participant?: Prisma.ParticipantUpdateOneWithoutSessionsNestedInput
 }
 
@@ -592,7 +592,7 @@ export type SessionCreateWithoutParticipantInput = {
   lastSeenAt?: Date | string
   revokedAt?: Date | string | null
   createdAt?: Date | string
-  admin?: Prisma.AdminCreateNestedOneWithoutSessionsInput
+  admin?: Prisma.UserCreateNestedOneWithoutSessionsInput
 }
 
 export type SessionUncheckedCreateWithoutParticipantInput = {
@@ -702,7 +702,7 @@ export type SessionUpdateWithoutParticipantInput = {
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  admin?: Prisma.AdminUpdateOneWithoutSessionsNestedInput
+  admin?: Prisma.UserUpdateOneWithoutSessionsNestedInput
 }
 
 export type SessionUncheckedUpdateWithoutParticipantInput = {
@@ -806,7 +806,7 @@ export type SessionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Session"
   objects: {
-    admin: Prisma.$AdminPayload<ExtArgs> | null
+    admin: Prisma.$UserPayload<ExtArgs> | null
     participant: Prisma.$ParticipantPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1214,7 +1214,7 @@ readonly fields: SessionFieldRefs;
  */
 export interface Prisma__SessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  admin<T extends Prisma.Session$adminArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Session$adminArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  admin<T extends Prisma.Session$adminArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Session$adminArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participant<T extends Prisma.Session$participantArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Session$participantArgs<ExtArgs>>): Prisma.Prisma__ParticipantClient<runtime.Types.Result.GetResult<Prisma.$ParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1655,18 +1655,18 @@ export type SessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
  */
 export type Session$adminArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Admin
+   * Select specific fields to fetch from the User
    */
-  select?: Prisma.AdminSelect<ExtArgs> | null
+  select?: Prisma.UserSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Admin
+   * Omit specific fields from the User
    */
-  omit?: Prisma.AdminOmit<ExtArgs> | null
+  omit?: Prisma.UserOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AdminInclude<ExtArgs> | null
-  where?: Prisma.AdminWhereInput
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

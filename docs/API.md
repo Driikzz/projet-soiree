@@ -36,38 +36,50 @@ Réponse :
 }
 ```
 
-## Authentification administrateur
+## Comptes utilisateurs
 
-L’administrateur utilise une session opaque dans le cookie `songfest_admin_session`. Le cookie
+L’utilisateur connecté utilise une session opaque dans le cookie `songfest_admin_session`. Le cookie
 `songfest_admin_csrf`, lisible par le frontend, doit être recopié dans l’en-tête `X-CSRF-Token`
 pour chaque mutation authentifiée. Les deux cookies sont `Secure` en production et `SameSite=Lax`.
 
-### `POST /api/admin/auth/login`
+### `POST /api/auth/register`
+
+Crée un compte utilisateur puis ouvre sa session. Corps :
+
+```json
+{ "displayName": "Léa", "email": "lea@example.com", "password": "un-mot-de-passe-long" }
+```
+
+### `POST /api/auth/login`
 
 Limite : 10 tentatives par IP et par tranche de 15 minutes.
 
 Corps :
 
 ```json
-{ "username": "admin", "password": "un-mot-de-passe-long" }
+{ "identifier": "lea@example.com", "password": "un-mot-de-passe-long" }
 ```
 
-Réponse `200` : `{ "admin": { "id": "uuid", "username": "admin" } }`.
+Réponse `200` : `{ "user": { "id": "uuid", "displayName": "Léa", "email": "lea@example.com" } }`.
 
-### `GET /api/admin/auth/me`
+### `GET /api/auth/me`
 
-Retourne la session administrateur courante. Réponse `401` si elle est absente ou expirée.
+Retourne la session utilisateur courante. Réponse `401` si elle est absente ou expirée.
 
-### `POST /api/admin/auth/logout`
+### `POST /api/auth/logout`
 
 Révoque la session courante et efface ses cookies. Requiert `X-CSRF-Token`. Réponse `204`.
 
 ## Gestion initiale d’une soirée
 
-### `POST /api/admin/parties`
+### `GET /api/organizer/parties`
+
+Retourne toutes les soirées appartenant à l’utilisateur connecté, de la plus récente à la plus ancienne.
+
+### `POST /api/organizer/parties`
 
 Crée une soirée en brouillon, ses réglages par défaut et son état de lecture. Requiert une session
-administrateur et `X-CSRF-Token`.
+utilisateur et `X-CSRF-Token`.
 
 Corps :
 
@@ -77,12 +89,12 @@ Corps :
 
 Réponse `201` : `{ "party": PartySummary }`, avec un code lisible unique de six caractères.
 
-### `GET /api/admin/parties/:partyId`
+### `GET /api/organizer/parties/:partyId`
 
-Retourne uniquement une soirée appartenant à l’administrateur connecté. Une autre soirée produit
+Retourne uniquement une soirée appartenant à l’utilisateur connecté. Une autre soirée produit
 volontairement un `404`.
 
-### `POST /api/admin/parties/:partyId/open`
+### `POST /api/organizer/parties/:partyId/open`
 
 Passe une soirée de `DRAFT` à `OPEN`. Requiert `X-CSRF-Token`. Une soirée terminée ne peut pas être
 rouverte.
@@ -120,12 +132,12 @@ CSRF invité recopié dans `X-CSRF-Token`. Réponse `204`.
 
 ## Playlists
 
-### `GET /api/admin/parties/:partyId/playlists`
+### `GET /api/organizer/parties/:partyId/playlists`
 
 Retourne les playlists d’une soirée appartenant à l’administrateur, avec les nombres de morceaux,
 contributeurs et votes. Requiert la session administrateur.
 
-### `POST /api/admin/parties/:partyId/playlists`
+### `POST /api/organizer/parties/:partyId/playlists`
 
 Crée une playlist. Requiert la session administrateur et `X-CSRF-Token`.
 
@@ -144,16 +156,16 @@ Crée une playlist. Requiert la session administrateur et `X-CSRF-Token`.
 Les valeurs possibles de `visualKey` sont `sunset`, `pixel`, `bass`, `pulse`, `midnight` et `free`.
 Le nom est unique dans une soirée.
 
-### `PATCH /api/admin/playlists/:playlistId`
+### `PATCH /api/organizer/playlists/:playlistId`
 
 Modifie un ou plusieurs réglages. Un corps vide est refusé. Requiert `X-CSRF-Token`.
 
-### `POST /api/admin/playlists/:playlistId/activate`
+### `POST /api/organizer/playlists/:playlistId/activate`
 
 Définit la playlist active et retire toute programmation précédente. Cette action ne lance pas
 Spotify et ne coupe aucun morceau. La transition de lecture sera gérée par la Mission 9.
 
-### `DELETE /api/admin/playlists/:playlistId`
+### `DELETE /api/organizer/playlists/:playlistId`
 
 Supprime uniquement une playlist vide, non active et non programmée. Réponse `204`.
 
@@ -169,12 +181,12 @@ activation des votes et playlist programmée.
 Les tokens Spotify ne sont jamais renvoyés par l’API. Les routes administrateur vérifient la
 session et la propriété de la soirée.
 
-### `GET /api/admin/parties/:partyId/spotify/status`
+### `GET /api/organizer/parties/:partyId/spotify/status`
 
 Vérifie que la soirée appartient à l’administrateur connecté, puis indique si les variables serveur
 sont présentes, si son compte est connecté, la date de fin du refresh token et les scopes accordés.
 
-### `POST /api/admin/spotify/connect`
+### `POST /api/organizer/spotify/connect`
 
 Requiert `X-CSRF-Token`. Vérifie que la soirée appartient à l’administrateur, écrit un cookie OAuth
 temporaire et retourne une `authorizationUrl` Spotify. Le navigateur redirige ensuite vers Spotify :
@@ -190,12 +202,12 @@ Callback OAuth appelé par Spotify. Vérifie la session administrateur, le cooki
 `state`, échange le code côté serveur, puis redirige vers l’écran de configuration. Les paramètres
 techniques ne sont jamais affichés à l’utilisateur.
 
-### `GET /api/admin/parties/:partyId/spotify/devices`
+### `GET /api/organizer/parties/:partyId/spotify/devices`
 
 Retourne les appareils Spotify disponibles. Les appareils sans identifiant sont ignorés et les
 appareils restreints sont signalés.
 
-### `PUT /api/admin/parties/:partyId/spotify/device`
+### `PUT /api/organizer/parties/:partyId/spotify/device`
 
 Requiert `X-CSRF-Token`. Enregistre l’appareil de diffusion choisi après avoir vérifié sa présence
 dans la liste Spotify actuelle.
@@ -204,7 +216,7 @@ dans la liste Spotify actuelle.
 { "deviceId": "identifiant-spotify" }
 ```
 
-### `GET /api/admin/parties/:partyId/spotify/playback`
+### `GET /api/organizer/parties/:partyId/spotify/playback`
 
 Retourne le morceau et l’appareil détectés, la progression, la durée, l’état de lecture et un
 `serverTimestamp`. Une absence de lecture retourne `track: null`.
@@ -370,12 +382,12 @@ Seul le participant tiré au sort peut répondre, avant `expiresAt`.
 Le morceau est persisté pour l’historique de lecture, mais reste exclu de la liste normale des
 propositions, du quota et des compteurs de contribution du participant.
 
-### `POST /api/admin/parties/:partyId/flash/trigger`
+### `POST /api/organizer/parties/:partyId/flash/trigger`
 
 Déclenche immédiatement un tirage équitable. La soirée doit être active et aucun autre tour ne doit
 être en cours ou attendre sa lecture.
 
-### `POST /api/admin/parties/:partyId/flash/cancel`
+### `POST /api/organizer/parties/:partyId/flash/cancel`
 
 Annule le tour courant. Un morceau déjà transmis à Spotify ne peut plus être retiré de sa file.
 
@@ -407,16 +419,16 @@ progressMs + (Date.now() - serverTimestamp)
 
 uniquement lorsque `isPlaying` vaut `true`.
 
-### `GET /api/admin/parties/:partyId/playback`
+### `GET /api/organizer/parties/:partyId/playback`
 
 Retourne le même contrat après avoir vérifié la propriété administrateur.
 
 ### Contrôles administrateur
 
-- `POST /api/admin/parties/:partyId/playback/start`
-- `POST /api/admin/parties/:partyId/playback/pause`
-- `POST /api/admin/parties/:partyId/playback/resume`
-- `POST /api/admin/parties/:partyId/playback/skip`
+- `POST /api/organizer/parties/:partyId/playback/start`
+- `POST /api/organizer/parties/:partyId/playback/pause`
+- `POST /api/organizer/parties/:partyId/playback/resume`
+- `POST /api/organizer/parties/:partyId/playback/skip`
 
 Ces routes exigent une origine autorisée, la session administrateur et `X-CSRF-Token`. Elles sont
 limitées à 30 commandes par minute et nécessitent une playlist active ainsi qu’un appareil Spotify
@@ -433,18 +445,18 @@ vote est conservé par participant et morceau. Le morceau est passé dès que le
 strictement supérieur à la moitié des participants actifs non bloqués. Les compteurs sont diffusés
 avec `playback:skip-vote-updated`.
 
-## Administration et récompenses
+## Pilotage et récompenses
 
 Les mutations administrateur suivantes exigent une origine autorisée, la session administrateur,
 `X-CSRF-Token`, la propriété de la soirée et sont limitées à 60 actions par minute et par IP.
 
-### `GET /api/admin/parties/:partyId/dashboard`
+### `GET /api/organizer/parties/:partyId/dashboard`
 
 Retourne les réglages, les participants, leurs récompenses, les douze propositions les plus
 récentes et le prochain morceau calculé. Les tokens et identifiants OAuth Spotify ne font jamais
 partie de cette réponse.
 
-### `PATCH /api/admin/parties/:partyId/settings`
+### `PATCH /api/organizer/parties/:partyId/settings`
 
 Modifie un ou plusieurs réglages de la soirée. Un corps vide ou une clé inconnue est refusé.
 
@@ -461,12 +473,12 @@ Modifie un ou plusieurs réglages de la soirée. Un corps vide ou une clé incon
 
 Les champs omis conservent leur valeur actuelle.
 
-### `POST /api/admin/parties/:partyId/participants/:participantId/block`
+### `POST /api/organizer/parties/:partyId/participants/:participantId/block`
 
 Bloque le participant, le marque inactif, révoque toutes ses sessions et déconnecte ses sockets.
 L’identifiant doit appartenir à la soirée administrée.
 
-### `DELETE /api/admin/parties/:partyId/tracks/:trackId`
+### `DELETE /api/organizer/parties/:partyId/tracks/:trackId`
 
 Retire une proposition encore `PENDING`. Un motif facultatif de 300 caractères peut être fourni :
 
@@ -476,17 +488,17 @@ Retire une proposition encore `PENDING`. Un motif facultatif de 300 caractères 
 
 Un morceau sélectionné, envoyé à Spotify ou déjà joué n’est plus supprimable par cette route.
 
-### `POST /api/admin/parties/:partyId/tracks/:trackId/force`
+### `POST /api/organizer/parties/:partyId/tracks/:trackId/force`
 
 Place un morceau `PENDING` de la playlist active au niveau de priorité administrateur. La décision
 reste dans la file SongFest et ne remplit pas immédiatement la file Spotify.
 
-### `POST /api/admin/parties/:partyId/end`
+### `POST /api/organizer/parties/:partyId/end`
 
 Passe la soirée à `ENDED`, renseigne `endedAt`, rend les participants inactifs et révoque leurs
 sessions. Les sockets invités reçoivent `party:ended` avant d’être déconnectés.
 
-### `POST /api/admin/rewards`
+### `POST /api/organizer/rewards`
 
 Attribue de une à dix utilisations d’une récompense à un participant non bloqué de la soirée.
 

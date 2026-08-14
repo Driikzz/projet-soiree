@@ -19,8 +19,8 @@ export function HomePage() {
           <p className="hero-copy">
             Les invités proposent et votent. L’organisateur garde le contrôle de la lecture.
           </p>
-          <Link className="primary-link" to="/admin/parties/new">
-            Créer une soirée
+          <Link className="primary-link" to="/parties">
+            Accéder à mes soirées
             <ArrowRight aria-hidden="true" weight="bold" />
           </Link>
         </div>

@@ -4,29 +4,24 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import {
-  adminLoginRequestSchema,
-  type AdminLoginRequest,
-  type AdminSession,
-} from "@songfest/shared";
+import { userLoginRequestSchema, type UserLoginRequest, type UserSession } from "@songfest/shared";
 
 import { FormError } from "../components/form-error";
-import { loginAdmin } from "../lib/api/auth";
+import { loginUser } from "../lib/api/auth";
 
 export function AdminLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
-  const form = useForm<AdminLoginRequest>({
-    resolver: zodResolver(adminLoginRequestSchema),
-    defaultValues: { username: "", password: "" },
+  const form = useForm<UserLoginRequest>({
+    resolver: zodResolver(userLoginRequestSchema),
+    defaultValues: { identifier: "", password: "" },
   });
   const loginMutation = useMutation({
-    mutationFn: loginAdmin,
+    mutationFn: loginUser,
     onSuccess: (session) => {
-      queryClient.setQueryData<AdminSession>(["admin-session"], session);
-      const destination =
-        (location.state as { from?: string } | null)?.from ?? "/admin/parties/new";
+      queryClient.setQueryData<UserSession>(["user-session"], session);
+      const destination = (location.state as { from?: string } | null)?.from ?? "/parties";
       void navigate(destination, { replace: true });
     },
   });
@@ -45,7 +40,7 @@ export function AdminLoginPage() {
           Prends les commandes.
         </h1>
         <p className="screen-copy">
-          Cette connexion protège la création de soirée et, bientôt, les contrôles Spotify.
+          Retrouve tes soirées, prépare les invitations et garde le contrôle de la musique.
         </p>
 
         <form
@@ -53,13 +48,13 @@ export function AdminLoginPage() {
           onSubmit={form.handleSubmit((values) => loginMutation.mutate(values))}
         >
           <label className="field">
-            <span>Identifiant</span>
+            <span>E-mail ou ancien identifiant</span>
             <input
               autoComplete="username"
-              {...form.register("username")}
-              aria-invalid={form.formState.errors.username !== undefined}
+              {...form.register("identifier")}
+              aria-invalid={form.formState.errors.identifier !== undefined}
             />
-            <FormError message={form.formState.errors.username?.message} />
+            <FormError message={form.formState.errors.identifier?.message} />
           </label>
           <label className="field">
             <span>Mot de passe</span>
@@ -79,6 +74,9 @@ export function AdminLoginPage() {
             <ArrowRight aria-hidden="true" weight="bold" />
           </button>
         </form>
+        <p className="form-switch-copy">
+          Pas encore de compte ? <Link to="/register">Créer mon espace</Link>
+        </p>
       </section>
     </main>
   );

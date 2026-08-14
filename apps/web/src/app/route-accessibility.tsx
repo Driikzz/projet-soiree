@@ -3,8 +3,10 @@ import { useLocation } from "react-router-dom";
 
 const getPageTitle = (pathname: string) => {
   if (pathname === "/") return "Accueil";
-  if (pathname === "/admin/login") return "Connexion organisateur";
-  if (pathname === "/admin/parties/new") return "Créer une soirée";
+  if (pathname === "/login") return "Connexion";
+  if (pathname === "/register") return "Créer un compte";
+  if (pathname === "/parties") return "Mes soirées";
+  if (pathname === "/parties/new") return "Créer une soirée";
   if (pathname.includes("/dashboard")) return "Tableau de bord";
   if (pathname.includes("/playlists")) return "Playlists";
   if (pathname.includes("/spotify")) return "Configuration Spotify";

@@ -373,6 +373,153 @@ h1 {
   width: 100%;
 }
 
+.form-switch-copy {
+  margin: 1.5rem 0 0;
+  color: #a8b5b1;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.form-switch-copy a {
+  color: #7ce0ce;
+  font-weight: 750;
+  text-underline-offset: 0.2em;
+}
+
+.account-shell {
+  width: min(100% - 2rem, 76rem);
+}
+
+.account-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: clamp(2rem, 6vw, 4rem);
+  border-bottom: 1px solid #2a393c;
+}
+
+.account-header .brand-link {
+  margin-bottom: clamp(3rem, 8vw, 6rem);
+}
+
+.account-header h1 {
+  max-width: none;
+  font-size: clamp(3.25rem, 9vw, 7rem);
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-bottom: 0.5rem;
+}
+
+.text-button {
+  display: inline-flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  border: 0;
+  padding: 0.75rem 0.5rem;
+  background: transparent;
+  color: #a8b5b1;
+  font: inherit;
+  font-weight: 700;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.text-button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.account-empty-state {
+  display: grid;
+  gap: 2rem;
+  align-items: end;
+  margin-top: clamp(3rem, 9vw, 7rem);
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  background: #182326;
+}
+
+.account-empty-state > span,
+.party-library-index {
+  color: #55c7b4;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.account-empty-state h2 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.account-empty-state p:not(.eyebrow) {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: #a8b5b1;
+  line-height: 1.6;
+}
+
+.account-empty-state .primary-link {
+  justify-self: start;
+}
+
+.party-library {
+  margin-top: clamp(2rem, 6vw, 4rem);
+  border-top: 1px solid #2a393c;
+}
+
+.party-library-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  border-bottom: 1px solid #2a393c;
+  padding-block: clamp(1.35rem, 4vw, 2.25rem);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.party-library-row h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 4vw, 2.15rem);
+  letter-spacing: -0.035em;
+}
+
+.party-library-row p,
+.party-library-meta {
+  margin: 0.45rem 0 0;
+  color: #8fa09b;
+  font-size: 0.9rem;
+}
+
+.party-library-meta {
+  display: flex;
+  grid-column: 2;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+}
+
+.party-library-meta svg {
+  flex: none;
+  color: #f47a55;
+  font-size: 1.35rem;
+}
+
 .secondary-button {
   display: inline-flex;
   min-height: 3rem;
@@ -3007,6 +3154,15 @@ h1 {
     transform: translateY(-1px);
   }
 
+  .text-button:not(:disabled):hover {
+    color: #f4f7f5;
+  }
+
+  .party-library-row:hover {
+    transform: translateX(0.35rem);
+    border-color: #557074;
+  }
+
   .guest-secondary-action:hover {
     background: rgb(255 255 255 / 18%);
   }
@@ -3058,6 +3214,20 @@ h1 {
 }
 
 @media (max-width: 40rem) {
+  .account-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-actions {
+    display: grid;
+    justify-content: stretch;
+  }
+
+  .account-header .brand-link {
+    margin-bottom: 3rem;
+  }
+
   .topbar {
     align-items: stretch;
     flex-direction: column;
@@ -3095,6 +3265,19 @@ h1 {
 }
 
 @media (min-width: 52rem) {
+  .account-empty-state {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .party-library-row {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+  }
+
+  .party-library-meta {
+    grid-column: auto;
+    min-width: 14rem;
+  }
+
   .home-hero-grid {
     grid-template-columns: minmax(0, 0.9fr) minmax(25rem, 1.1fr);
   }

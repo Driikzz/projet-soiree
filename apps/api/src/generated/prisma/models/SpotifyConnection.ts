@@ -218,7 +218,7 @@ export type SpotifyConnectionWhereInput = {
   scopes?: Prisma.StringNullableListFilter<"SpotifyConnection">
   connectedAt?: Prisma.DateTimeFilter<"SpotifyConnection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SpotifyConnection"> | Date | string
-  admin?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type SpotifyConnectionOrderByWithRelationInput = {
@@ -232,7 +232,7 @@ export type SpotifyConnectionOrderByWithRelationInput = {
   scopes?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  admin?: Prisma.AdminOrderByWithRelationInput
+  admin?: Prisma.UserOrderByWithRelationInput
 }
 
 export type SpotifyConnectionWhereUniqueInput = Prisma.AtLeast<{
@@ -249,7 +249,7 @@ export type SpotifyConnectionWhereUniqueInput = Prisma.AtLeast<{
   scopes?: Prisma.StringNullableListFilter<"SpotifyConnection">
   connectedAt?: Prisma.DateTimeFilter<"SpotifyConnection"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SpotifyConnection"> | Date | string
-  admin?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "adminId" | "spotifyAccountId">
 
 export type SpotifyConnectionOrderByWithAggregationInput = {
@@ -294,7 +294,7 @@ export type SpotifyConnectionCreateInput = {
   scopes?: Prisma.SpotifyConnectionCreatescopesInput | string[]
   connectedAt?: Date | string
   updatedAt?: Date | string
-  admin: Prisma.AdminCreateNestedOneWithoutSpotifyConnectionInput
+  admin: Prisma.UserCreateNestedOneWithoutSpotifyConnectionInput
 }
 
 export type SpotifyConnectionUncheckedCreateInput = {
@@ -320,7 +320,7 @@ export type SpotifyConnectionUpdateInput = {
   scopes?: Prisma.SpotifyConnectionUpdatescopesInput | string[]
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  admin?: Prisma.AdminUpdateOneRequiredWithoutSpotifyConnectionNestedInput
+  admin?: Prisma.UserUpdateOneRequiredWithoutSpotifyConnectionNestedInput
 }
 
 export type SpotifyConnectionUncheckedUpdateInput = {
@@ -460,10 +460,6 @@ export type SpotifyConnectionCreatescopesInput = {
   set: string[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type SpotifyConnectionUpdatescopesInput = {
   set?: string[]
   push?: string | string[]
@@ -546,7 +542,7 @@ export type SpotifyConnectionSelect<ExtArgs extends runtime.Types.Extensions.Int
   scopes?: boolean
   connectedAt?: boolean
   updatedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spotifyConnection"]>
 
 export type SpotifyConnectionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -560,7 +556,7 @@ export type SpotifyConnectionSelectCreateManyAndReturn<ExtArgs extends runtime.T
   scopes?: boolean
   connectedAt?: boolean
   updatedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spotifyConnection"]>
 
 export type SpotifyConnectionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -574,7 +570,7 @@ export type SpotifyConnectionSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   scopes?: boolean
   connectedAt?: boolean
   updatedAt?: boolean
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["spotifyConnection"]>
 
 export type SpotifyConnectionSelectScalar = {
@@ -592,19 +588,19 @@ export type SpotifyConnectionSelectScalar = {
 
 export type SpotifyConnectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "adminId" | "spotifyAccountId" | "accessTokenEncrypted" | "refreshTokenEncrypted" | "accessTokenExpiresAt" | "refreshTokenExpiresAt" | "scopes" | "connectedAt" | "updatedAt", ExtArgs["result"]["spotifyConnection"]>
 export type SpotifyConnectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type SpotifyConnectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type SpotifyConnectionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  admin?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $SpotifyConnectionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SpotifyConnection"
   objects: {
-    admin: Prisma.$AdminPayload<ExtArgs>
+    admin: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1011,7 +1007,7 @@ readonly fields: SpotifyConnectionFieldRefs;
  */
 export interface Prisma__SpotifyConnectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  admin<T extends Prisma.AdminDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminDefaultArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  admin<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

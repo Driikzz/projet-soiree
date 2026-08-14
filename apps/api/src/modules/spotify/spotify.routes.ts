@@ -41,7 +41,7 @@ const oauthCallbackQuerySchema = z.object({
 const searchLimiter = createRateLimiter(60 * 1_000, 30);
 
 const spotifyRedirect = (status: "connected" | "denied" | "error", partyId: string) => {
-  const redirect = new URL(`/admin/parties/${partyId}/spotify`, env.WEB_ORIGIN);
+  const redirect = new URL(`/organizer/parties/${partyId}/spotify`, env.WEB_ORIGIN);
   redirect.searchParams.set("spotify", status);
   return redirect.toString();
 };
@@ -49,15 +49,19 @@ const spotifyRedirect = (status: "connected" | "denied" | "error", partyId: stri
 export const createSpotifyRouter = () => {
   const router = Router();
 
-  router.get("/admin/parties/:partyId/spotify/status", requireAdmin, async (request, response) => {
-    const partyId = uuidSchema.parse(request.params.partyId);
-    await getAdminParty(request.adminAuth!.admin.id, partyId);
-    const status = await getSpotifyConnectionStatus(request.adminAuth!.admin.id);
-    response.json(status);
-  });
+  router.get(
+    "/organizer/parties/:partyId/spotify/status",
+    requireAdmin,
+    async (request, response) => {
+      const partyId = uuidSchema.parse(request.params.partyId);
+      await getAdminParty(request.adminAuth!.admin.id, partyId);
+      const status = await getSpotifyConnectionStatus(request.adminAuth!.admin.id);
+      response.json(status);
+    },
+  );
 
   router.post(
-    "/admin/spotify/connect",
+    "/organizer/spotify/connect",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -99,14 +103,18 @@ export const createSpotifyRouter = () => {
     }
   });
 
-  router.get("/admin/parties/:partyId/spotify/devices", requireAdmin, async (request, response) => {
-    const partyId = uuidSchema.parse(request.params.partyId);
-    const devices = await getSpotifyDevices(request.adminAuth!.admin.id, partyId);
-    response.json({ devices });
-  });
+  router.get(
+    "/organizer/parties/:partyId/spotify/devices",
+    requireAdmin,
+    async (request, response) => {
+      const partyId = uuidSchema.parse(request.params.partyId);
+      const devices = await getSpotifyDevices(request.adminAuth!.admin.id, partyId);
+      response.json({ devices });
+    },
+  );
 
   router.put(
-    "/admin/parties/:partyId/spotify/device",
+    "/organizer/parties/:partyId/spotify/device",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -123,7 +131,7 @@ export const createSpotifyRouter = () => {
   );
 
   router.get(
-    "/admin/parties/:partyId/spotify/playback",
+    "/organizer/parties/:partyId/spotify/playback",
     requireAdmin,
     async (request, response) => {
       const partyId = uuidSchema.parse(request.params.partyId);

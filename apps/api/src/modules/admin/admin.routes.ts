@@ -43,14 +43,14 @@ const rewardUseLimiter = createRateLimiter(60 * 1_000, 20);
 export const createAdminDashboardRouter = () => {
   const router = Router();
 
-  router.get("/admin/parties/:partyId/dashboard", requireAdmin, async (request, response) => {
+  router.get("/organizer/parties/:partyId/dashboard", requireAdmin, async (request, response) => {
     const partyId = uuidSchema.parse(request.params.partyId);
     const dashboard = await getAdminDashboard(request.adminAuth!.admin.id, partyId);
     response.json(dashboard);
   });
 
   router.patch(
-    "/admin/parties/:partyId/settings",
+    "/organizer/parties/:partyId/settings",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -69,7 +69,7 @@ export const createAdminDashboardRouter = () => {
   );
 
   router.post(
-    "/admin/parties/:partyId/participants/:participantId/block",
+    "/organizer/parties/:partyId/participants/:participantId/block",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -89,7 +89,7 @@ export const createAdminDashboardRouter = () => {
   );
 
   router.post(
-    "/admin/rewards",
+    "/organizer/rewards",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -103,7 +103,7 @@ export const createAdminDashboardRouter = () => {
   );
 
   router.delete(
-    "/admin/parties/:partyId/tracks/:trackId",
+    "/organizer/parties/:partyId/tracks/:trackId",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -119,7 +119,7 @@ export const createAdminDashboardRouter = () => {
   );
 
   router.post(
-    "/admin/parties/:partyId/tracks/:trackId/force",
+    "/organizer/parties/:partyId/tracks/:trackId/force",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,
@@ -134,7 +134,7 @@ export const createAdminDashboardRouter = () => {
   );
 
   router.post(
-    "/admin/parties/:partyId/end",
+    "/organizer/parties/:partyId/end",
     requireTrustedOrigin,
     requireAdmin,
     requireAdminCsrf,

@@ -44,8 +44,8 @@ Le frontend est disponible sur `http://127.0.0.1:5173` et l’API sur
 `http://127.0.0.1:3000/api/health`. Utilisez bien l’adresse IP `127.0.0.1` pour que le callback
 Spotify local et les cookies partagent le même hôte.
 
-Le seed utilise `ADMIN_USERNAME` et `ADMIN_INITIAL_PASSWORD` depuis `.env`. Ne conservez jamais les
-valeurs d’exemple pour une vraie soirée.
+Créez ensuite votre compte depuis `/register`. Le seed peut facultativement créer un premier compte
+avec `INITIAL_USER_USERNAME` et `INITIAL_USER_PASSWORD` depuis `.env`.
 
 La configuration Spotify est facultative pour démarrer le projet. Pour activer OAuth, la recherche,
 les appareils et le test de lecture, suis [le guide Spotify](./docs/SPOTIFY_SETUP.md).

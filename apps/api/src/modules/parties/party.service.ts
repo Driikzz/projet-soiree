@@ -116,6 +116,16 @@ export const createParty = async (adminId: string, input: CreatePartyRequest) =>
   );
 };
 
+export const listAdminParties = async (adminId: string) => {
+  const parties = await prisma.party.findMany({
+    where: { adminId },
+    orderBy: { createdAt: "desc" },
+    select: partySummarySelect,
+  });
+
+  return parties.map(toPartySummary);
+};
+
 export const getAdminParty = async (adminId: string, partyId: string) => {
   const party = await prisma.party.findFirst({
     where: { id: partyId, adminId },

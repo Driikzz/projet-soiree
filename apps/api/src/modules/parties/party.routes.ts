@@ -29,6 +29,7 @@ import {
   getParticipantSession,
   getPublicParty,
   joinParty,
+  listAdminParties,
   openParty,
 } from "./party.service.js";
 
@@ -36,6 +37,11 @@ const joinLimiter = createRateLimiter(10 * 60 * 1_000, 20);
 
 export const createAdminPartyRouter = () => {
   const router = Router();
+
+  router.get("/", requireAdmin, async (request, response) => {
+    const parties = await listAdminParties(request.adminAuth!.admin.id);
+    response.json({ parties });
+  });
 
   router.post(
     "/",

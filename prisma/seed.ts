@@ -6,39 +6,73 @@ import { z } from "zod";
 
 import { PrismaClient } from "../apps/api/src/generated/prisma/client.js";
 
-const seedEnvironmentSchema = z.object({
-  DATABASE_URL: z.string().url(),
-  ADMIN_USERNAME: z.string().trim().min(3).max(64).default("admin"),
-  ADMIN_INITIAL_PASSWORD: z.string().min(12),
-  SEED_DEMO_DATA: z
-    .enum(["true", "false"])
-    .default("false")
-    .transform((value) => value === "true"),
-});
+const seedEnvironmentSchema = z
+  .object({
+    DATABASE_URL: z.string().url(),
+    INITIAL_USER_USERNAME: z.string().trim().min(3).max(64).optional(),
+    INITIAL_USER_PASSWORD: z.string().min(12).optional(),
+    SEED_DEMO_DATA: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+  })
+  .superRefine((value, context) => {
+    if (
+      (value.INITIAL_USER_USERNAME === undefined) !==
+      (value.INITIAL_USER_PASSWORD === undefined)
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["INITIAL_USER_PASSWORD"],
+        message: "initial user credentials must be provided together",
+      });
+    }
 
-const seedEnvironment = seedEnvironmentSchema.parse(process.env);
+    if (value.SEED_DEMO_DATA && value.INITIAL_USER_USERNAME === undefined) {
+      context.addIssue({
+        code: "custom",
+        path: ["INITIAL_USER_USERNAME"],
+        message: "an initial user is required for demo data",
+      });
+    }
+  });
+
+const seedEnvironment = seedEnvironmentSchema.parse({
+  ...process.env,
+  INITIAL_USER_USERNAME: process.env.INITIAL_USER_USERNAME ?? process.env.ADMIN_USERNAME,
+  INITIAL_USER_PASSWORD: process.env.INITIAL_USER_PASSWORD ?? process.env.ADMIN_INITIAL_PASSWORD,
+});
 const adapter = new PrismaPg({
   connectionString: seedEnvironment.DATABASE_URL,
 });
 const prisma = new PrismaClient({ adapter });
 
 async function seed() {
-  const passwordHash = await hash(seedEnvironment.ADMIN_INITIAL_PASSWORD, {
+  if (
+    seedEnvironment.INITIAL_USER_USERNAME === undefined ||
+    seedEnvironment.INITIAL_USER_PASSWORD === undefined
+  ) {
+    return;
+  }
+
+  const passwordHash = await hash(seedEnvironment.INITIAL_USER_PASSWORD, {
     type: argon2id,
     memoryCost: 19_456,
     timeCost: 2,
     parallelism: 1,
   });
 
-  const admin = await prisma.admin.upsert({
+  const user = await prisma.user.upsert({
     where: {
-      username: seedEnvironment.ADMIN_USERNAME,
+      username: seedEnvironment.INITIAL_USER_USERNAME,
     },
     update: {
       passwordHash,
+      displayName: seedEnvironment.INITIAL_USER_USERNAME,
     },
     create: {
-      username: seedEnvironment.ADMIN_USERNAME,
+      username: seedEnvironment.INITIAL_USER_USERNAME,
+      displayName: seedEnvironment.INITIAL_USER_USERNAME,
       passwordHash,
     },
   });
@@ -55,7 +89,7 @@ async function seed() {
       name: "Soirée SongFest",
     },
     create: {
-      adminId: admin.id,
+      adminId: user.id,
       name: "Soirée SongFest",
       code: "DEMO26",
       settings: {

@@ -30,7 +30,7 @@ const assertDedicatedTestDatabase = () => {
 const cleanDatabase = async () => {
   await prisma.auditLog.deleteMany();
   await prisma.party.deleteMany();
-  await prisma.admin.deleteMany();
+  await prisma.user.deleteMany();
 };
 
 const extractCookie = (setCookieHeader: unknown, cookieName: string) => {
@@ -67,10 +67,10 @@ describe("PostgreSQL party journey", () => {
       parallelism: 1,
     });
 
-    await prisma.admin.createMany({
+    await prisma.user.createMany({
       data: [
-        { username: "organizer", passwordHash },
-        { username: "other-organizer", passwordHash },
+        { username: "organizer", displayName: "Organisateur", passwordHash },
+        { username: "other-organizer", displayName: "Autre organisateur", passwordHash },
       ],
     });
   });
@@ -80,17 +80,46 @@ describe("PostgreSQL party journey", () => {
     await prisma.$disconnect();
   });
 
+  it("registers a standard user account and opens its session", async () => {
+    const userAgent = request.agent(app);
+    const registrationResponse = await userAgent
+      .post("/api/auth/register")
+      .set("Origin", webOrigin)
+      .send({
+        displayName: "Léa Martin",
+        email: "lea@example.com",
+        password: "registration-password-2026",
+      })
+      .expect(201);
+
+    expect(registrationResponse.body.user).toMatchObject({
+      displayName: "Léa Martin",
+      email: "lea@example.com",
+    });
+    expect(
+      extractCookie(registrationResponse.headers["set-cookie"], "songfest_admin_csrf"),
+    ).toBeTruthy();
+
+    await userAgent
+      .get("/api/auth/me")
+      .expect(200)
+      .expect(({ body }) => {
+        expect(body.user.email).toBe("lea@example.com");
+      });
+    await userAgent.get("/api/organizer/parties").expect(200, { parties: [] });
+  });
+
   it("creates, opens and joins a party while enforcing sessions, ownership and unique votes", async () => {
     const adminAgent = request.agent(app);
     const loginResponse = await adminAgent
-      .post("/api/admin/auth/login")
+      .post("/api/auth/login")
       .set("Origin", webOrigin)
-      .send({ username: "organizer", password: adminPassword })
+      .send({ identifier: "organizer", password: adminPassword })
       .expect(200);
     const adminCsrf = extractCookie(loginResponse.headers["set-cookie"], "songfest_admin_csrf");
 
     const createPartyResponse = await adminAgent
-      .post("/api/admin/parties")
+      .post("/api/organizer/parties")
       .set("Origin", webOrigin)
       .set("X-CSRF-Token", adminCsrf)
       .send({ name: "Intégration SongFest" })
@@ -103,31 +132,31 @@ describe("PostgreSQL party journey", () => {
 
     const otherAdminAgent = request.agent(app);
     const otherLoginResponse = await otherAdminAgent
-      .post("/api/admin/auth/login")
+      .post("/api/auth/login")
       .set("Origin", webOrigin)
-      .send({ username: "other-organizer", password: adminPassword })
+      .send({ identifier: "other-organizer", password: adminPassword })
       .expect(200);
     expect(
       extractCookie(otherLoginResponse.headers["set-cookie"], "songfest_admin_csrf"),
     ).toBeTruthy();
-    await otherAdminAgent.get(`/api/admin/parties/${party.id}`).expect(404);
-    await otherAdminAgent.get(`/api/admin/parties/${party.id}/spotify/status`).expect(404);
+    await otherAdminAgent.get(`/api/organizer/parties/${party.id}`).expect(404);
+    await otherAdminAgent.get(`/api/organizer/parties/${party.id}/spotify/status`).expect(404);
 
     await adminAgent
-      .get(`/api/admin/parties/${party.id}/spotify/status`)
+      .get(`/api/organizer/parties/${party.id}/spotify/status`)
       .expect(200)
       .expect(({ body }) => {
         expect(body).toMatchObject({ isConfigured: false, isConnected: false });
       });
 
     await adminAgent
-      .post(`/api/admin/parties/${party.id}/open`)
+      .post(`/api/organizer/parties/${party.id}/open`)
       .set("Origin", webOrigin)
       .set("X-CSRF-Token", adminCsrf)
       .expect(200);
 
     const createPlaylistResponse = await adminAgent
-      .post(`/api/admin/parties/${party.id}/playlists`)
+      .post(`/api/organizer/parties/${party.id}/playlists`)
       .set("Origin", webOrigin)
       .set("X-CSRF-Token", adminCsrf)
       .send({
@@ -143,7 +172,7 @@ describe("PostgreSQL party journey", () => {
     const playlist = playlistSummarySchema.parse(createPlaylistResponse.body.playlist);
 
     await adminAgent
-      .post(`/api/admin/playlists/${playlist.id}/activate`)
+      .post(`/api/organizer/playlists/${playlist.id}/activate`)
       .set("Origin", webOrigin)
       .set("X-CSRF-Token", adminCsrf)
       .expect(200);
@@ -244,7 +273,7 @@ describe("PostgreSQL party journey", () => {
       });
 
     await adminAgent
-      .get(`/api/admin/parties/${party.id}/dashboard`)
+      .get(`/api/organizer/parties/${party.id}/dashboard`)
       .expect(200)
       .expect(({ body }) => {
         expect(body.participants[0]).toMatchObject({ contributionCount: 1 });

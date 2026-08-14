@@ -12,26 +12,35 @@ interface AdminPartyResponse {
   party: PartySummary;
 }
 
+interface OwnedPartiesResponse {
+  parties: PartySummary[];
+}
+
 interface PublicPartyResponse {
   party: PublicParty;
 }
 
 export const createParty = (input: CreatePartyRequest) =>
-  apiRequest<AdminPartyResponse>("/api/admin/parties", {
+  apiRequest<AdminPartyResponse>("/api/organizer/parties", {
     method: "POST",
     body: input,
     csrfCookie: "songfest_admin_csrf",
   });
 
 export const getAdminParty = (partyId: string, signal?: AbortSignal) =>
-  apiRequest<AdminPartyResponse>(`/api/admin/parties/${partyId}`, {
+  apiRequest<AdminPartyResponse>(`/api/organizer/parties/${partyId}`, {
     ...(signal === undefined ? {} : { signal }),
   });
 
 export const openParty = (partyId: string) =>
-  apiRequest<AdminPartyResponse>(`/api/admin/parties/${partyId}/open`, {
+  apiRequest<AdminPartyResponse>(`/api/organizer/parties/${partyId}/open`, {
     method: "POST",
     csrfCookie: "songfest_admin_csrf",
+  });
+
+export const listOwnedParties = (signal?: AbortSignal) =>
+  apiRequest<OwnedPartiesResponse>("/api/organizer/parties", {
+    ...(signal === undefined ? {} : { signal }),
   });
 
 export const getPublicParty = (partyCode: string, signal?: AbortSignal) =>

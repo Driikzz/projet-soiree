@@ -278,7 +278,7 @@ export type RewardWhereInput = {
   revokedAt?: Prisma.DateTimeNullableFilter<"Reward"> | Date | string | null
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   participant?: Prisma.XOR<Prisma.ParticipantScalarRelationFilter, Prisma.ParticipantWhereInput>
-  assignedBy?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  assignedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   affectedTracks?: Prisma.PlaylistTrackListRelationFilter
 }
 
@@ -297,7 +297,7 @@ export type RewardOrderByWithRelationInput = {
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   party?: Prisma.PartyOrderByWithRelationInput
   participant?: Prisma.ParticipantOrderByWithRelationInput
-  assignedBy?: Prisma.AdminOrderByWithRelationInput
+  assignedBy?: Prisma.UserOrderByWithRelationInput
   affectedTracks?: Prisma.PlaylistTrackOrderByRelationAggregateInput
 }
 
@@ -319,7 +319,7 @@ export type RewardWhereUniqueInput = Prisma.AtLeast<{
   revokedAt?: Prisma.DateTimeNullableFilter<"Reward"> | Date | string | null
   party?: Prisma.XOR<Prisma.PartyScalarRelationFilter, Prisma.PartyWhereInput>
   participant?: Prisma.XOR<Prisma.ParticipantScalarRelationFilter, Prisma.ParticipantWhereInput>
-  assignedBy?: Prisma.XOR<Prisma.AdminScalarRelationFilter, Prisma.AdminWhereInput>
+  assignedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   affectedTracks?: Prisma.PlaylistTrackListRelationFilter
 }, "id">
 
@@ -373,7 +373,7 @@ export type RewardCreateInput = {
   revokedAt?: Date | string | null
   party: Prisma.PartyCreateNestedOneWithoutRewardsInput
   participant: Prisma.ParticipantCreateNestedOneWithoutRewardsInput
-  assignedBy: Prisma.AdminCreateNestedOneWithoutAssignedRewardsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutAssignedRewardsInput
   affectedTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutRewardInput
 }
 
@@ -405,7 +405,7 @@ export type RewardUpdateInput = {
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   party?: Prisma.PartyUpdateOneRequiredWithoutRewardsNestedInput
   participant?: Prisma.ParticipantUpdateOneRequiredWithoutRewardsNestedInput
-  assignedBy?: Prisma.AdminUpdateOneRequiredWithoutAssignedRewardsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutAssignedRewardsNestedInput
   affectedTracks?: Prisma.PlaylistTrackUpdateManyWithoutRewardNestedInput
 }
 
@@ -772,7 +772,7 @@ export type RewardCreateWithoutPartyInput = {
   consumedAt?: Date | string | null
   revokedAt?: Date | string | null
   participant: Prisma.ParticipantCreateNestedOneWithoutRewardsInput
-  assignedBy: Prisma.AdminCreateNestedOneWithoutAssignedRewardsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutAssignedRewardsInput
   affectedTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutRewardInput
 }
 
@@ -828,7 +828,7 @@ export type RewardCreateWithoutParticipantInput = {
   consumedAt?: Date | string | null
   revokedAt?: Date | string | null
   party: Prisma.PartyCreateNestedOneWithoutRewardsInput
-  assignedBy: Prisma.AdminCreateNestedOneWithoutAssignedRewardsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutAssignedRewardsInput
   affectedTracks?: Prisma.PlaylistTrackCreateNestedManyWithoutRewardInput
 }
 
@@ -885,7 +885,7 @@ export type RewardCreateWithoutAffectedTracksInput = {
   revokedAt?: Date | string | null
   party: Prisma.PartyCreateNestedOneWithoutRewardsInput
   participant: Prisma.ParticipantCreateNestedOneWithoutRewardsInput
-  assignedBy: Prisma.AdminCreateNestedOneWithoutAssignedRewardsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutAssignedRewardsInput
 }
 
 export type RewardUncheckedCreateWithoutAffectedTracksInput = {
@@ -931,7 +931,7 @@ export type RewardUpdateWithoutAffectedTracksInput = {
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   party?: Prisma.PartyUpdateOneRequiredWithoutRewardsNestedInput
   participant?: Prisma.ParticipantUpdateOneRequiredWithoutRewardsNestedInput
-  assignedBy?: Prisma.AdminUpdateOneRequiredWithoutAssignedRewardsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutAssignedRewardsNestedInput
 }
 
 export type RewardUncheckedUpdateWithoutAffectedTracksInput = {
@@ -1032,7 +1032,7 @@ export type RewardUpdateWithoutPartyInput = {
   consumedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   participant?: Prisma.ParticipantUpdateOneRequiredWithoutRewardsNestedInput
-  assignedBy?: Prisma.AdminUpdateOneRequiredWithoutAssignedRewardsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutAssignedRewardsNestedInput
   affectedTracks?: Prisma.PlaylistTrackUpdateManyWithoutRewardNestedInput
 }
 
@@ -1090,7 +1090,7 @@ export type RewardUpdateWithoutParticipantInput = {
   consumedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   party?: Prisma.PartyUpdateOneRequiredWithoutRewardsNestedInput
-  assignedBy?: Prisma.AdminUpdateOneRequiredWithoutAssignedRewardsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutAssignedRewardsNestedInput
   affectedTracks?: Prisma.PlaylistTrackUpdateManyWithoutRewardNestedInput
 }
 
@@ -1169,7 +1169,7 @@ export type RewardSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   revokedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   affectedTracks?: boolean | Prisma.Reward$affectedTracksArgs<ExtArgs>
   _count?: boolean | Prisma.RewardCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reward"]>
@@ -1189,7 +1189,7 @@ export type RewardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   revokedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reward"]>
 
 export type RewardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1207,7 +1207,7 @@ export type RewardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   revokedAt?: boolean
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reward"]>
 
 export type RewardSelectScalar = {
@@ -1229,19 +1229,19 @@ export type RewardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type RewardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   affectedTracks?: boolean | Prisma.Reward$affectedTracksArgs<ExtArgs>
   _count?: boolean | Prisma.RewardCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RewardIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type RewardIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   party?: boolean | Prisma.PartyDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
-  assignedBy?: boolean | Prisma.AdminDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $RewardPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1249,7 +1249,7 @@ export type $RewardPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     party: Prisma.$PartyPayload<ExtArgs>
     participant: Prisma.$ParticipantPayload<ExtArgs>
-    assignedBy: Prisma.$AdminPayload<ExtArgs>
+    assignedBy: Prisma.$UserPayload<ExtArgs>
     affectedTracks: Prisma.$PlaylistTrackPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1661,7 +1661,7 @@ export interface Prisma__RewardClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   party<T extends Prisma.PartyDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PartyDefaultArgs<ExtArgs>>): Prisma.Prisma__PartyClient<runtime.Types.Result.GetResult<Prisma.$PartyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   participant<T extends Prisma.ParticipantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ParticipantDefaultArgs<ExtArgs>>): Prisma.Prisma__ParticipantClient<runtime.Types.Result.GetResult<Prisma.$ParticipantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  assignedBy<T extends Prisma.AdminDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AdminDefaultArgs<ExtArgs>>): Prisma.Prisma__AdminClient<runtime.Types.Result.GetResult<Prisma.$AdminPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   affectedTracks<T extends Prisma.Reward$affectedTracksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reward$affectedTracksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlaylistTrackPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.

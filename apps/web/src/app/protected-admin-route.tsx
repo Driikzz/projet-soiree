@@ -2,15 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import type { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-import { getAdminSession } from "../lib/api/auth";
+import { getUserSession } from "../lib/api/auth";
 import { ApiError } from "../lib/api/client";
 import { LoadingPage } from "../components/loading-page";
 
 export function ProtectedAdminRoute({ children }: PropsWithChildren) {
   const location = useLocation();
   const sessionQuery = useQuery({
-    queryKey: ["admin-session"],
-    queryFn: ({ signal }) => getAdminSession(signal),
+    queryKey: ["user-session"],
+    queryFn: ({ signal }) => getUserSession(signal),
     retry: false,
   });
 
@@ -22,7 +22,7 @@ export function ProtectedAdminRoute({ children }: PropsWithChildren) {
     sessionQuery.error instanceof ApiError &&
     sessionQuery.error.code === "AUTHENTICATION_REQUIRED"
   ) {
-    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
   }
 
   if (sessionQuery.isError) {

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import { ProtectedAdminRoute } from "./protected-admin-route";
 import { RouteAccessibility } from "./route-accessibility";
@@ -30,6 +30,16 @@ const AdminSpotifyPage = lazy(() =>
 const CreatePartyPage = lazy(() =>
   import("../routes/create-party-page").then((module) => ({
     default: module.CreatePartyPage,
+  })),
+);
+const PartiesPage = lazy(() =>
+  import("../routes/parties-page").then((module) => ({
+    default: module.PartiesPage,
+  })),
+);
+const RegisterPage = lazy(() =>
+  import("../routes/register-page").then((module) => ({
+    default: module.RegisterPage,
   })),
 );
 const GuestPartyPage = lazy(() =>
@@ -64,9 +74,18 @@ export function App() {
         <Suspense fallback={<LoadingPage />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/login" element={<AdminLoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route
-              path="/admin/parties/new"
+              path="/parties"
+              element={
+                <ProtectedAdminRoute>
+                  <PartiesPage />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/parties/new"
               element={
                 <ProtectedAdminRoute>
                   <CreatePartyPage />
@@ -74,7 +93,7 @@ export function App() {
               }
             />
             <Route
-              path="/admin/parties/:partyId/dashboard"
+              path="/organizer/parties/:partyId/dashboard"
               element={
                 <ProtectedAdminRoute>
                   <AdminDashboardPage />
@@ -82,7 +101,7 @@ export function App() {
               }
             />
             <Route
-              path="/admin/parties/:partyId/playlists"
+              path="/organizer/parties/:partyId/playlists"
               element={
                 <ProtectedAdminRoute>
                   <AdminPlaylistsPage />
@@ -90,7 +109,7 @@ export function App() {
               }
             />
             <Route
-              path="/admin/parties/:partyId/spotify"
+              path="/organizer/parties/:partyId/spotify"
               element={
                 <ProtectedAdminRoute>
                   <AdminSpotifyPage />
@@ -98,7 +117,7 @@ export function App() {
               }
             />
             <Route
-              path="/admin/parties/:partyId/share"
+              path="/organizer/parties/:partyId/share"
               element={
                 <ProtectedAdminRoute>
                   <SharePartyPage />
@@ -108,6 +127,7 @@ export function App() {
             <Route path="/join/:partyCode" element={<JoinPartyPage />} />
             <Route path="/party/:partyId" element={<GuestPartyPage />} />
             <Route path="/party/:partyId/playlists/:playlistId" element={<PlaylistDetailPage />} />
+            <Route path="/admin/*" element={<Navigate to="/parties" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>

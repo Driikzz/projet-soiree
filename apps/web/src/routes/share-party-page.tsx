@@ -155,12 +155,15 @@ export function SharePartyPage() {
           />
           <Link
             className="secondary-button configure-link"
-            to={`/admin/parties/${partyId}/dashboard`}
+            to={`/organizer/parties/${partyId}/dashboard`}
           >
             <MusicNotes aria-hidden="true" weight="bold" />
             Ouvrir le tableau de bord
           </Link>
-          <Link className="text-link spotify-config-link" to={`/admin/parties/${partyId}/spotify`}>
+          <Link
+            className="text-link spotify-config-link"
+            to={`/organizer/parties/${partyId}/spotify`}
+          >
             <SpeakerHigh aria-hidden="true" weight="bold" />
             Configurer Spotify
           </Link>

@@ -36,7 +36,7 @@ export const createPlaybackRouter = () => {
     response.json(playback);
   });
 
-  router.get("/admin/parties/:partyId/playback", requireAdmin, async (request, response) => {
+  router.get("/organizer/parties/:partyId/playback", requireAdmin, async (request, response) => {
     const partyId = uuidSchema.parse(request.params.partyId);
     const playback = await getAdminPlayback(request.adminAuth!.admin.id, partyId);
     response.json(playback);
@@ -75,7 +75,7 @@ export const createPlaybackRouter = () => {
 
   for (const [action, control] of controls) {
     router.post(
-      `/admin/parties/:partyId/playback/${action}`,
+      `/organizer/parties/:partyId/playback/${action}`,
       requireTrustedOrigin,
       requireAdmin,
       requireAdminCsrf,
