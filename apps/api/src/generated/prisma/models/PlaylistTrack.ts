@@ -29,6 +29,7 @@ export type AggregatePlaylistTrack = {
 export type PlaylistTrackAvgAggregateOutputType = {
   durationMs: number | null
   voteCount: number | null
+  voteSupporterCount: number | null
   priorityLevel: number | null
   sequencePosition: number | null
 }
@@ -36,6 +37,7 @@ export type PlaylistTrackAvgAggregateOutputType = {
 export type PlaylistTrackSumAggregateOutputType = {
   durationMs: number | null
   voteCount: number | null
+  voteSupporterCount: number | null
   priorityLevel: number | null
   sequencePosition: number | null
 }
@@ -54,6 +56,7 @@ export type PlaylistTrackMinAggregateOutputType = {
   isExplicit: boolean | null
   status: $Enums.TrackStatus | null
   voteCount: number | null
+  voteSupporterCount: number | null
   priorityLevel: number | null
   sequenceGroupId: string | null
   sequencePosition: number | null
@@ -82,6 +85,7 @@ export type PlaylistTrackMaxAggregateOutputType = {
   isExplicit: boolean | null
   status: $Enums.TrackStatus | null
   voteCount: number | null
+  voteSupporterCount: number | null
   priorityLevel: number | null
   sequenceGroupId: string | null
   sequencePosition: number | null
@@ -112,6 +116,7 @@ export type PlaylistTrackCountAggregateOutputType = {
   isExplicit: number
   status: number
   voteCount: number
+  voteSupporterCount: number
   priorityLevel: number
   sequenceGroupId: number
   sequencePosition: number
@@ -131,6 +136,7 @@ export type PlaylistTrackCountAggregateOutputType = {
 export type PlaylistTrackAvgAggregateInputType = {
   durationMs?: true
   voteCount?: true
+  voteSupporterCount?: true
   priorityLevel?: true
   sequencePosition?: true
 }
@@ -138,6 +144,7 @@ export type PlaylistTrackAvgAggregateInputType = {
 export type PlaylistTrackSumAggregateInputType = {
   durationMs?: true
   voteCount?: true
+  voteSupporterCount?: true
   priorityLevel?: true
   sequencePosition?: true
 }
@@ -156,6 +163,7 @@ export type PlaylistTrackMinAggregateInputType = {
   isExplicit?: true
   status?: true
   voteCount?: true
+  voteSupporterCount?: true
   priorityLevel?: true
   sequenceGroupId?: true
   sequencePosition?: true
@@ -184,6 +192,7 @@ export type PlaylistTrackMaxAggregateInputType = {
   isExplicit?: true
   status?: true
   voteCount?: true
+  voteSupporterCount?: true
   priorityLevel?: true
   sequenceGroupId?: true
   sequencePosition?: true
@@ -214,6 +223,7 @@ export type PlaylistTrackCountAggregateInputType = {
   isExplicit?: true
   status?: true
   voteCount?: true
+  voteSupporterCount?: true
   priorityLevel?: true
   sequenceGroupId?: true
   sequencePosition?: true
@@ -331,6 +341,7 @@ export type PlaylistTrackGroupByOutputType = {
   isExplicit: boolean
   status: $Enums.TrackStatus
   voteCount: number
+  voteSupporterCount: number
   priorityLevel: number
   sequenceGroupId: string | null
   sequencePosition: number | null
@@ -384,6 +395,7 @@ export type PlaylistTrackWhereInput = {
   isExplicit?: Prisma.BoolFilter<"PlaylistTrack"> | boolean
   status?: Prisma.EnumTrackStatusFilter<"PlaylistTrack"> | $Enums.TrackStatus
   voteCount?: Prisma.IntFilter<"PlaylistTrack"> | number
+  voteSupporterCount?: Prisma.IntFilter<"PlaylistTrack"> | number
   priorityLevel?: Prisma.IntFilter<"PlaylistTrack"> | number
   sequenceGroupId?: Prisma.UuidNullableFilter<"PlaylistTrack"> | string | null
   sequencePosition?: Prisma.IntNullableFilter<"PlaylistTrack"> | number | null
@@ -423,6 +435,7 @@ export type PlaylistTrackOrderByWithRelationInput = {
   isExplicit?: Prisma.SortOrder
   status?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequenceGroupId?: Prisma.SortOrderInput | Prisma.SortOrder
   sequencePosition?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -466,6 +479,7 @@ export type PlaylistTrackWhereUniqueInput = Prisma.AtLeast<{
   isExplicit?: Prisma.BoolFilter<"PlaylistTrack"> | boolean
   status?: Prisma.EnumTrackStatusFilter<"PlaylistTrack"> | $Enums.TrackStatus
   voteCount?: Prisma.IntFilter<"PlaylistTrack"> | number
+  voteSupporterCount?: Prisma.IntFilter<"PlaylistTrack"> | number
   priorityLevel?: Prisma.IntFilter<"PlaylistTrack"> | number
   sequenceGroupId?: Prisma.UuidNullableFilter<"PlaylistTrack"> | string | null
   sequencePosition?: Prisma.IntNullableFilter<"PlaylistTrack"> | number | null
@@ -505,6 +519,7 @@ export type PlaylistTrackOrderByWithAggregationInput = {
   isExplicit?: Prisma.SortOrder
   status?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequenceGroupId?: Prisma.SortOrderInput | Prisma.SortOrder
   sequencePosition?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -543,6 +558,7 @@ export type PlaylistTrackScalarWhereWithAggregatesInput = {
   isExplicit?: Prisma.BoolWithAggregatesFilter<"PlaylistTrack"> | boolean
   status?: Prisma.EnumTrackStatusWithAggregatesFilter<"PlaylistTrack"> | $Enums.TrackStatus
   voteCount?: Prisma.IntWithAggregatesFilter<"PlaylistTrack"> | number
+  voteSupporterCount?: Prisma.IntWithAggregatesFilter<"PlaylistTrack"> | number
   priorityLevel?: Prisma.IntWithAggregatesFilter<"PlaylistTrack"> | number
   sequenceGroupId?: Prisma.UuidNullableWithAggregatesFilter<"PlaylistTrack"> | string | null
   sequencePosition?: Prisma.IntNullableWithAggregatesFilter<"PlaylistTrack"> | number | null
@@ -570,6 +586,7 @@ export type PlaylistTrackCreateInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -609,6 +626,7 @@ export type PlaylistTrackUncheckedCreateInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -642,6 +660,7 @@ export type PlaylistTrackUpdateInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -681,6 +700,7 @@ export type PlaylistTrackUncheckedUpdateInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -717,6 +737,7 @@ export type PlaylistTrackCreateManyInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -744,6 +765,7 @@ export type PlaylistTrackUpdateManyMutationInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -774,6 +796,7 @@ export type PlaylistTrackUncheckedUpdateManyInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -819,6 +842,7 @@ export type PlaylistTrackCountOrderByAggregateInput = {
   isExplicit?: Prisma.SortOrder
   status?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequenceGroupId?: Prisma.SortOrder
   sequencePosition?: Prisma.SortOrder
@@ -836,6 +860,7 @@ export type PlaylistTrackCountOrderByAggregateInput = {
 export type PlaylistTrackAvgOrderByAggregateInput = {
   durationMs?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequencePosition?: Prisma.SortOrder
 }
@@ -854,6 +879,7 @@ export type PlaylistTrackMaxOrderByAggregateInput = {
   isExplicit?: Prisma.SortOrder
   status?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequenceGroupId?: Prisma.SortOrder
   sequencePosition?: Prisma.SortOrder
@@ -882,6 +908,7 @@ export type PlaylistTrackMinOrderByAggregateInput = {
   isExplicit?: Prisma.SortOrder
   status?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequenceGroupId?: Prisma.SortOrder
   sequencePosition?: Prisma.SortOrder
@@ -899,6 +926,7 @@ export type PlaylistTrackMinOrderByAggregateInput = {
 export type PlaylistTrackSumOrderByAggregateInput = {
   durationMs?: Prisma.SortOrder
   voteCount?: Prisma.SortOrder
+  voteSupporterCount?: Prisma.SortOrder
   priorityLevel?: Prisma.SortOrder
   sequencePosition?: Prisma.SortOrder
 }
@@ -1174,6 +1202,7 @@ export type PlaylistTrackCreateWithoutProposedByInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1211,6 +1240,7 @@ export type PlaylistTrackUncheckedCreateWithoutProposedByInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1276,6 +1306,7 @@ export type PlaylistTrackScalarWhereInput = {
   isExplicit?: Prisma.BoolFilter<"PlaylistTrack"> | boolean
   status?: Prisma.EnumTrackStatusFilter<"PlaylistTrack"> | $Enums.TrackStatus
   voteCount?: Prisma.IntFilter<"PlaylistTrack"> | number
+  voteSupporterCount?: Prisma.IntFilter<"PlaylistTrack"> | number
   priorityLevel?: Prisma.IntFilter<"PlaylistTrack"> | number
   sequenceGroupId?: Prisma.UuidNullableFilter<"PlaylistTrack"> | string | null
   sequencePosition?: Prisma.IntNullableFilter<"PlaylistTrack"> | number | null
@@ -1303,6 +1334,7 @@ export type PlaylistTrackCreateWithoutPlaylistInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1340,6 +1372,7 @@ export type PlaylistTrackUncheckedCreateWithoutPlaylistInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1399,6 +1432,7 @@ export type PlaylistTrackCreateWithoutVotesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1437,6 +1471,7 @@ export type PlaylistTrackUncheckedCreateWithoutVotesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1485,6 +1520,7 @@ export type PlaylistTrackUpdateWithoutVotesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1523,6 +1559,7 @@ export type PlaylistTrackUncheckedUpdateWithoutVotesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1555,6 +1592,7 @@ export type PlaylistTrackCreateWithoutSkipVotesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1593,6 +1631,7 @@ export type PlaylistTrackUncheckedCreateWithoutSkipVotesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1641,6 +1680,7 @@ export type PlaylistTrackUpdateWithoutSkipVotesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1679,6 +1719,7 @@ export type PlaylistTrackUncheckedUpdateWithoutSkipVotesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1711,6 +1752,7 @@ export type PlaylistTrackCreateWithoutRewardInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1748,6 +1790,7 @@ export type PlaylistTrackUncheckedCreateWithoutRewardInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1807,6 +1850,7 @@ export type PlaylistTrackCreateWithoutFlashTurnInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1845,6 +1889,7 @@ export type PlaylistTrackUncheckedCreateWithoutFlashTurnInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -1893,6 +1938,7 @@ export type PlaylistTrackUpdateWithoutFlashTurnInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1931,6 +1977,7 @@ export type PlaylistTrackUncheckedUpdateWithoutFlashTurnInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -1963,6 +2010,7 @@ export type PlaylistTrackCreateWithoutCurrentInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2001,6 +2049,7 @@ export type PlaylistTrackUncheckedCreateWithoutCurrentInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2038,6 +2087,7 @@ export type PlaylistTrackCreateWithoutQueuedInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2076,6 +2126,7 @@ export type PlaylistTrackUncheckedCreateWithoutQueuedInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2113,6 +2164,7 @@ export type PlaylistTrackCreateWithoutLockedInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2151,6 +2203,7 @@ export type PlaylistTrackUncheckedCreateWithoutLockedInPlaybackStatesInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2199,6 +2252,7 @@ export type PlaylistTrackUpdateWithoutCurrentInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2237,6 +2291,7 @@ export type PlaylistTrackUncheckedUpdateWithoutCurrentInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2280,6 +2335,7 @@ export type PlaylistTrackUpdateWithoutQueuedInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2318,6 +2374,7 @@ export type PlaylistTrackUncheckedUpdateWithoutQueuedInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2361,6 +2418,7 @@ export type PlaylistTrackUpdateWithoutLockedInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2399,6 +2457,7 @@ export type PlaylistTrackUncheckedUpdateWithoutLockedInPlaybackStatesInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2433,6 +2492,7 @@ export type PlaylistTrackCreateManyProposedByInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2460,6 +2520,7 @@ export type PlaylistTrackUpdateWithoutProposedByInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2497,6 +2558,7 @@ export type PlaylistTrackUncheckedUpdateWithoutProposedByInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2532,6 +2594,7 @@ export type PlaylistTrackUncheckedUpdateManyWithoutProposedByInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2561,6 +2624,7 @@ export type PlaylistTrackCreateManyPlaylistInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2588,6 +2652,7 @@ export type PlaylistTrackUpdateWithoutPlaylistInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2625,6 +2690,7 @@ export type PlaylistTrackUncheckedUpdateWithoutPlaylistInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2660,6 +2726,7 @@ export type PlaylistTrackUncheckedUpdateManyWithoutPlaylistInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2689,6 +2756,7 @@ export type PlaylistTrackCreateManyRewardInput = {
   isExplicit?: boolean
   status?: $Enums.TrackStatus
   voteCount?: number
+  voteSupporterCount?: number
   priorityLevel?: number
   sequenceGroupId?: string | null
   sequencePosition?: number | null
@@ -2716,6 +2784,7 @@ export type PlaylistTrackUpdateWithoutRewardInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2753,6 +2822,7 @@ export type PlaylistTrackUncheckedUpdateWithoutRewardInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2788,6 +2858,7 @@ export type PlaylistTrackUncheckedUpdateManyWithoutRewardInput = {
   isExplicit?: Prisma.BoolFieldUpdateOperationsInput | boolean
   status?: Prisma.EnumTrackStatusFieldUpdateOperationsInput | $Enums.TrackStatus
   voteCount?: Prisma.IntFieldUpdateOperationsInput | number
+  voteSupporterCount?: Prisma.IntFieldUpdateOperationsInput | number
   priorityLevel?: Prisma.IntFieldUpdateOperationsInput | number
   sequenceGroupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sequencePosition?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -2885,6 +2956,7 @@ export type PlaylistTrackSelect<ExtArgs extends runtime.Types.Extensions.Interna
   isExplicit?: boolean
   status?: boolean
   voteCount?: boolean
+  voteSupporterCount?: boolean
   priorityLevel?: boolean
   sequenceGroupId?: boolean
   sequencePosition?: boolean
@@ -2925,6 +2997,7 @@ export type PlaylistTrackSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   isExplicit?: boolean
   status?: boolean
   voteCount?: boolean
+  voteSupporterCount?: boolean
   priorityLevel?: boolean
   sequenceGroupId?: boolean
   sequencePosition?: boolean
@@ -2958,6 +3031,7 @@ export type PlaylistTrackSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   isExplicit?: boolean
   status?: boolean
   voteCount?: boolean
+  voteSupporterCount?: boolean
   priorityLevel?: boolean
   sequenceGroupId?: boolean
   sequencePosition?: boolean
@@ -2991,6 +3065,7 @@ export type PlaylistTrackSelectScalar = {
   isExplicit?: boolean
   status?: boolean
   voteCount?: boolean
+  voteSupporterCount?: boolean
   priorityLevel?: boolean
   sequenceGroupId?: boolean
   sequencePosition?: boolean
@@ -3005,7 +3080,7 @@ export type PlaylistTrackSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PlaylistTrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "playlistId" | "proposedByParticipantId" | "rewardId" | "spotifyTrackId" | "spotifyUri" | "spotifyUrl" | "title" | "artistNames" | "spotifyArtistIds" | "coverUrl" | "durationMs" | "isExplicit" | "status" | "voteCount" | "priorityLevel" | "sequenceGroupId" | "sequencePosition" | "isBannedForParty" | "selectedAt" | "queuedAt" | "playingAt" | "playedAt" | "removedAt" | "removedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["playlistTrack"]>
+export type PlaylistTrackOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "playlistId" | "proposedByParticipantId" | "rewardId" | "spotifyTrackId" | "spotifyUri" | "spotifyUrl" | "title" | "artistNames" | "spotifyArtistIds" | "coverUrl" | "durationMs" | "isExplicit" | "status" | "voteCount" | "voteSupporterCount" | "priorityLevel" | "sequenceGroupId" | "sequencePosition" | "isBannedForParty" | "selectedAt" | "queuedAt" | "playingAt" | "playedAt" | "removedAt" | "removedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["playlistTrack"]>
 export type PlaylistTrackInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playlist?: boolean | Prisma.PartyPlaylistDefaultArgs<ExtArgs>
   proposedBy?: boolean | Prisma.PlaylistTrack$proposedByArgs<ExtArgs>
@@ -3058,6 +3133,7 @@ export type $PlaylistTrackPayload<ExtArgs extends runtime.Types.Extensions.Inter
     isExplicit: boolean
     status: $Enums.TrackStatus
     voteCount: number
+    voteSupporterCount: number
     priorityLevel: number
     sequenceGroupId: string | null
     sequencePosition: number | null
@@ -3517,6 +3593,7 @@ export interface PlaylistTrackFieldRefs {
   readonly isExplicit: Prisma.FieldRef<"PlaylistTrack", 'Boolean'>
   readonly status: Prisma.FieldRef<"PlaylistTrack", 'TrackStatus'>
   readonly voteCount: Prisma.FieldRef<"PlaylistTrack", 'Int'>
+  readonly voteSupporterCount: Prisma.FieldRef<"PlaylistTrack", 'Int'>
   readonly priorityLevel: Prisma.FieldRef<"PlaylistTrack", 'Int'>
   readonly sequenceGroupId: Prisma.FieldRef<"PlaylistTrack", 'String'>
   readonly sequencePosition: Prisma.FieldRef<"PlaylistTrack", 'Int'>

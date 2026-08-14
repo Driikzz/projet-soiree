@@ -1,9 +1,12 @@
+import { calculateTrackPriorityPoints } from "./track-priority.js";
+
 export interface SelectionCandidate {
   id: string;
   status: "PENDING";
   proposedByParticipantId: string | null;
   spotifyArtistIds: readonly string[];
   voteCount: number;
+  voteSupporterCount: number;
   priorityLevel: number;
   createdAtMs: number;
 }
@@ -48,8 +51,17 @@ export function selectNextTrack(context: NextTrackContext): SelectedTrack | null
   const highestPriority = Math.max(...context.candidates.map((track) => track.priorityLevel));
   let pool = context.candidates.filter((track) => track.priorityLevel === highestPriority);
 
-  const highestVoteCount = Math.max(...pool.map((track) => track.voteCount));
-  pool = pool.filter((track) => track.voteCount === highestVoteCount);
+  const highestVotePriority = Math.max(
+    ...pool.map((track) => calculateTrackPriorityPoints(track.voteSupporterCount, track.voteCount)),
+  );
+  pool = pool.filter(
+    (track) =>
+      calculateTrackPriorityPoints(track.voteSupporterCount, track.voteCount) ===
+      highestVotePriority,
+  );
+
+  const highestSupporterCount = Math.max(...pool.map((track) => track.voteSupporterCount));
+  pool = pool.filter((track) => track.voteSupporterCount === highestSupporterCount);
 
   let fairnessApplied = false;
   const lastContributorId = context.recentTracks[0]?.proposedByParticipantId;
@@ -90,7 +102,7 @@ export function selectNextTrack(context: NextTrackContext): SelectedTrack | null
   const reason: SelectionReason =
     highestPriority > 0
       ? "PRIORITY"
-      : highestVoteCount > 0
+      : highestVotePriority > 0
         ? "VOTES"
         : fairnessApplied
           ? "FAIRNESS"

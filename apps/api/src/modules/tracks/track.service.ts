@@ -1,12 +1,19 @@
 import type {
   AddTrackRequest,
-  ParticipantTrackQuota,
   ParticipantPlaylistTrack,
+  ParticipantTrackQuota,
   PlaylistTrack,
   SpotifyTrackSnapshot,
+  TrackFlameBudget,
   TrackRejectionReason,
 } from "@songfest/shared";
-import { calculateRemainingQuota, findTrackRejectionReason } from "@songfest/shared";
+import {
+  calculateRemainingQuota,
+  calculateTrackPriorityScore,
+  findTrackRejectionReason,
+  MAX_FLAMES_PER_TRACK,
+  TRACK_FLAME_BUDGET,
+} from "@songfest/shared";
 
 import { AppError } from "../../errors/app-error.js";
 import { Prisma } from "../../generated/prisma/client.js";
@@ -30,6 +37,7 @@ export const playlistTrackSelect = {
   durationMs: true,
   isExplicit: true,
   voteCount: true,
+  voteSupporterCount: true,
   status: true,
   createdAt: true,
   proposedBy: {
@@ -65,10 +73,18 @@ export const toPlaylistTrack = (track: NonNullable<TrackRecord>): PlaylistTrack 
 
 const toParticipantPlaylistTrack = (
   track: NonNullable<TrackRecord>,
-  participantHasVoted: boolean,
+  participantFlameCount = 0,
+  activeParticipantCount = 0,
 ): ParticipantPlaylistTrack => ({
   ...toPlaylistTrack(track),
-  participantHasVoted,
+  participantHasVoted: participantFlameCount > 0,
+  participantFlameCount,
+  voteSupporterCount: track.voteSupporterCount,
+  voteScore: calculateTrackPriorityScore(
+    track.voteSupporterCount,
+    track.voteCount,
+    activeParticipantCount,
+  ),
 });
 
 const throwTrackRejection = (reason: TrackRejectionReason): never => {
@@ -105,6 +121,13 @@ const getParticipantPlaylist = async (participantId: string, playlistId: string)
         select: {
           adminId: true,
           status: true,
+          _count: {
+            select: {
+              participants: {
+                where: { isActive: true, isBlocked: false },
+              },
+            },
+          },
         },
       },
     },
@@ -131,7 +154,7 @@ const ensurePlaylistAcceptsTracks = (playlist: {
 };
 
 export const listPlaylistTracks = async (participantId: string, playlistId: string) => {
-  await getParticipantPlaylist(participantId, playlistId);
+  const playlist = await getParticipantPlaylist(participantId, playlistId);
   const [tracks, participantVotes] = await Promise.all([
     prisma.playlistTrack.findMany({
       where: {
@@ -147,12 +170,33 @@ export const listPlaylistTracks = async (participantId: string, playlistId: stri
         participantId,
         track: { playlistId },
       },
-      select: { trackId: true },
+      select: { trackId: true, weight: true, track: { select: { status: true } } },
     }),
   ]);
-  const votedTrackIds = new Set(participantVotes.map((vote) => vote.trackId));
+  const participantFlames = new Map(
+    participantVotes.map((vote) => [vote.trackId, vote.weight] as const),
+  );
+  const usedFlames = participantVotes.reduce(
+    (total, vote) => total + (vote.track.status === "PENDING" ? vote.weight : 0),
+    0,
+  );
+  const flameBudget: TrackFlameBudget = {
+    total: TRACK_FLAME_BUDGET,
+    used: usedFlames,
+    remaining: Math.max(0, TRACK_FLAME_BUDGET - usedFlames),
+    maxPerTrack: MAX_FLAMES_PER_TRACK,
+  };
 
-  return tracks.map((track) => toParticipantPlaylistTrack(track, votedTrackIds.has(track.id)));
+  return {
+    tracks: tracks.map((track) =>
+      toParticipantPlaylistTrack(
+        track,
+        track.status === "PENDING" ? (participantFlames.get(track.id) ?? 0) : 0,
+        playlist.party._count.participants,
+      ),
+    ),
+    flameBudget,
+  };
 };
 
 interface QuotaSnapshot {
@@ -445,7 +489,7 @@ const createTrackInTransaction = async (
   };
 
   return {
-    track: toParticipantPlaylistTrack(createdTrack, false),
+    track: toParticipantPlaylistTrack(createdTrack),
     quota: updatedQuota,
   };
 };

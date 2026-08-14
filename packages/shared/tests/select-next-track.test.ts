@@ -11,6 +11,7 @@ const candidate = (
   proposedByParticipantId: `participant-${id}`,
   spotifyArtistIds: [`artist-${id}`],
   voteCount: 0,
+  voteSupporterCount: 0,
   priorityLevel: 0,
   createdAtMs: 1_000,
   ...overrides,
@@ -64,6 +65,19 @@ describe("selectNextTrack", () => {
     });
 
     expect(selected?.track.id).toBe("two");
+  });
+
+  it("favors broad support over concentrated flames", () => {
+    const selected = selectNextTrack({
+      candidates: [
+        candidate("consensus", { voteCount: 3, voteSupporterCount: 3 }),
+        candidate("solo", { voteCount: 3, voteSupporterCount: 1 }),
+      ],
+      recentTracks: [],
+      lockedNextTrackId: null,
+    });
+
+    expect(selected?.track.id).toBe("consensus");
   });
 
   it("avoids the previous contributor when an equivalent candidate exists", () => {

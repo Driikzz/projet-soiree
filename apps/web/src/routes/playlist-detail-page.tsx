@@ -1,11 +1,4 @@
-import {
-  ArrowLeft,
-  ArrowSquareOut,
-  Heart,
-  LockKey,
-  MusicNotes,
-  UsersThree,
-} from "@phosphor-icons/react";
+import { ArrowLeft, ArrowSquareOut, LockKey, MusicNotes, UsersThree } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Navigate, useParams } from "react-router-dom";
 
@@ -13,6 +6,7 @@ import { LoadingPage } from "../components/loading-page";
 import { FormError } from "../components/form-error";
 import { PlaylistVisual } from "../components/playlist-visual";
 import { SpotifySearch } from "../components/spotify-search";
+import { FlameBudgetSummary, TrackFlameControl } from "../components/track-flame-control";
 import { TrackRewardPanel } from "../components/track-reward-panel";
 import { ApiError } from "../lib/api/client";
 import { getParticipantPlaylists } from "../lib/api/playlists";
@@ -58,13 +52,8 @@ export function PlaylistDetailPage() {
     refetchInterval: 10_000,
   });
   const trackVoteMutation = useMutation({
-    mutationFn: ({
-      trackId,
-      participantHasVoted,
-    }: {
-      trackId: string;
-      participantHasVoted: boolean;
-    }) => (participantHasVoted ? removeTrackVote(trackId) : addTrackVote(trackId)),
+    mutationFn: ({ trackId, action }: { trackId: string; action: "add" | "remove" }) =>
+      action === "add" ? addTrackVote(trackId) : removeTrackVote(trackId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] });
     },
@@ -111,6 +100,12 @@ export function PlaylistDetailPage() {
   const extraTrackQuota = playlist.extraTrackQuota ?? 0;
   const totalQuota = playlist.quotaPerParticipant + extraTrackQuota;
   const tracks = tracksQuery.data?.tracks ?? [];
+  const flameBudget = tracksQuery.data?.flameBudget ?? {
+    total: 5,
+    used: 0,
+    remaining: 5,
+    maxPerTrack: 3,
+  };
   const existingTrackIds = new Set(tracks.map((track) => track.spotifyTrackId));
 
   return (
@@ -150,6 +145,10 @@ export function PlaylistDetailPage() {
           {remainingQuota}/{totalQuota}
         </span>
       </section>
+
+      {playlist.isActive && playlist.trackVotesEnabled && (
+        <FlameBudgetSummary budget={flameBudget} />
+      )}
 
       {!playlist.isOpen ? (
         <div className="locked-playlist-note">
@@ -191,7 +190,7 @@ export function PlaylistDetailPage() {
         <section className="tracks-empty-state">
           <MusicNotes aria-hidden="true" weight="duotone" />
           <h2>Aucun morceau pour le moment.</h2>
-          <p>Les propositions apparaîtront ici avec leurs votes et leurs contributeurs.</p>
+          <p>Les propositions apparaîtront ici avec leur priorité et leurs contributeurs.</p>
           <span>
             <UsersThree aria-hidden="true" />
             {playlist.contributorCount} contributeur
@@ -231,32 +230,25 @@ export function PlaylistDetailPage() {
                 </div>
                 <div className="playlist-track-meta">
                   <span className="track-status">{trackStatusLabels[track.status]}</span>
-                  <button
-                    type="button"
-                    className={`track-vote-button${track.participantHasVoted ? " voted" : ""}`}
-                    aria-pressed={track.participantHasVoted}
-                    aria-label={`${
-                      track.participantHasVoted ? "Retirer ton vote pour" : "Voter pour"
-                    } ${track.title}`}
+                  <TrackFlameControl
+                    track={track}
+                    flameBudget={flameBudget}
                     disabled={
                       !playlist.isActive ||
                       !playlist.trackVotesEnabled ||
-                      track.status !== "PENDING" ||
-                      trackVoteMutation.isPending
+                      track.status !== "PENDING"
                     }
-                    onClick={() =>
+                    pending={trackVoteMutation.isPending}
+                    onAdd={() =>
                       trackVoteMutation.mutate({
                         trackId: track.id,
-                        participantHasVoted: track.participantHasVoted,
+                        action: "add",
                       })
                     }
-                  >
-                    <Heart
-                      aria-hidden="true"
-                      weight={track.participantHasVoted ? "fill" : "bold"}
-                    />
-                    {track.voteCount}
-                  </button>
+                    onRemove={() =>
+                      trackVoteMutation.mutate({ trackId: track.id, action: "remove" })
+                    }
+                  />
                   <a
                     href={track.spotifyUrl}
                     target="_blank"

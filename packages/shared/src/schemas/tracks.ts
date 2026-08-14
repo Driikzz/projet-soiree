@@ -36,12 +36,26 @@ export const playlistTrackSchema = spotifyTrackSnapshotSchema.extend({
 
 export const participantPlaylistTrackSchema = playlistTrackSchema.extend({
   participantHasVoted: z.boolean(),
+  participantFlameCount: z.number().int().min(0).max(3),
+  voteSupporterCount: z.number().int().nonnegative(),
+  voteScore: z.number().int().min(0).max(100),
+});
+
+export const trackFlameBudgetSchema = z.object({
+  total: z.number().int().positive(),
+  used: z.number().int().nonnegative(),
+  remaining: z.number().int().nonnegative(),
+  maxPerTrack: z.number().int().positive(),
 });
 
 export const trackVoteResultSchema = z.object({
   trackId: uuidSchema,
   voteCount: z.number().int().nonnegative(),
   participantHasVoted: z.boolean(),
+  participantFlameCount: z.number().int().min(0).max(3),
+  voteSupporterCount: z.number().int().nonnegative(),
+  voteScore: z.number().int().min(0).max(100),
+  flameBudget: trackFlameBudgetSchema,
 });
 
 export const participantTrackQuotaSchema = z.object({
@@ -59,5 +73,6 @@ export type SpotifyTrackSnapshot = z.infer<typeof spotifyTrackSnapshotSchema>;
 export type AddTrackRequest = z.infer<typeof addTrackRequestSchema>;
 export type PlaylistTrack = z.infer<typeof playlistTrackSchema>;
 export type ParticipantPlaylistTrack = z.infer<typeof participantPlaylistTrackSchema>;
+export type TrackFlameBudget = z.infer<typeof trackFlameBudgetSchema>;
 export type ParticipantTrackQuota = z.infer<typeof participantTrackQuotaSchema>;
 export type TrackVoteResult = z.infer<typeof trackVoteResultSchema>;

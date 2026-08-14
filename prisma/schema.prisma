@@ -205,6 +205,7 @@ model PlaylistTrack {
   isExplicit              Boolean         @default(false)
   status                  TrackStatus     @default(PENDING)
   voteCount               Int             @default(0)
+  voteSupporterCount      Int             @default(0)
   priorityLevel           Int             @default(0)
   sequenceGroupId         String?         @db.Uuid
   sequencePosition        Int?
@@ -237,6 +238,7 @@ model TrackVote {
   id            String        @id @default(uuid()) @db.Uuid
   trackId       String        @db.Uuid
   participantId String        @db.Uuid
+  weight        Int           @default(1)
   createdAt     DateTime      @default(now())
   track         PlaylistTrack @relation(fields: [trackId], references: [id], onDelete: Cascade)
   participant   Participant   @relation(fields: [participantId], references: [id], onDelete: Cascade)

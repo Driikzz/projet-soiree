@@ -2,6 +2,7 @@ import type {
   AddTrackRequest,
   ParticipantPlaylistTrack,
   ParticipantTrackQuota,
+  TrackFlameBudget,
   TrackVoteResult,
 } from "@songfest/shared";
 
@@ -9,6 +10,7 @@ import { apiRequest } from "./client";
 
 interface TrackListResponse {
   tracks: ParticipantPlaylistTrack[];
+  flameBudget: TrackFlameBudget;
 }
 
 interface AddTrackResponse {

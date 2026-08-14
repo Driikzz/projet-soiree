@@ -20,14 +20,25 @@ export type TrackVoteModel = runtime.Types.Result.DefaultSelection<Prisma.$Track
 
 export type AggregateTrackVote = {
   _count: TrackVoteCountAggregateOutputType | null
+  _avg: TrackVoteAvgAggregateOutputType | null
+  _sum: TrackVoteSumAggregateOutputType | null
   _min: TrackVoteMinAggregateOutputType | null
   _max: TrackVoteMaxAggregateOutputType | null
+}
+
+export type TrackVoteAvgAggregateOutputType = {
+  weight: number | null
+}
+
+export type TrackVoteSumAggregateOutputType = {
+  weight: number | null
 }
 
 export type TrackVoteMinAggregateOutputType = {
   id: string | null
   trackId: string | null
   participantId: string | null
+  weight: number | null
   createdAt: Date | null
 }
 
@@ -35,6 +46,7 @@ export type TrackVoteMaxAggregateOutputType = {
   id: string | null
   trackId: string | null
   participantId: string | null
+  weight: number | null
   createdAt: Date | null
 }
 
@@ -42,15 +54,25 @@ export type TrackVoteCountAggregateOutputType = {
   id: number
   trackId: number
   participantId: number
+  weight: number
   createdAt: number
   _all: number
 }
 
 
+export type TrackVoteAvgAggregateInputType = {
+  weight?: true
+}
+
+export type TrackVoteSumAggregateInputType = {
+  weight?: true
+}
+
 export type TrackVoteMinAggregateInputType = {
   id?: true
   trackId?: true
   participantId?: true
+  weight?: true
   createdAt?: true
 }
 
@@ -58,6 +80,7 @@ export type TrackVoteMaxAggregateInputType = {
   id?: true
   trackId?: true
   participantId?: true
+  weight?: true
   createdAt?: true
 }
 
@@ -65,6 +88,7 @@ export type TrackVoteCountAggregateInputType = {
   id?: true
   trackId?: true
   participantId?: true
+  weight?: true
   createdAt?: true
   _all?: true
 }
@@ -76,13 +100,13 @@ export type TrackVoteAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   where?: Prisma.TrackVoteWhereInput
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-   * 
+   *
    * Determine the order of TrackVotes to fetch.
    */
   orderBy?: Prisma.TrackVoteOrderByWithRelationInput | Prisma.TrackVoteOrderByWithRelationInput[]
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-   * 
+   *
    * Sets the start position
    */
   cursor?: Prisma.TrackVoteWhereUniqueInput
@@ -100,10 +124,22 @@ export type TrackVoteAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   skip?: number
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
+   *
    * Count returned TrackVotes
   **/
   _count?: true | TrackVoteCountAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to average
+  **/
+  _avg?: TrackVoteAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: TrackVoteSumAggregateInputType
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
@@ -137,6 +173,8 @@ export type TrackVoteGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: TrackVoteCountAggregateInputType | true
+  _avg?: TrackVoteAvgAggregateInputType
+  _sum?: TrackVoteSumAggregateInputType
   _min?: TrackVoteMinAggregateInputType
   _max?: TrackVoteMaxAggregateInputType
 }
@@ -145,8 +183,11 @@ export type TrackVoteGroupByOutputType = {
   id: string
   trackId: string
   participantId: string
+  weight: number
   createdAt: Date
   _count: TrackVoteCountAggregateOutputType | null
+  _avg: TrackVoteAvgAggregateOutputType | null
+  _sum: TrackVoteSumAggregateOutputType | null
   _min: TrackVoteMinAggregateOutputType | null
   _max: TrackVoteMaxAggregateOutputType | null
 }
@@ -173,6 +214,7 @@ export type TrackVoteWhereInput = {
   id?: Prisma.UuidFilter<"TrackVote"> | string
   trackId?: Prisma.UuidFilter<"TrackVote"> | string
   participantId?: Prisma.UuidFilter<"TrackVote"> | string
+  weight?: Prisma.IntFilter<"TrackVote"> | number
   createdAt?: Prisma.DateTimeFilter<"TrackVote"> | Date | string
   track?: Prisma.XOR<Prisma.PlaylistTrackScalarRelationFilter, Prisma.PlaylistTrackWhereInput>
   participant?: Prisma.XOR<Prisma.ParticipantScalarRelationFilter, Prisma.ParticipantWhereInput>
@@ -182,6 +224,7 @@ export type TrackVoteOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   track?: Prisma.PlaylistTrackOrderByWithRelationInput
   participant?: Prisma.ParticipantOrderByWithRelationInput
@@ -195,6 +238,7 @@ export type TrackVoteWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TrackVoteWhereInput | Prisma.TrackVoteWhereInput[]
   trackId?: Prisma.UuidFilter<"TrackVote"> | string
   participantId?: Prisma.UuidFilter<"TrackVote"> | string
+  weight?: Prisma.IntFilter<"TrackVote"> | number
   createdAt?: Prisma.DateTimeFilter<"TrackVote"> | Date | string
   track?: Prisma.XOR<Prisma.PlaylistTrackScalarRelationFilter, Prisma.PlaylistTrackWhereInput>
   participant?: Prisma.XOR<Prisma.ParticipantScalarRelationFilter, Prisma.ParticipantWhereInput>
@@ -204,10 +248,13 @@ export type TrackVoteOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TrackVoteCountOrderByAggregateInput
+  _avg?: Prisma.TrackVoteAvgOrderByAggregateInput
   _max?: Prisma.TrackVoteMaxOrderByAggregateInput
   _min?: Prisma.TrackVoteMinOrderByAggregateInput
+  _sum?: Prisma.TrackVoteSumOrderByAggregateInput
 }
 
 export type TrackVoteScalarWhereWithAggregatesInput = {
@@ -217,11 +264,13 @@ export type TrackVoteScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"TrackVote"> | string
   trackId?: Prisma.UuidWithAggregatesFilter<"TrackVote"> | string
   participantId?: Prisma.UuidWithAggregatesFilter<"TrackVote"> | string
+  weight?: Prisma.IntWithAggregatesFilter<"TrackVote"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TrackVote"> | Date | string
 }
 
 export type TrackVoteCreateInput = {
   id?: string
+  weight?: number
   createdAt?: Date | string
   track: Prisma.PlaylistTrackCreateNestedOneWithoutVotesInput
   participant: Prisma.ParticipantCreateNestedOneWithoutTrackVotesInput
@@ -231,11 +280,13 @@ export type TrackVoteUncheckedCreateInput = {
   id?: string
   trackId: string
   participantId: string
+  weight?: number
   createdAt?: Date | string
 }
 
 export type TrackVoteUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   track?: Prisma.PlaylistTrackUpdateOneRequiredWithoutVotesNestedInput
   participant?: Prisma.ParticipantUpdateOneRequiredWithoutTrackVotesNestedInput
@@ -245,6 +296,7 @@ export type TrackVoteUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   trackId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -252,11 +304,13 @@ export type TrackVoteCreateManyInput = {
   id?: string
   trackId: string
   participantId: string
+  weight?: number
   createdAt?: Date | string
 }
 
 export type TrackVoteUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -264,6 +318,7 @@ export type TrackVoteUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   trackId?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -286,13 +341,19 @@ export type TrackVoteCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type TrackVoteAvgOrderByAggregateInput = {
+  weight?: Prisma.SortOrder
 }
 
 export type TrackVoteMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -300,7 +361,12 @@ export type TrackVoteMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   trackId?: Prisma.SortOrder
   participantId?: Prisma.SortOrder
+  weight?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type TrackVoteSumOrderByAggregateInput = {
+  weight?: Prisma.SortOrder
 }
 
 export type TrackVoteCreateNestedManyWithoutParticipantInput = {
@@ -389,6 +455,7 @@ export type TrackVoteUncheckedUpdateManyWithoutTrackNestedInput = {
 
 export type TrackVoteCreateWithoutParticipantInput = {
   id?: string
+  weight?: number
   createdAt?: Date | string
   track: Prisma.PlaylistTrackCreateNestedOneWithoutVotesInput
 }
@@ -396,6 +463,7 @@ export type TrackVoteCreateWithoutParticipantInput = {
 export type TrackVoteUncheckedCreateWithoutParticipantInput = {
   id?: string
   trackId: string
+  weight?: number
   createdAt?: Date | string
 }
 
@@ -432,11 +500,13 @@ export type TrackVoteScalarWhereInput = {
   id?: Prisma.UuidFilter<"TrackVote"> | string
   trackId?: Prisma.UuidFilter<"TrackVote"> | string
   participantId?: Prisma.UuidFilter<"TrackVote"> | string
+  weight?: Prisma.IntFilter<"TrackVote"> | number
   createdAt?: Prisma.DateTimeFilter<"TrackVote"> | Date | string
 }
 
 export type TrackVoteCreateWithoutTrackInput = {
   id?: string
+  weight?: number
   createdAt?: Date | string
   participant: Prisma.ParticipantCreateNestedOneWithoutTrackVotesInput
 }
@@ -444,6 +514,7 @@ export type TrackVoteCreateWithoutTrackInput = {
 export type TrackVoteUncheckedCreateWithoutTrackInput = {
   id?: string
   participantId: string
+  weight?: number
   createdAt?: Date | string
 }
 
@@ -476,11 +547,13 @@ export type TrackVoteUpdateManyWithWhereWithoutTrackInput = {
 export type TrackVoteCreateManyParticipantInput = {
   id?: string
   trackId: string
+  weight?: number
   createdAt?: Date | string
 }
 
 export type TrackVoteUpdateWithoutParticipantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   track?: Prisma.PlaylistTrackUpdateOneRequiredWithoutVotesNestedInput
 }
@@ -488,23 +561,27 @@ export type TrackVoteUpdateWithoutParticipantInput = {
 export type TrackVoteUncheckedUpdateWithoutParticipantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   trackId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrackVoteUncheckedUpdateManyWithoutParticipantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   trackId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrackVoteCreateManyTrackInput = {
   id?: string
   participantId: string
+  weight?: number
   createdAt?: Date | string
 }
 
 export type TrackVoteUpdateWithoutTrackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   participant?: Prisma.ParticipantUpdateOneRequiredWithoutTrackVotesNestedInput
 }
@@ -512,12 +589,14 @@ export type TrackVoteUpdateWithoutTrackInput = {
 export type TrackVoteUncheckedUpdateWithoutTrackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TrackVoteUncheckedUpdateManyWithoutTrackInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   participantId?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -527,6 +606,7 @@ export type TrackVoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   trackId?: boolean
   participantId?: boolean
+  weight?: boolean
   createdAt?: boolean
   track?: boolean | Prisma.PlaylistTrackDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
@@ -536,6 +616,7 @@ export type TrackVoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   trackId?: boolean
   participantId?: boolean
+  weight?: boolean
   createdAt?: boolean
   track?: boolean | Prisma.PlaylistTrackDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
@@ -545,6 +626,7 @@ export type TrackVoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   trackId?: boolean
   participantId?: boolean
+  weight?: boolean
   createdAt?: boolean
   track?: boolean | Prisma.PlaylistTrackDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
@@ -554,10 +636,11 @@ export type TrackVoteSelectScalar = {
   id?: boolean
   trackId?: boolean
   participantId?: boolean
+  weight?: boolean
   createdAt?: boolean
 }
 
-export type TrackVoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "trackId" | "participantId" | "createdAt", ExtArgs["result"]["trackVote"]>
+export type TrackVoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "trackId" | "participantId" | "weight" | "createdAt", ExtArgs["result"]["trackVote"]>
 export type TrackVoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   track?: boolean | Prisma.PlaylistTrackDefaultArgs<ExtArgs>
   participant?: boolean | Prisma.ParticipantDefaultArgs<ExtArgs>
@@ -581,6 +664,7 @@ export type $TrackVotePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     trackId: string
     participantId: string
+    weight: number
     createdAt: Date
   }, ExtArgs["result"]["trackVote"]>
   composites: {}
@@ -1010,6 +1094,7 @@ export interface TrackVoteFieldRefs {
   readonly id: Prisma.FieldRef<"TrackVote", 'String'>
   readonly trackId: Prisma.FieldRef<"TrackVote", 'String'>
   readonly participantId: Prisma.FieldRef<"TrackVote", 'String'>
+  readonly weight: Prisma.FieldRef<"TrackVote", 'Int'>
   readonly createdAt: Prisma.FieldRef<"TrackVote", 'DateTime'>
 }
     

@@ -225,12 +225,39 @@ describe("PostgreSQL party journey", () => {
     await voteRequest()
       .expect(201)
       .expect(({ body }) => {
-        expect(body.vote).toMatchObject({ voteCount: 1, participantHasVoted: true });
+        expect(body.vote).toMatchObject({
+          voteCount: 1,
+          participantHasVoted: true,
+          participantFlameCount: 1,
+          voteScore: 80,
+          flameBudget: { remaining: 4 },
+        });
       });
     await voteRequest()
       .expect(201)
       .expect(({ body }) => {
-        expect(body.vote).toMatchObject({ voteCount: 1, participantHasVoted: true });
+        expect(body.vote).toMatchObject({
+          voteCount: 2,
+          participantHasVoted: true,
+          participantFlameCount: 2,
+          voteScore: 90,
+          flameBudget: { remaining: 3 },
+        });
+      });
+    await voteRequest()
+      .expect(201)
+      .expect(({ body }) => {
+        expect(body.vote).toMatchObject({
+          voteCount: 3,
+          participantFlameCount: 3,
+          voteScore: 100,
+          flameBudget: { remaining: 2 },
+        });
+      });
+    await voteRequest()
+      .expect(409)
+      .expect(({ body }) => {
+        expect(body.error.code).toBe("TRACK_FLAME_LIMIT_REACHED");
       });
 
     expect(
@@ -238,6 +265,17 @@ describe("PostgreSQL party journey", () => {
         where: { trackId: track.id, participantId: participantSession.participant.id },
       }),
     ).toBe(1);
+    expect(
+      await prisma.trackVote.findUnique({
+        where: {
+          trackId_participantId: {
+            trackId: track.id,
+            participantId: participantSession.participant.id,
+          },
+        },
+        select: { weight: true },
+      }),
+    ).toEqual({ weight: 3 });
 
     const flashTrack = await prisma.playlistTrack.create({
       data: {

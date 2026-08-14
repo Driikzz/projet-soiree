@@ -23,6 +23,7 @@ import {
   requireTrustedOrigin,
 } from "../auth/auth.middleware.js";
 import { clearSessionCookies, createSession } from "../auth/session.service.js";
+import { clearParticipantTrackVotes } from "../votes/track-vote.service.js";
 import {
   createParty,
   getAdminParty,
@@ -121,16 +122,17 @@ export const createParticipantRouter = () => {
     requireParticipantCsrf,
     async (request, response) => {
       const auth = request.participantAuth!;
-      await prisma.$transaction([
-        prisma.session.update({
+      await prisma.$transaction(async (transaction) => {
+        await transaction.session.update({
           where: { id: auth.sessionId },
           data: { revokedAt: new Date() },
-        }),
-        prisma.participant.update({
+        });
+        await transaction.participant.update({
           where: { id: auth.participant.id },
           data: { isActive: false, lastSeenAt: new Date() },
-        }),
-      ]);
+        });
+        await clearParticipantTrackVotes(transaction, auth.participant.id);
+      });
       clearSessionCookies(response, "PARTICIPANT");
       response.status(204).end();
       void publishParticipantLeft(auth.participant.partyId, auth.participant.id);

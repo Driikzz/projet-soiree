@@ -385,7 +385,7 @@ export function AdminDashboardPage() {
                 <div>
                   <strong>{track.title}</strong>
                   <span>
-                    {track.artistNames.join(", ")} · {track.playlistName} · {track.voteCount} vote
+                    {track.artistNames.join(", ")} · {track.playlistName} · {track.voteCount} flamme
                     {track.voteCount === 1 ? "" : "s"}
                   </span>
                 </div>

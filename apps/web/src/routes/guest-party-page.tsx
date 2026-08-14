@@ -1,7 +1,7 @@
 import {
-  ArrowFatUp,
   CheckCircle,
   Clock,
+  Fire,
   ListHeart,
   MusicNotes,
   Plus,
@@ -162,9 +162,7 @@ export function GuestPartyPage() {
           <p className="eyebrow">{session.party.name}</p>
           <h1>Salut {session.participant.nickname}, à toi de jouer.</h1>
         </div>
-        <p>
-          Propose des sons, vote pour les prochains titres et aide le groupe à choisir l’ambiance.
-        </p>
+        <p>Propose des sons, distribue tes flammes et aide le groupe à choisir l’ambiance.</p>
       </section>
 
       {showGuide && (
@@ -197,8 +195,8 @@ export function GuestPartyPage() {
             <li>
               <span>2</span>
               <div>
-                <strong>Vote</strong>
-                <small>Fais remonter les morceaux que tu veux entendre.</small>
+                <strong>Priorise</strong>
+                <small>Distribue tes 5 flammes sur les morceaux que tu veux entendre.</small>
               </div>
             </li>
             <li>
@@ -254,8 +252,8 @@ export function GuestPartyPage() {
             </Link>
           )}
           <a className="guest-secondary-action" href="#guest-track-votes">
-            <ArrowFatUp aria-hidden="true" />
-            Voter pour les sons
+            <Fire aria-hidden="true" />
+            Distribuer mes flammes
           </a>
           <a className="guest-secondary-action" href="#guest-playlists-title">
             <ListHeart aria-hidden="true" />
@@ -282,6 +280,14 @@ export function GuestPartyPage() {
           playlistId={activePlaylist.id}
           playlistName={activePlaylist.name}
           tracks={activeTracks}
+          flameBudget={
+            activeTracksQuery.data?.flameBudget ?? {
+              total: 5,
+              used: 0,
+              remaining: 5,
+              maxPerTrack: 3,
+            }
+          }
           votesEnabled={activePlaylist.trackVotesEnabled}
         />
       )}
@@ -380,8 +386,8 @@ export function GuestPartyPage() {
           </Link>
         )}
         <a href="#guest-track-votes">
-          <ArrowFatUp aria-hidden="true" />
-          Voter
+          <Fire aria-hidden="true" />
+          Flammes
         </a>
         <a href="#guest-playlists-title">
           <Sparkle aria-hidden="true" />

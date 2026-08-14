@@ -1,10 +1,11 @@
-import { ArrowFatUp, ArrowRight, MusicNotes } from "@phosphor-icons/react";
+import { ArrowRight, MusicNotes } from "@phosphor-icons/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
-import type { ParticipantPlaylistTrack } from "@songfest/shared";
+import type { ParticipantPlaylistTrack, TrackFlameBudget } from "@songfest/shared";
 
 import { FormError } from "./form-error";
+import { FlameBudgetSummary, TrackFlameControl } from "./track-flame-control";
 import { addTrackVote, removeTrackVote } from "../lib/api/tracks";
 
 interface ActiveTrackPreviewProps {
@@ -12,6 +13,7 @@ interface ActiveTrackPreviewProps {
   playlistId: string;
   playlistName: string;
   tracks: ParticipantPlaylistTrack[];
+  flameBudget: TrackFlameBudget;
   votesEnabled: boolean;
 }
 
@@ -20,12 +22,13 @@ export function ActiveTrackPreview({
   playlistId,
   playlistName,
   tracks,
+  flameBudget,
   votesEnabled,
 }: ActiveTrackPreviewProps) {
   const queryClient = useQueryClient();
   const voteMutation = useMutation({
-    mutationFn: (track: ParticipantPlaylistTrack) =>
-      track.participantHasVoted ? removeTrackVote(track.id) : addTrackVote(track.id),
+    mutationFn: ({ trackId, action }: { trackId: string; action: "add" | "remove" }) =>
+      action === "add" ? addTrackVote(trackId) : removeTrackVote(trackId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] });
     },
@@ -34,6 +37,8 @@ export function ActiveTrackPreview({
     .filter((track) => track.status === "PENDING")
     .sort(
       (left, right) =>
+        right.voteScore - left.voteScore ||
+        right.voteSupporterCount - left.voteSupporterCount ||
         right.voteCount - left.voteCount ||
         new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
     )
@@ -47,9 +52,9 @@ export function ActiveTrackPreview({
     >
       <div className="section-heading action-section-heading">
         <div>
-          <p className="eyebrow">À toi de voter</p>
+          <p className="eyebrow">À toi de distribuer</p>
           <h2 id="track-votes-title">Les prochains sons de {playlistName}</h2>
-          <p>Les votes font remonter les morceaux tant qu’ils ne sont pas réservés.</p>
+          <p>Place tes flammes sur les morceaux que tu veux vraiment entendre.</p>
         </div>
         <Link className="text-link" to={`/party/${partyId}/playlists/${playlistId}`}>
           Tout voir
@@ -60,6 +65,7 @@ export function ActiveTrackPreview({
       <FormError
         message={voteMutation.error instanceof Error ? voteMutation.error.message : undefined}
       />
+      {votesEnabled && <FlameBudgetSummary budget={flameBudget} />}
       {candidates.length === 0 ? (
         <div className="guest-action-empty">
           <MusicNotes aria-hidden="true" />
@@ -88,24 +94,15 @@ export function ActiveTrackPreview({
                 <strong>{track.title}</strong>
                 <span>{track.artistNames.join(", ")}</span>
               </div>
-              <button
-                type="button"
-                className={`track-vote-button compact-track-vote${
-                  track.participantHasVoted ? " voted" : ""
-                }`}
-                aria-label={`${
-                  track.participantHasVoted ? "Retirer le vote pour" : "Voter pour"
-                } ${track.title}`}
-                aria-pressed={track.participantHasVoted}
-                disabled={!votesEnabled || voteMutation.isPending}
-                onClick={() => voteMutation.mutate(track)}
-              >
-                <ArrowFatUp
-                  aria-hidden="true"
-                  weight={track.participantHasVoted ? "fill" : "bold"}
-                />
-                {track.voteCount}
-              </button>
+              <TrackFlameControl
+                track={track}
+                flameBudget={flameBudget}
+                compact
+                disabled={!votesEnabled}
+                pending={voteMutation.isPending}
+                onAdd={() => voteMutation.mutate({ trackId: track.id, action: "add" })}
+                onRemove={() => voteMutation.mutate({ trackId: track.id, action: "remove" })}
+              />
             </article>
           ))}
         </div>

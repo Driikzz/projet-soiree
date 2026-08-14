@@ -19,8 +19,8 @@ export const createTrackRouter = () => {
 
   router.get("/playlists/:playlistId/tracks", requireParticipant, async (request, response) => {
     const playlistId = uuidSchema.parse(request.params.playlistId);
-    const tracks = await listPlaylistTracks(request.participantAuth!.participant.id, playlistId);
-    response.json({ tracks });
+    const result = await listPlaylistTracks(request.participantAuth!.participant.id, playlistId);
+    response.json(result);
   });
 
   router.post(

@@ -77,6 +77,9 @@ describe("track schemas", () => {
       participantPlaylistTrackSchema.safeParse({
         ...baseTrack,
         participantHasVoted: true,
+        participantFlameCount: 1,
+        voteSupporterCount: 1,
+        voteScore: 80,
       }).success,
     ).toBe(true);
     expect(
@@ -84,6 +87,15 @@ describe("track schemas", () => {
         trackId: baseTrack.id,
         voteCount: 1,
         participantHasVoted: true,
+        participantFlameCount: 1,
+        voteSupporterCount: 1,
+        voteScore: 80,
+        flameBudget: {
+          total: 5,
+          used: 1,
+          remaining: 4,
+          maxPerTrack: 3,
+        },
       }).success,
     ).toBe(true);
   });

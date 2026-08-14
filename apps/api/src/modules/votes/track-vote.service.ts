@@ -1,4 +1,10 @@
-import type { TrackVoteResult } from "@songfest/shared";
+import {
+  calculateTrackPriorityScore,
+  MAX_FLAMES_PER_TRACK,
+  TRACK_FLAME_BUDGET,
+  type TrackFlameBudget,
+  type TrackVoteResult,
+} from "@songfest/shared";
 
 import { AppError } from "../../errors/app-error.js";
 import type { Prisma } from "../../generated/prisma/client.js";
@@ -36,6 +42,13 @@ const getVotableTrack = async (
               id: true,
               status: true,
               activePlaylistId: true,
+              _count: {
+                select: {
+                  participants: {
+                    where: { isActive: true, isBlocked: false },
+                  },
+                },
+              },
             },
           },
         },
@@ -70,16 +83,62 @@ const getVotableTrack = async (
   return track;
 };
 
-const synchronizeTrackVoteCount = async (
+const getFlameBudget = async (
+  transaction: Prisma.TransactionClient,
+  participantId: string,
+  playlistId: string,
+): Promise<TrackFlameBudget> => {
+  const aggregate = await transaction.trackVote.aggregate({
+    where: {
+      participantId,
+      track: { playlistId, status: "PENDING" },
+    },
+    _sum: { weight: true },
+  });
+  const used = aggregate._sum.weight ?? 0;
+
+  return {
+    total: TRACK_FLAME_BUDGET,
+    used,
+    remaining: Math.max(0, TRACK_FLAME_BUDGET - used),
+    maxPerTrack: MAX_FLAMES_PER_TRACK,
+  };
+};
+
+const synchronizeTrackVoteMetrics = async (
   transaction: Prisma.TransactionClient,
   trackId: string,
 ) => {
-  const voteCount = await transaction.trackVote.count({ where: { trackId } });
+  const aggregate = await transaction.trackVote.aggregate({
+    where: { trackId },
+    _sum: { weight: true },
+    _count: { id: true },
+  });
+  const voteCount = aggregate._sum.weight ?? 0;
+  const voteSupporterCount = aggregate._count.id;
   await transaction.playlistTrack.update({
     where: { id: trackId },
-    data: { voteCount },
+    data: { voteCount, voteSupporterCount },
   });
-  return voteCount;
+  return { voteCount, voteSupporterCount };
+};
+
+export const clearParticipantTrackVotes = async (
+  transaction: Prisma.TransactionClient,
+  participantId: string,
+) => {
+  const votes = await transaction.trackVote.findMany({
+    where: { participantId },
+    select: { trackId: true },
+  });
+  if (votes.length === 0) {
+    return;
+  }
+
+  await transaction.trackVote.deleteMany({ where: { participantId } });
+  for (const vote of votes) {
+    await synchronizeTrackVoteMetrics(transaction, vote.trackId);
+  }
 };
 
 const recordVoteMutation = async (
@@ -88,7 +147,8 @@ const recordVoteMutation = async (
     partyId: string;
     participantId: string;
     trackId: string;
-    action: "track.vote-added" | "track.vote-removed";
+    action: "track.flame-added" | "track.flame-removed";
+    participantFlameCount: number;
   },
 ) => {
   await transaction.party.update({
@@ -102,6 +162,7 @@ const recordVoteMutation = async (
           action: input.action,
           entityType: "PlaylistTrack",
           entityId: input.trackId,
+          metadata: { participantFlameCount: input.participantFlameCount },
         },
       },
     },
@@ -121,28 +182,62 @@ export const addTrackVote = async (
           participantId,
         },
       },
-      select: { id: true },
+      select: { id: true, weight: true },
     });
+    const flameBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
 
+    if (existingVote?.weight === MAX_FLAMES_PER_TRACK) {
+      throw new AppError(
+        409,
+        "TRACK_FLAME_LIMIT_REACHED",
+        `Tu peux placer au maximum ${MAX_FLAMES_PER_TRACK} flammes sur un morceau.`,
+      );
+    }
+    if (flameBudget.remaining === 0) {
+      throw new AppError(
+        409,
+        "TRACK_FLAME_BUDGET_EXHAUSTED",
+        "Tu as distribué toutes tes flammes. Retire-en une pour la déplacer.",
+      );
+    }
+
+    const participantFlameCount = (existingVote?.weight ?? 0) + 1;
     if (existingVote === null) {
       await transaction.trackVote.create({
         data: {
           trackId,
           participantId,
+          weight: participantFlameCount,
         },
       });
-      await recordVoteMutation(transaction, {
-        partyId: track.playlist.party.id,
-        participantId,
-        trackId,
-        action: "track.vote-added",
+    } else {
+      await transaction.trackVote.update({
+        where: { id: existingVote.id },
+        data: { weight: participantFlameCount },
       });
     }
+    await recordVoteMutation(transaction, {
+      partyId: track.playlist.party.id,
+      participantId,
+      trackId,
+      action: "track.flame-added",
+      participantFlameCount,
+    });
+
+    const metrics = await synchronizeTrackVoteMetrics(transaction, trackId);
+    const updatedBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
 
     return {
       trackId,
-      voteCount: await synchronizeTrackVoteCount(transaction, trackId),
+      ...metrics,
       participantHasVoted: true,
+      participantFlameCount,
+      voteScore: calculateTrackPriorityScore(
+        metrics.voteSupporterCount,
+        metrics.voteCount,
+        track.playlist.party._count.participants,
+      ),
+      flameBudget: updatedBudget,
     };
   });
 
@@ -152,25 +247,43 @@ export const removeTrackVote = async (
 ): Promise<TrackVoteResult> =>
   runSerializableTransaction(async (transaction) => {
     const track = await getVotableTrack(transaction, participantId, trackId);
-    const deleted = await transaction.trackVote.deleteMany({
-      where: {
-        trackId,
-        participantId,
-      },
+    const existingVote = await transaction.trackVote.findUnique({
+      where: { trackId_participantId: { trackId, participantId } },
+      select: { id: true, weight: true },
     });
 
-    if (deleted.count > 0) {
+    const participantFlameCount = Math.max(0, (existingVote?.weight ?? 0) - 1);
+    if (existingVote !== null) {
+      if (participantFlameCount === 0) {
+        await transaction.trackVote.delete({ where: { id: existingVote.id } });
+      } else {
+        await transaction.trackVote.update({
+          where: { id: existingVote.id },
+          data: { weight: participantFlameCount },
+        });
+      }
       await recordVoteMutation(transaction, {
         partyId: track.playlist.party.id,
         participantId,
         trackId,
-        action: "track.vote-removed",
+        action: "track.flame-removed",
+        participantFlameCount,
       });
     }
 
+    const metrics = await synchronizeTrackVoteMetrics(transaction, trackId);
+    const flameBudget = await getFlameBudget(transaction, participantId, track.playlist.id);
+
     return {
       trackId,
-      voteCount: await synchronizeTrackVoteCount(transaction, trackId),
-      participantHasVoted: false,
+      ...metrics,
+      participantHasVoted: participantFlameCount > 0,
+      participantFlameCount,
+      voteScore: calculateTrackPriorityScore(
+        metrics.voteSupporterCount,
+        metrics.voteCount,
+        track.playlist.party._count.participants,
+      ),
+      flameBudget,
     };
   });

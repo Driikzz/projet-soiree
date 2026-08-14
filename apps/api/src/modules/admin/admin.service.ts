@@ -12,6 +12,7 @@ import { playlistTrackSelect, toPlaylistTrack } from "../tracks/track.service.js
 import { toReward } from "../rewards/reward.service.js";
 import { getAdminFlashState } from "../flash/flash.service.js";
 import { closeParty } from "../parties/party-lifecycle.service.js";
+import { clearParticipantTrackVotes } from "../votes/track-vote.service.js";
 
 const toPartySettings = (settings: {
   defaultTrackQuota: number;
@@ -145,6 +146,7 @@ export const getAdminDashboard = async (
             proposedByParticipantId: true,
             spotifyArtistIds: true,
             voteCount: true,
+            voteSupporterCount: true,
             priorityLevel: true,
             createdAt: true,
           },
@@ -171,6 +173,7 @@ export const getAdminDashboard = async (
       proposedByParticipantId: track.proposedByParticipantId,
       spotifyArtistIds: track.spotifyArtistIds,
       voteCount: track.voteCount,
+      voteSupporterCount: track.voteSupporterCount,
       priorityLevel: track.priorityLevel,
       createdAtMs: track.createdAt.getTime(),
     })),
@@ -300,8 +303,8 @@ export const blockParticipant = async (adminId: string, partyId: string, partici
   }
 
   const now = new Date();
-  await prisma.$transaction([
-    prisma.participant.update({
+  await prisma.$transaction(async (transaction) => {
+    await transaction.participant.update({
       where: { id: participantId },
       data: {
         isBlocked: true,
@@ -309,15 +312,16 @@ export const blockParticipant = async (adminId: string, partyId: string, partici
         blockedAt: now,
         lastSeenAt: now,
       },
-    }),
-    prisma.session.updateMany({
+    });
+    await transaction.session.updateMany({
       where: {
         participantId,
         revokedAt: null,
       },
       data: { revokedAt: now },
-    }),
-    prisma.party.update({
+    });
+    await clearParticipantTrackVotes(transaction, participantId);
+    await transaction.party.update({
       where: { id: partyId },
       data: {
         stateVersion: { increment: 1 },
@@ -331,8 +335,8 @@ export const blockParticipant = async (adminId: string, partyId: string, partici
           },
         },
       },
-    }),
-  ]);
+    });
+  });
 
   return { id: participantId, isBlocked: true };
 };

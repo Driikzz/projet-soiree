@@ -1692,6 +1692,7 @@ export const PlaylistTrackScalarFieldEnum = {
   isExplicit: 'isExplicit',
   status: 'status',
   voteCount: 'voteCount',
+  voteSupporterCount: 'voteSupporterCount',
   priorityLevel: 'priorityLevel',
   sequenceGroupId: 'sequenceGroupId',
   sequencePosition: 'sequencePosition',
@@ -1713,6 +1714,7 @@ export const TrackVoteScalarFieldEnum = {
   id: 'id',
   trackId: 'trackId',
   participantId: 'participantId',
+  weight: 'weight',
   createdAt: 'createdAt'
 } as const
 
