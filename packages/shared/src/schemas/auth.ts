@@ -3,14 +3,33 @@ import { z } from "zod";
 import { uuidSchema } from "./common.js";
 
 export const userLoginRequestSchema = z.object({
-  identifier: z.string().trim().min(3).max(254),
-  password: z.string().min(12).max(256),
+  identifier: z
+    .string()
+    .trim()
+    .min(3, "Saisis ton e-mail ou ton identifiant.")
+    .max(254, "Cet identifiant est trop long."),
+  password: z
+    .string()
+    .min(12, "Le mot de passe doit contenir au moins 12 caractères.")
+    .max(256, "Le mot de passe est trop long."),
 });
 
 export const userRegistrationRequestSchema = z.object({
-  displayName: z.string().trim().min(2).max(80),
-  email: z.string().trim().toLowerCase().email().max(254),
-  password: z.string().min(12).max(256),
+  displayName: z
+    .string()
+    .trim()
+    .min(2, "Le nom affiché doit contenir au moins 2 caractères.")
+    .max(80, "Le nom affiché est trop long."),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email("Saisis une adresse e-mail valide.")
+    .max(254, "L’adresse e-mail est trop longue."),
+  password: z
+    .string()
+    .min(12, "Le mot de passe doit contenir au moins 12 caractères.")
+    .max(256, "Le mot de passe est trop long."),
 });
 
 export const userSessionSchema = z.object({

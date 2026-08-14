@@ -348,6 +348,12 @@ h1 {
   color: #758681;
 }
 
+.field-hint {
+  color: #8fa09b;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
 .field input[aria-invalid="true"] {
   border-color: #fa806f;
 }

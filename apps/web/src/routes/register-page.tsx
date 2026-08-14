@@ -11,7 +11,9 @@ import { FormError } from "../components/form-error";
 import { registerUser } from "../lib/api/auth";
 
 const registrationFormSchema = userRegistrationRequestSchema
-  .extend({ passwordConfirmation: z.string().min(1) })
+  .extend({
+    passwordConfirmation: z.string().min(1, "Confirme ton mot de passe."),
+  })
   .refine((input) => input.password === input.passwordConfirmation, {
     path: ["passwordConfirmation"],
     message: "Les mots de passe ne correspondent pas.",
@@ -67,7 +69,17 @@ export function RegisterPage() {
           </label>
           <label className="field">
             <span>Mot de passe</span>
-            <input type="password" autoComplete="new-password" {...form.register("password")} />
+            <input
+              type="password"
+              autoComplete="new-password"
+              minLength={12}
+              maxLength={256}
+              aria-describedby="password-help"
+              {...form.register("password")}
+            />
+            <small className="field-hint" id="password-help">
+              12 caractères minimum.
+            </small>
             <FormError message={form.formState.errors.password?.message} />
           </label>
           <label className="field">
@@ -75,6 +87,8 @@ export function RegisterPage() {
             <input
               type="password"
               autoComplete="new-password"
+              minLength={12}
+              maxLength={256}
               {...form.register("passwordConfirmation")}
             />
             <FormError message={form.formState.errors.passwordConfirmation?.message} />

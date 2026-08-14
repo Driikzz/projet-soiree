@@ -14,13 +14,18 @@ describe("user account schemas", () => {
   });
 
   it("rejects invalid emails and short passwords", () => {
-    expect(
-      userRegistrationRequestSchema.safeParse({
-        displayName: "Léa",
-        email: "pas-un-email",
-        password: "court",
-      }).success,
-    ).toBe(false);
+    const result = userRegistrationRequestSchema.safeParse({
+      displayName: "Léa",
+      email: "pas-un-email",
+      password: "court",
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.password).toContain(
+        "Le mot de passe doit contenir au moins 12 caractères.",
+      );
+    }
   });
 
   it("keeps legacy usernames valid as login identifiers", () => {
