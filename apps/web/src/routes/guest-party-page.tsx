@@ -7,7 +7,6 @@ import {
   Plus,
   SignOut,
   UsersThree,
-  X,
 } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -17,8 +16,8 @@ import { ActiveTrackPreview } from "../components/active-track-preview";
 import { AvatarMark } from "../components/avatar-mark";
 import { FlashTurnPanel } from "../components/flash-turn-panel";
 import { FormError } from "../components/form-error";
+import { GuestLiveScreen } from "../components/guest-live-screen";
 import { LoadingPage } from "../components/loading-page";
-import { NowPlayingCard } from "../components/now-playing-card";
 import { PlaylistCard } from "../components/playlist-card";
 import { PlaylistRewardPanel } from "../components/playlist-reward-panel";
 import { RealtimeStatus } from "../components/realtime-status";
@@ -29,7 +28,13 @@ import { getParticipantFlashState } from "../lib/api/flash";
 import { getParticipantSession, getPartyPeople, leaveParty } from "../lib/api/parties";
 import { getParticipantPlayback } from "../lib/api/playback";
 import { addPlaylistVote, getParticipantPlaylists, removePlaylistVote } from "../lib/api/playlists";
-import { getPlaylistTracks } from "../lib/api/tracks";
+import {
+  addTrackVote,
+  applyTrackVoteResult,
+  getPlaylistTracks,
+  removeTrackVote,
+  type TrackListResponse,
+} from "../lib/api/tracks";
 import { usePartyRealtime } from "../lib/realtime/use-party-realtime";
 
 export function GuestPartyPage() {
@@ -37,10 +42,6 @@ export function GuestPartyPage() {
   const queryClient = useQueryClient();
   const { partyId } = useParams();
   const [activeTab, setActiveTab] = useState<"live" | "rotation" | "people">("live");
-  const guideStorageKey = `rotate_guest_guide_seen:${partyId ?? "unknown"}`;
-  const [showGuide, setShowGuide] = useState(
-    () => window.localStorage.getItem(guideStorageKey) !== "true",
-  );
   const realtimeStatus = usePartyRealtime(partyId ?? "");
   const sessionQuery = useQuery({
     queryKey: ["participant-session"],
@@ -109,6 +110,16 @@ export function GuestPartyPage() {
       });
     },
   });
+  const trackVoteMutation = useMutation({
+    mutationFn: ({ trackId, hasVoted }: { trackId: string; hasVoted: boolean }) =>
+      hasVoted ? removeTrackVote(trackId) : addTrackVote(trackId),
+    onSuccess: ({ vote }) => {
+      queryClient.setQueryData<TrackListResponse>(
+        ["playlist-tracks", activePlaylist?.id],
+        (current) => applyTrackVoteResult(current, vote),
+      );
+    },
+  });
 
   if (sessionQuery.isPending || playlistsQuery.isPending) {
     return <LoadingPage />;
@@ -148,10 +159,47 @@ export function GuestPartyPage() {
   const orderedPlaylists = [...playlists].sort(
     (left, right) => Number(right.isActive) - Number(left.isActive),
   );
+  const upNext = activeTracks
+    .filter((track) => track.status === "PENDING")
+    .sort(
+      (left, right) =>
+        right.voteScore - left.voteScore ||
+        right.voteSupporterCount - left.voteSupporterCount ||
+        new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
+    )
+    .slice(0, 2);
 
   return (
-    <main className="guest-shell">
-      <header className="guest-header rotate-guest-header">
+    <main className={`guest-shell${activeTab === "live" ? " is-live-screen" : ""}`}>
+      {activeTab === "live" && (
+        <GuestLiveScreen
+          partyCode={session.party.code}
+          partyId={session.party.id}
+          partyName={session.party.name}
+          peopleCount={
+            peopleQuery.data?.participants.length ?? session.party.activeParticipantCount
+          }
+          moodName={activePlaylist?.name}
+          playback={playbackQuery.data}
+          upNext={upNext}
+          votePendingTrackId={trackVoteMutation.variables?.trackId}
+          onVote={(track) =>
+            trackVoteMutation.mutate({
+              trackId: track.id,
+              hasVoted: track.participantHasVoted,
+            })
+          }
+          errorMessage={
+            playbackQuery.error instanceof Error
+              ? playbackQuery.error.message
+              : trackVoteMutation.error instanceof Error
+                ? trackVoteMutation.error.message
+                : undefined
+          }
+        />
+      )}
+
+      <header className="guest-header rotate-guest-header" hidden={activeTab === "live"}>
         <RotateBrand compact />
         <div className="guest-party-context">
           <RotReference code={session.party.code} live={session.party.status === "ACTIVE"} />
@@ -170,134 +218,23 @@ export function GuestPartyPage() {
         </div>
       </header>
 
-      <section className="guest-welcome rotate-live-heading" hidden={activeTab !== "live"}>
-        <div>
-          <p className="eyebrow">Live rotation</p>
-          <h1>{session.party.name}</h1>
-        </div>
-        <div className="guest-you-chip">
-          <AvatarMark seed={session.participant.nickname} label={session.participant.nickname} />
-          <span>
-            <small>You</small>
-            {session.participant.nickname}
-          </span>
-        </div>
-      </section>
-
-      {showGuide && activeTab === "live" && (
-        <section className="guest-guide" aria-labelledby="guest-guide-title">
-          <div className="guest-guide-heading">
-            <div>
-              <p className="eyebrow">First press</p>
-              <h2 id="guest-guide-title">Vote. Press. Listen.</h2>
-            </div>
-            <button
-              type="button"
-              className="guide-close-button"
-              aria-label="Masquer cette explication"
-              onClick={() => {
-                window.localStorage.setItem(guideStorageKey, "true");
-                setShowGuide(false);
-              }}
-            >
-              <X aria-hidden="true" />
-            </button>
-          </div>
-          <ol>
-            <li>
-              <span>1</span>
-              <div>
-                <strong>Vote</strong>
-                <small>Soutiens les morceaux que tu veux entendre.</small>
-              </div>
-            </li>
-            <li>
-              <span>2</span>
-              <div>
-                <strong>Press</strong>
-                <small>Dépense ta ressource limitée pour augmenter leur poids.</small>
-              </div>
-            </li>
-            <li>
-              <span>3</span>
-              <div>
-                <strong>Mood</strong>
-                <small>Choisis l’ambiance qui prendra le relais.</small>
-              </div>
-            </li>
-          </ol>
-        </section>
-      )}
-
       <FormError
         message={leaveMutation.error instanceof Error ? leaveMutation.error.message : undefined}
       />
-      <FormError
-        message={playbackQuery.error instanceof Error ? playbackQuery.error.message : undefined}
-      />
-      {playbackQuery.data !== undefined && (
-        <div className="guest-now-playing" hidden={activeTab !== "live"}>
-          <NowPlayingCard playback={playbackQuery.data} partyId={session.party.id} />
-        </div>
-      )}
-
-      <section
-        className="guest-action-panel"
-        aria-labelledby="guest-actions-title"
-        hidden={activeTab !== "live"}
-      >
-        <div>
-          <p className="eyebrow">Current mood</p>
-          <h2 id="guest-actions-title">
-            {activePlaylist === undefined ? "La soirée se prépare" : activePlaylist.name}
-          </h2>
-          {proposalPlaylist !== undefined && (
-            <p>
-              Il te reste <strong>{proposalPlaylist.remainingTrackQuota}</strong> ajout
-              {proposalPlaylist.remainingTrackQuota === 1 ? "" : "s"} dans cette playlist.
-            </p>
-          )}
-        </div>
-        <div className="guest-primary-actions">
-          {proposalPlaylist === undefined ? (
-            <button className="primary-button" disabled>
-              <Plus aria-hidden="true" />
-              Ajouter un morceau
-            </button>
-          ) : (
-            <Link
-              className="primary-link guest-main-action"
-              to={`/party/${session.party.id}/playlists/${proposalPlaylist.id}#spotify-search-title`}
-            >
-              <Plus aria-hidden="true" weight="bold" />
-              Ajouter un morceau
-              <span>{proposalPlaylist.remainingTrackQuota} restants</span>
-            </Link>
-          )}
-          <button
-            type="button"
-            className="guest-secondary-action"
-            onClick={() => setActiveTab("rotation")}
-          >
-            Voir la rotation
-          </button>
-          <a className="guest-secondary-action" href="#guest-playlists-title">
-            Changer d’ambiance
-          </a>
-        </div>
-      </section>
 
       <FormError
         message={flashQuery.error instanceof Error ? flashQuery.error.message : undefined}
       />
-      {flashQuery.data !== undefined && activeTab === "live" && (
-        <FlashTurnPanel
-          partyId={session.party.id}
-          flash={flashQuery.data.flash}
-          explicitContentAllowed={flashPlaylist?.explicitContentAllowed ?? false}
-          existingTrackIds={new Set(flashTracks.map((track) => track.spotifyTrackId))}
-        />
-      )}
+      {flashQuery.data !== undefined &&
+        flashQuery.data.flash.turn !== null &&
+        activeTab === "live" && (
+          <FlashTurnPanel
+            partyId={session.party.id}
+            flash={flashQuery.data.flash}
+            explicitContentAllowed={flashPlaylist?.explicitContentAllowed ?? false}
+            existingTrackIds={new Set(flashTracks.map((track) => track.spotifyTrackId))}
+          />
+        )}
 
       <div className="guest-tab-panel" hidden={activeTab !== "rotation"}>
         {activePlaylist !== undefined ? (
@@ -328,7 +265,7 @@ export function GuestPartyPage() {
       <section
         className="guest-playlists"
         aria-labelledby="guest-playlists-title"
-        hidden={activeTab !== "live"}
+        hidden={activeTab !== "rotation"}
       >
         <div className="section-heading">
           <div>

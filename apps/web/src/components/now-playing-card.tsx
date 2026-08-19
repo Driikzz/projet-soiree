@@ -28,7 +28,13 @@ const usePlaybackProgress = (playback: PartyPlayback) => {
   return Math.min(playback.durationMs, playback.progressMs + elapsed);
 };
 
-function SkipVoteControl({ partyId, playback }: { partyId: string; playback: PartyPlayback }) {
+export function SkipVoteControl({
+  partyId,
+  playback,
+}: {
+  partyId: string;
+  playback: PartyPlayback;
+}) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: () =>

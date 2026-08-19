@@ -1,8 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight } from "@phosphor-icons/react";
+import { ArrowRight, Camera } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { joinPartyRequestSchema, type JoinPartyRequest } from "@songfest/shared";
@@ -10,6 +10,7 @@ import { joinPartyRequestSchema, type JoinPartyRequest } from "@songfest/shared"
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
 import { AvatarMark } from "../components/avatar-mark";
+import { LiveIndicator } from "../components/live-indicator";
 import { RotateBrand } from "../components/rotate-brand";
 import { RotReference } from "../components/rot-reference";
 import { getPublicParty, joinParty } from "../lib/api/parties";
@@ -18,6 +19,8 @@ export function JoinPartyPage() {
   const navigate = useNavigate();
   const { partyCode = "" } = useParams();
   const [joinedPartyId, setJoinedPartyId] = useState<string>();
+  const markSeeds = Array.from({ length: 4 }, (_, index) => `${partyCode}:mark:${index + 1}`);
+  const [selectedMarkSeed, setSelectedMarkSeed] = useState(markSeeds[0] ?? partyCode);
   const partyQuery = useQuery({
     queryKey: ["public-party", partyCode],
     queryFn: ({ signal }) => getPublicParty(partyCode.toUpperCase(), signal),
@@ -31,7 +34,6 @@ export function JoinPartyPage() {
     mutationFn: (input: JoinPartyRequest) => joinParty(partyCode.toUpperCase(), input),
     onSuccess: ({ party }) => setJoinedPartyId(party.id),
   });
-  const nickname = useWatch({ control: form.control, name: "nickname" });
 
   useEffect(() => {
     if (joinedPartyId === undefined) return;
@@ -65,6 +67,14 @@ export function JoinPartyPage() {
   }
 
   const canJoin = party.status === "OPEN" || party.status === "ACTIVE";
+  const formattedDate = new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  })
+    .format(new Date(party.createdAt))
+    .replaceAll(".", "")
+    .toUpperCase();
 
   if (joinedPartyId !== undefined) {
     return (
@@ -86,54 +96,100 @@ export function JoinPartyPage() {
 
   return (
     <main className="join-page">
-      <section className="join-identity" aria-label="Présentation de la soirée">
-        <RotateBrand />
-        <RotReference code={party.code} live={party.status === "ACTIVE"} />
-        <p className="eyebrow">Join the rotation</p>
-        <h1 className="join-party-name">{party.name}</h1>
-        <p className="join-date">The night is being recorded.</p>
-      </section>
+      <section className="join-sleeve" aria-labelledby="join-party-name">
+        <header className="join-catalogue">
+          <RotReference code={party.code} />
+          <LiveIndicator waiting={party.status !== "ACTIVE"} />
+        </header>
 
-      <section className="join-form-panel" aria-labelledby="join-title">
-        <h2 id="join-title">Comment on t’appelle ?</h2>
-        <p>Pas de compte à créer. Ton pseudo restera lié à ce navigateur.</p>
-        {canJoin ? (
-          <form
-            className="form-stack"
-            onSubmit={form.handleSubmit((values) => joinMutation.mutate(values))}
-          >
-            <label className="field">
-              <span>Ton pseudo</span>
-              <input
-                autoFocus
-                autoComplete="nickname"
-                placeholder="Camille"
-                maxLength={30}
-                {...form.register("nickname")}
-                aria-invalid={form.formState.errors.nickname !== undefined}
+        <div className="join-party-heading">
+          <h1 className="join-party-name" id="join-party-name">
+            {party.name}
+          </h1>
+          <p className="join-date">{formattedDate}</p>
+        </div>
+
+        <div className="join-party-people" aria-label="Participants déjà présents">
+          <div className="join-avatar-stack">
+            {party.participantPreview.map((participant) => (
+              <AvatarMark
+                key={`${participant.nickname}:${participant.avatarSeed}`}
+                seed={participant.avatarSeed}
+                label={participant.nickname}
               />
-              <FormError message={form.formState.errors.nickname?.message} />
-            </label>
-            <div className="join-mark-preview">
-              <AvatarMark seed={nickname || "rotate"} label={nickname || "ton profil"} />
-              <span>
-                <strong>Your mark</strong>
-                Un symbole ROTATE sera généré pour toi.
+            ))}
+            {party.activeParticipantCount > party.participantPreview.length && (
+              <span className="join-avatar-overflow">
+                +{party.activeParticipantCount - party.participantPreview.length}
               </span>
-            </div>
-            <FormError
-              message={joinMutation.error instanceof Error ? joinMutation.error.message : undefined}
-            />
-            <button className="primary-button full-button" disabled={joinMutation.isPending}>
-              {joinMutation.isPending ? "Entrée en cours…" : "Join the rotation"}
-              <ArrowRight aria-hidden="true" weight="bold" />
-            </button>
-          </form>
-        ) : (
-          <div className="locked-note" role="status">
-            Cette soirée n’est pas encore ouverte. L’organisateur te fait signe dès que c’est prêt.
+            )}
           </div>
-        )}
+          <p>{party.activeParticipantCount} people already in</p>
+        </div>
+
+        <div className="join-form-panel">
+          {canJoin ? (
+            <form
+              className="form-stack"
+              onSubmit={form.handleSubmit((values) =>
+                joinMutation.mutate({ ...values, avatarSeed: selectedMarkSeed }),
+              )}
+            >
+              <label className="field">
+                <span>Comment on t’appelle ?</span>
+                <input
+                  autoFocus
+                  autoComplete="nickname"
+                  placeholder="Ton pseudo"
+                  maxLength={30}
+                  {...form.register("nickname")}
+                  aria-invalid={form.formState.errors.nickname !== undefined}
+                />
+                <FormError message={form.formState.errors.nickname?.message} />
+              </label>
+              <FormError
+                message={
+                  joinMutation.error instanceof Error ? joinMutation.error.message : undefined
+                }
+              />
+              <button className="primary-button full-button" disabled={joinMutation.isPending}>
+                {joinMutation.isPending ? "Entrée en cours…" : "Join the rotation"}
+                <ArrowRight aria-hidden="true" weight="bold" />
+              </button>
+
+              <fieldset className="join-mark-picker">
+                <legend>Your mark — optional</legend>
+                <div>
+                  {markSeeds.map((seed) => (
+                    <button
+                      type="button"
+                      className="join-mark-option"
+                      aria-pressed={selectedMarkSeed === seed}
+                      aria-label={`Choisir le mark ${markSeeds.indexOf(seed) + 1}`}
+                      onClick={() => setSelectedMarkSeed(seed)}
+                      key={seed}
+                    >
+                      <AvatarMark seed={seed} label="Aperçu du mark" />
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="join-camera-option"
+                    aria-label="Ajouter une photo — bientôt disponible"
+                    disabled
+                  >
+                    <Camera aria-hidden="true" weight="bold" />
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          ) : (
+            <div className="locked-note" role="status">
+              Cette soirée n’est pas encore ouverte. L’organisateur te fait signe dès que c’est
+              prêt.
+            </div>
+          )}
+        </div>
       </section>
     </main>
   );

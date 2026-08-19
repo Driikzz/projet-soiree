@@ -17,9 +17,15 @@ describe("JoinPartyPage", () => {
               code: "ABC234",
               name: "Anniversaire de Léa",
               status: "OPEN",
+              createdAt: "2026-08-19T18:00:00.000Z",
               activePlaylistId: null,
               scheduledPlaylistId: null,
               stateVersion: 1,
+              activeParticipantCount: 3,
+              participantPreview: [
+                { nickname: "Mina", avatarSeed: "mina" },
+                { nickname: "Jo", avatarSeed: "jo" },
+              ],
             },
           }),
           { status: 200, headers: { "Content-Type": "application/json" } },
@@ -41,7 +47,8 @@ describe("JoinPartyPage", () => {
     );
 
     expect(await screen.findByRole("heading", { name: "Anniversaire de Léa" })).toBeInTheDocument();
-    expect(screen.getByLabelText("Ton pseudo")).toBeInTheDocument();
-    expect(screen.getByText(/Pas de compte à créer/)).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Comment on t’appelle/i })).toBeInTheDocument();
+    expect(screen.getByText(/3 people already in/i)).toBeInTheDocument();
+    expect(screen.getByText(/Your mark/i)).toBeInTheDocument();
   });
 });

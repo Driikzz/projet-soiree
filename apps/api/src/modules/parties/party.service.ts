@@ -43,7 +43,21 @@ const toPublicParty = (party: {
   activePlaylistId: string | null;
   scheduledPlaylistId: string | null;
   stateVersion: number;
-}) => party;
+  createdAt: Date;
+  _count: { participants: number };
+  participants: { nickname: string; avatarSeed: string }[];
+}) => ({
+  id: party.id,
+  code: party.code,
+  name: party.name,
+  status: party.status,
+  activePlaylistId: party.activePlaylistId,
+  scheduledPlaylistId: party.scheduledPlaylistId,
+  stateVersion: party.stateVersion,
+  createdAt: party.createdAt.toISOString(),
+  activeParticipantCount: party._count.participants,
+  participantPreview: party.participants,
+});
 
 const partySummarySelect = {
   id: true,
@@ -75,6 +89,18 @@ const publicPartySelect = {
   activePlaylistId: true,
   scheduledPlaylistId: true,
   stateVersion: true,
+  createdAt: true,
+  _count: {
+    select: {
+      participants: { where: { isActive: true, isBlocked: false } },
+    },
+  },
+  participants: {
+    where: { isActive: true, isBlocked: false },
+    orderBy: { joinedAt: "asc" },
+    take: 5,
+    select: { nickname: true, avatarSeed: true },
+  },
 } as const;
 
 export const createParty = async (adminId: string, input: CreatePartyRequest) => {
@@ -211,7 +237,7 @@ export const joinParty = async (partyCode: string, input: JoinPartyRequest) => {
           partyId: party.id,
           nickname: input.nickname.trim(),
           normalizedNickname: normalizeNickname(input.nickname),
-          avatarSeed: randomBytes(12).toString("hex"),
+          avatarSeed: input.avatarSeed ?? randomBytes(12).toString("hex"),
         },
         select: {
           id: true,

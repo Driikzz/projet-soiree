@@ -8,6 +8,7 @@ export const createPartyRequestSchema = z.object({
 
 export const joinPartyRequestSchema = z.object({
   nickname: nicknameSchema,
+  avatarSeed: z.string().trim().min(1).max(64).optional(),
 });
 
 export const partySettingsSchema = z.object({
@@ -39,15 +40,28 @@ export const partySummarySchema = z.object({
   selectedDeviceId: z.string().nullable(),
 });
 
-export const publicPartySchema = partySummarySchema.pick({
-  id: true,
-  code: true,
-  name: true,
-  status: true,
-  activePlaylistId: true,
-  scheduledPlaylistId: true,
-  stateVersion: true,
-});
+export const publicPartySchema = partySummarySchema
+  .pick({
+    id: true,
+    code: true,
+    name: true,
+    status: true,
+    activePlaylistId: true,
+    scheduledPlaylistId: true,
+    stateVersion: true,
+    createdAt: true,
+    activeParticipantCount: true,
+  })
+  .extend({
+    participantPreview: z
+      .array(
+        z.object({
+          nickname: nicknameSchema,
+          avatarSeed: z.string(),
+        }),
+      )
+      .max(5),
+  });
 
 export const participantSummarySchema = z.object({
   id: uuidSchema,
