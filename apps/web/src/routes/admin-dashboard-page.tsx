@@ -15,11 +15,15 @@ import { useParams } from "react-router-dom";
 import type { AssignRewardRequest, RewardType } from "@songfest/shared";
 
 import { AdminPartyNav } from "../components/admin-party-nav";
+import { AvatarMark } from "../components/avatar-mark";
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
 import { NowPlayingCard } from "../components/now-playing-card";
 import { PartySettingsForm } from "../components/party-settings-form";
 import { RewardAssignment } from "../components/reward-assignment";
+import { RecordSummary } from "../components/record-summary";
+import { RotationTrackCard } from "../components/rotation-track-card";
+import { RotReference } from "../components/rot-reference";
 import {
   assignAdminReward,
   blockAdminParticipant,
@@ -183,13 +187,13 @@ export function AdminDashboardPage() {
     <main className="page-shell dashboard-shell">
       <AdminPartyNav partyId={partyId} partyName={party.name} />
 
-      <section className="admin-page-heading">
+      {party.status === "ENDED" && <RecordSummary party={party} dashboard={dashboard} />}
+
+      <section className="admin-page-heading" hidden={party.status === "ENDED"}>
         <div>
-          <p className="eyebrow">{party.name}</p>
-          <h1 className="screen-title">Pilote la soirée.</h1>
-          <p className="screen-copy">
-            Lecture, propositions, participants et règles au même endroit.
-          </p>
+          <RotReference code={party.code} live={party.status === "ACTIVE"} />
+          <h1 className="screen-title">Host live.</h1>
+          <p className="screen-copy">Ce dont tu as besoin pour piloter la rotation, simplement.</p>
         </div>
         <span className={`status-badge ${party.status === "ACTIVE" ? "status-open" : ""}`}>
           {party.status === "ACTIVE"
@@ -204,19 +208,19 @@ export function AdminDashboardPage() {
         <article>
           <UsersThree aria-hidden="true" weight="fill" />
           <strong>{party.activeParticipantCount}</strong>
-          <span>participants actifs</span>
+          <span>people</span>
         </article>
         <article>
           <MusicNotes aria-hidden="true" weight="fill" />
           <strong>{activePlaylist?.name ?? "Aucune"}</strong>
-          <span>ambiance active</span>
+          <span>current mood</span>
         </article>
         <article>
           <SkipForward aria-hidden="true" weight="fill" />
           <strong>
             {nextTrack?.title ?? (dashboard.nextTrackId === null ? "Aucun" : "Calculé")}
           </strong>
-          <span>prochain choix SongFest</span>
+          <span>up next</span>
         </article>
       </section>
 
@@ -225,8 +229,8 @@ export function AdminDashboardPage() {
           <Lightning weight="fill" />
         </div>
         <div className="admin-flash-copy">
-          <p className="eyebrow">Moment collectif</p>
-          <h2 id="admin-flash-title">Musique Flash</h2>
+          <p className="eyebrow">Brand moment</p>
+          <h2 id="admin-flash-title">Your turn</h2>
           {dashboard.flash.turn === null ? (
             <p>
               {dashboard.flash.enabled
@@ -320,9 +324,7 @@ export function AdminDashboardPage() {
           <div className="dashboard-participants">
             {dashboard.participants.map((participant) => (
               <article key={participant.id} className="dashboard-participant">
-                <span className="participant-avatar" aria-hidden="true">
-                  {participant.nickname.slice(0, 2).toUpperCase()}
-                </span>
+                <AvatarMark seed={participant.nickname} label={participant.nickname} />
                 <div>
                   <h3>{participant.nickname}</h3>
                   <p>
@@ -371,7 +373,7 @@ export function AdminDashboardPage() {
       <section className="dashboard-section" aria-labelledby="proposals-title">
         <div className="section-heading">
           <div>
-            <h2 id="proposals-title">Dernières propositions</h2>
+            <h2 id="proposals-title">Music control</h2>
           </div>
         </div>
         <div className="dashboard-track-list">
@@ -380,36 +382,35 @@ export function AdminDashboardPage() {
               Les propositions apparaîtront ici dès qu’un invité ajoute un morceau.
             </p>
           ) : (
-            dashboard.recentTracks.map((track) => (
-              <article key={track.id}>
-                <div>
-                  <strong>{track.title}</strong>
-                  <span>
-                    {track.artistNames.join(", ")} · {track.playlistName} · {track.voteCount} flamme
-                    {track.voteCount === 1 ? "" : "s"}
-                  </span>
-                </div>
-                {track.status === "PENDING" && (
-                  <div>
-                    <button
-                      className="secondary-button"
-                      disabled={forceMutation.isPending}
-                      onClick={() => forceMutation.mutate(track.id)}
-                    >
-                      <CheckCircle aria-hidden="true" />
-                      Forcer ensuite
-                    </button>
-                    <button
-                      className="icon-button danger-button"
-                      aria-label={`Supprimer ${track.title}`}
-                      disabled={removeMutation.isPending}
-                      onClick={() => removeMutation.mutate(track.id)}
-                    >
-                      <Trash aria-hidden="true" />
-                    </button>
-                  </div>
-                )}
-              </article>
+            dashboard.recentTracks.map((track, index) => (
+              <RotationTrackCard
+                key={track.id}
+                track={track}
+                position={index + 1}
+                label={`${track.playlistName} · ${track.status}`}
+                actions={
+                  track.status === "PENDING" ? (
+                    <>
+                      <button
+                        className="secondary-button"
+                        disabled={forceMutation.isPending}
+                        onClick={() => forceMutation.mutate(track.id)}
+                      >
+                        <CheckCircle aria-hidden="true" />
+                        Forcer ensuite
+                      </button>
+                      <button
+                        className="icon-button danger-button"
+                        aria-label={`Supprimer ${track.title}`}
+                        disabled={removeMutation.isPending}
+                        onClick={() => removeMutation.mutate(track.id)}
+                      >
+                        <Trash aria-hidden="true" />
+                      </button>
+                    </>
+                  ) : undefined
+                }
+              />
             ))
           )}
         </div>
@@ -418,7 +419,7 @@ export function AdminDashboardPage() {
       <section className="dashboard-section" aria-labelledby="settings-title">
         <div className="section-heading">
           <div>
-            <h2 id="settings-title">Réglages de la soirée</h2>
+            <h2 id="settings-title">Rules</h2>
           </div>
         </div>
         <PartySettingsForm
@@ -434,7 +435,7 @@ export function AdminDashboardPage() {
       <section className="dashboard-danger-zone" aria-labelledby="danger-title">
         <WarningCircle aria-hidden="true" weight="fill" />
         <div>
-          <h2 id="danger-title">Clôturer la soirée</h2>
+          <h2 id="danger-title">Fin de la rotation ?</h2>
           <p>Les invités seront déconnectés et aucune nouvelle proposition ne sera acceptée.</p>
         </div>
         <button

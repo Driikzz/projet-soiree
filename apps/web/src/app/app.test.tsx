@@ -23,7 +23,7 @@ describe("App accessibility", () => {
     expect(screen.getByRole("link", { name: "Revenir à l’accueil" })).toHaveAttribute("href", "/");
 
     await waitFor(() => {
-      expect(document.title).toBe("Page introuvable | SongFest");
+      expect(document.title).toBe("Page introuvable | ROTATE");
     });
   });
 });

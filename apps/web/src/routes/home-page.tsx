@@ -2,6 +2,8 @@ import { ArrowRight, CheckCircle, WarningCircle } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
+import { RecordStamp } from "../components/record-stamp";
+import { RotateBrand } from "../components/rotate-brand";
 import { getHealth } from "../lib/api/health";
 
 export function HomePage() {
@@ -11,31 +13,47 @@ export function HomePage() {
   });
 
   return (
-    <main className="page-shell">
-      <section className="home-hero-grid" aria-labelledby="page-title">
-        <div className="hero">
-          <p className="eyebrow">Programmation musicale collaborative</p>
-          <h1 id="page-title">La soirée choisit l’ambiance.</h1>
-          <p className="hero-copy">
-            Les invités proposent et votent. L’organisateur garde le contrôle de la lecture.
+    <main className="rotate-home">
+      <header className="rotate-home-header">
+        <RotateBrand />
+        <Link className="rotate-text-link" to="/login">
+          Connexion host
+        </Link>
+      </header>
+
+      <section className="rotate-home-hero" aria-labelledby="page-title">
+        <div className="rotate-home-copy">
+          <p className="catalogue-label">ROT/OPEN — Collaborative listening</p>
+          <h1 id="page-title" aria-label="THE NIGHT, RECORDED.">
+            THE NIGHT,
+            <br />
+            RECORDED<span>.</span>
+          </h1>
+          <p>
+            Crée la rotation. Tes invités rejoignent, proposent, votent et donnent du poids aux
+            morceaux qui doivent passer ensuite.
           </p>
-          <Link className="primary-link" to="/parties">
-            Accéder à mes soirées
-            <ArrowRight aria-hidden="true" weight="bold" />
-          </Link>
+          <div className="rotate-home-actions">
+            <Link className="primary-link" to="/parties">
+              Créer une rotation
+              <ArrowRight aria-hidden="true" weight="bold" />
+            </Link>
+            <Link className="secondary-button" to="/register">
+              Créer un compte
+            </Link>
+          </div>
         </div>
-        <figure className="hero-art">
-          <img
-            src="/images/songfest-hero.jpg"
-            width="1536"
-            height="1024"
-            alt="Un groupe réuni autour d’enceintes et de disques colorés"
-            fetchPriority="high"
-          />
-        </figure>
+        <div className="rotate-home-record" aria-label="ROTATE Record Culture">
+          <div className="vinyl-disc">
+            <span>ROTATE</span>
+            <i />
+            <small>Side A · 33 RPM</small>
+          </div>
+          <RecordStamp />
+        </div>
       </section>
 
-      <aside className="status-card" aria-live="polite">
+      <aside className="rotate-service-status" aria-live="polite">
         {healthQuery.isPending ? (
           <>
             <span className="status-skeleton" aria-hidden="true" />
@@ -49,7 +67,7 @@ export function HomePage() {
         ) : (
           <>
             <CheckCircle aria-hidden="true" weight="fill" />
-            <span>Le socle SongFest est opérationnel.</span>
+            <span>ROTATE est opérationnel.</span>
           </>
         )}
       </aside>

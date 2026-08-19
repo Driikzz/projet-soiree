@@ -126,15 +126,15 @@ export function AdminPlaylistsPage() {
 
       <section className="admin-page-heading">
         <div>
-          <p className="eyebrow">Ambiances musicales</p>
-          <h1 className="screen-title">Prépare le terrain de jeu.</h1>
+          <p className="eyebrow">Music control</p>
+          <h1 className="screen-title">Build the rotation.</h1>
           <p className="screen-copy">
             Chaque playlist a son propre quota, ses règles et son identité.
           </p>
         </div>
         <button className="primary-button" onClick={() => setFormPlaylist("create")}>
           <MusicNotesPlus aria-hidden="true" weight="bold" />
-          Nouvelle playlist
+          Nouvelle ambiance
         </button>
       </section>
 
@@ -179,7 +179,7 @@ export function AdminPlaylistsPage() {
                   {playlist.isActive && (
                     <span className="active-label">
                       <CheckCircle aria-hidden="true" weight="fill" />
-                      Playlist active
+                      Current mood
                     </span>
                   )}
                 </div>

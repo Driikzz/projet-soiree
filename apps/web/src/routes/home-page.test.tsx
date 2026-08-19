@@ -42,9 +42,7 @@ describe("HomePage", () => {
       </MemoryRouter>,
     );
 
-    expect(
-      screen.getByRole("heading", { name: "La soirée choisit l’ambiance." }),
-    ).toBeInTheDocument();
-    expect(await screen.findByText("Le socle SongFest est opérationnel.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "THE NIGHT, RECORDED." })).toBeInTheDocument();
+    expect(await screen.findByText("ROTATE est opérationnel.")).toBeInTheDocument();
   });
 });

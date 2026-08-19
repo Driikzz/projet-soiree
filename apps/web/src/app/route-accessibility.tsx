@@ -5,14 +5,14 @@ const getPageTitle = (pathname: string) => {
   if (pathname === "/") return "Accueil";
   if (pathname === "/login") return "Connexion";
   if (pathname === "/register") return "Créer un compte";
-  if (pathname === "/parties") return "Mes soirées";
-  if (pathname === "/parties/new") return "Créer une soirée";
-  if (pathname.includes("/dashboard")) return "Tableau de bord";
-  if (pathname.includes("/playlists")) return "Playlists";
-  if (pathname.includes("/spotify")) return "Configuration Spotify";
+  if (pathname === "/parties") return "Your Records";
+  if (pathname === "/parties/new") return "New Rotation";
+  if (pathname.includes("/dashboard")) return "Host Live";
+  if (pathname.includes("/playlists")) return "Music Control";
+  if (pathname.includes("/spotify")) return "Control";
   if (pathname.includes("/share")) return "Inviter";
-  if (pathname.startsWith("/join/")) return "Rejoindre une soirée";
-  if (pathname.startsWith("/party/")) return "Soirée";
+  if (pathname.startsWith("/join/")) return "Join the Rotation";
+  if (pathname.startsWith("/party/")) return "Live Rotation";
   return "Page introuvable";
 };
 
@@ -21,7 +21,7 @@ export function RouteAccessibility() {
   const pageTitle = getPageTitle(pathname);
 
   useEffect(() => {
-    document.title = `${pageTitle} | SongFest`;
+    document.title = `${pageTitle} | ROTATE`;
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [pageTitle]);
 

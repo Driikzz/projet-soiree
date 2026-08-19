@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Confetti } from "@phosphor-icons/react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createPartyRequestSchema, type CreatePartyRequest } from "@songfest/shared";
 
 import { FormError } from "../components/form-error";
+import { RotateBrand } from "../components/rotate-brand";
 import { createParty } from "../lib/api/parties";
 
 export function CreatePartyPage() {
@@ -23,17 +24,23 @@ export function CreatePartyPage() {
   });
 
   return (
-    <main className="page-shell compact-shell">
-      <Link className="brand-link" to="/parties">
-        ← Mes soirées
-      </Link>
-      <section className="form-card" aria-labelledby="create-title">
-        <span className="icon-chip accent-chip">
-          <Confetti aria-hidden="true" weight="fill" />
-        </span>
-        <p className="eyebrow">Nouvelle soirée</p>
+    <main className="rotate-form-page sleeve-page">
+      <header className="rotate-form-header">
+        <RotateBrand compact />
+        <Link className="back-link" to="/parties">
+          <ArrowLeft aria-hidden="true" />
+          Your records
+        </Link>
+      </header>
+      <section className="form-card rotate-editor-card" aria-labelledby="create-title">
+        <div className="editor-progress" aria-label="Étape 1 sur 1">
+          <span>01</span>
+          <i />
+          <small>Nouvelle rotation</small>
+        </div>
+        <p className="eyebrow">Créer une édition</p>
         <h1 className="screen-title" id="create-title">
-          Comment s’appelle la fête ?
+          Name the night.
         </h1>
         <p className="screen-copy">
           Tu pourras préparer les ambiances et connecter Spotify juste après.
@@ -46,7 +53,7 @@ export function CreatePartyPage() {
             <span>Nom de la soirée</span>
             <input
               autoFocus
-              placeholder="Anniversaire de Léa"
+              placeholder="Lucas’ Place"
               maxLength={120}
               {...form.register("name")}
               aria-invalid={form.formState.errors.name !== undefined}
@@ -59,7 +66,7 @@ export function CreatePartyPage() {
             }
           />
           <button className="primary-button full-button" disabled={createMutation.isPending}>
-            {createMutation.isPending ? "Création…" : "Créer la soirée"}
+            {createMutation.isPending ? "Création…" : "Continuer"}
             <ArrowRight aria-hidden="true" weight="bold" />
           </button>
         </form>
