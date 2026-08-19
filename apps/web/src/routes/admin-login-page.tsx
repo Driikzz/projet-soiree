@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { userLoginRequestSchema, type UserLoginRequest, type UserSession } from "@songfest/shared";
 
 import { FormError } from "../components/form-error";
+import { RotateBrand } from "../components/rotate-brand";
 import { loginUser } from "../lib/api/auth";
 
 export function AdminLoginPage() {
@@ -28,19 +29,17 @@ export function AdminLoginPage() {
 
   return (
     <main className="page-shell compact-shell">
-      <Link className="brand-link" to="/">
-        SongFest
-      </Link>
+      <RotateBrand />
       <section className="form-card" aria-labelledby="login-title">
         <span className="icon-chip">
           <LockKey aria-hidden="true" weight="bold" />
         </span>
-        <p className="eyebrow">Espace organisateur</p>
+        <p className="eyebrow">Host access</p>
         <h1 className="screen-title" id="login-title">
           Prends les commandes.
         </h1>
         <p className="screen-copy">
-          Retrouve tes soirées, prépare les invitations et garde le contrôle de la musique.
+          Retrouve tes rotations, prépare les invitations et garde le contrôle de la musique.
         </p>
 
         <form

@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import type { ParticipantPlaylistTrack, TrackFlameBudget } from "@songfest/shared";
 
 import { FormError } from "./form-error";
-import { FlameBudgetSummary, TrackFlameControl } from "./track-flame-control";
+import { FlameBudgetSummary } from "./track-flame-control";
+import { RotationTrackCard } from "./rotation-track-card";
 import { addTrackVote, removeTrackVote } from "../lib/api/tracks";
 
 interface ActiveTrackPreviewProps {
@@ -42,19 +43,21 @@ export function ActiveTrackPreview({
         right.voteCount - left.voteCount ||
         new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
     )
-    .slice(0, 4);
+    .slice(0, 6);
+  const sideA = candidates.slice(0, 3);
+  const sideB = candidates.slice(3);
 
   return (
     <section
-      className="active-track-preview"
+      className="active-track-preview rotation-preview"
       id="guest-track-votes"
       aria-labelledby="track-votes-title"
     >
       <div className="section-heading action-section-heading">
         <div>
-          <p className="eyebrow">À toi de distribuer</p>
-          <h2 id="track-votes-title">Les prochains sons de {playlistName}</h2>
-          <p>Place tes flammes sur les morceaux que tu veux vraiment entendre.</p>
+          <p className="eyebrow">ROT/NEXT — {playlistName}</p>
+          <h2 id="track-votes-title">Rotation</h2>
+          <p>Vote pour soutenir un morceau. Utilise PRESS pour lui donner plus de poids.</p>
         </div>
         <Link className="text-link" to={`/party/${partyId}/playlists/${playlistId}`}>
           Tout voir
@@ -75,36 +78,41 @@ export function ActiveTrackPreview({
           </div>
         </div>
       ) : (
-        <div className="active-track-list">
-          {candidates.map((track) => (
-            <article key={track.id} className="active-track-row">
-              {track.coverUrl === null ? (
-                <span className="active-track-cover cover-fallback" aria-hidden="true">
-                  <MusicNotes />
-                </span>
-              ) : (
-                <img
-                  className="active-track-cover"
-                  src={track.coverUrl}
-                  alt={`Pochette de ${track.title}`}
-                  loading="lazy"
-                />
-              )}
-              <div className="active-track-copy">
-                <strong>{track.title}</strong>
-                <span>{track.artistNames.join(", ")}</span>
-              </div>
-              <TrackFlameControl
+        <div className="rotation-sides">
+          <div className="rotation-side">
+            <p className="rotation-side-label">Side A / Up next</p>
+            {sideA.map((track, index) => (
+              <RotationTrackCard
                 track={track}
+                position={index + 1}
                 flameBudget={flameBudget}
                 compact
                 disabled={!votesEnabled}
                 pending={voteMutation.isPending}
                 onAdd={() => voteMutation.mutate({ trackId: track.id, action: "add" })}
                 onRemove={() => voteMutation.mutate({ trackId: track.id, action: "remove" })}
+                key={track.id}
               />
-            </article>
-          ))}
+            ))}
+          </div>
+          {sideB.length > 0 && (
+            <div className="rotation-side side-b">
+              <p className="rotation-side-label">Side B / In rotation</p>
+              {sideB.map((track, index) => (
+                <RotationTrackCard
+                  track={track}
+                  position={index + sideA.length + 1}
+                  flameBudget={flameBudget}
+                  compact
+                  disabled={!votesEnabled}
+                  pending={voteMutation.isPending}
+                  onAdd={() => voteMutation.mutate({ trackId: track.id, action: "add" })}
+                  onRemove={() => voteMutation.mutate({ trackId: track.id, action: "remove" })}
+                  key={track.id}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </section>

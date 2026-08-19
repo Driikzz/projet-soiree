@@ -15,6 +15,7 @@ import { Link, useParams } from "react-router-dom";
 import { AdminPartyNav } from "../components/admin-party-nav";
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
+import { RotReference } from "../components/rot-reference";
 import { getAdminParty, openParty } from "../lib/api/parties";
 import { usePartyRealtime } from "../lib/realtime/use-party-realtime";
 
@@ -46,8 +47,8 @@ export function SharePartyPage() {
       margin: 2,
       errorCorrectionLevel: "M",
       color: {
-        dark: "#101719",
-        light: "#F4F7F5",
+        dark: "#11100e",
+        light: "#f1eee6",
       },
     })
       .then((url) => {
@@ -115,9 +116,10 @@ export function SharePartyPage() {
 
       <div className="share-grid">
         <section className="share-copy" aria-labelledby="share-title">
-          <p className="eyebrow">Inviter tout le monde</p>
+          <RotReference code={party.code} live={party.status === "ACTIVE"} />
+          <p className="eyebrow">Join the rotation</p>
           <h1 className="screen-title share-title" id="share-title">
-            Scanne, choisis un pseudo, c’est parti.
+            Scan. Join. Rotate.
           </h1>
           <p className="screen-copy">
             Aucun compte Spotify n’est demandé aux invités. Ils rejoignent directement{" "}

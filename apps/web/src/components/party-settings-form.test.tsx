@@ -30,8 +30,8 @@ describe("PartySettingsForm", () => {
 
     await user.clear(screen.getByRole("spinbutton", { name: "Votes minimum" }));
     await user.type(screen.getByRole("spinbutton", { name: "Votes minimum" }), "6");
-    await user.clear(screen.getByRole("spinbutton", { name: "Flammes par participant" }));
-    await user.type(screen.getByRole("spinbutton", { name: "Flammes par participant" }), "8");
+    await user.clear(screen.getByRole("spinbutton", { name: "PRESS par participant" }));
+    await user.type(screen.getByRole("spinbutton", { name: "PRESS par participant" }), "8");
     await user.click(
       screen.getByRole("checkbox", {
         name: "Autoriser les votes de changement d’ambiance",

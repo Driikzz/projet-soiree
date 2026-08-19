@@ -1,5 +1,7 @@
-import { ArrowLeft, Gauge, MusicNotes, SpeakerHigh, UsersThree } from "@phosphor-icons/react";
+import { ArrowLeft, Disc, MusicNotes, SlidersHorizontal, UsersThree } from "@phosphor-icons/react";
 import { Link, NavLink } from "react-router-dom";
+
+import { RotateBrand } from "./rotate-brand";
 
 const getNavClassName = ({ isActive }: { isActive: boolean }) =>
   `admin-party-nav-link${isActive ? " active" : ""}`;
@@ -10,31 +12,29 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
       <div className="admin-toolbar-brand">
         <Link className="admin-party-back" to="/parties">
           <ArrowLeft aria-hidden="true" weight="bold" />
-          Toutes mes soirées
+          Your records
         </Link>
         <div className="admin-toolbar-context">
-          <Link className="brand-link" to="/">
-            SongFest
-          </Link>
+          <RotateBrand compact />
           <span title={partyName}>{partyName}</span>
         </div>
       </div>
       <nav className="admin-party-nav" aria-label="Navigation organisateur">
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/dashboard`}>
-          <Gauge aria-hidden="true" />
-          Pilotage
+          <Disc aria-hidden="true" />
+          Live
         </NavLink>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/playlists`}>
           <MusicNotes aria-hidden="true" />
-          Playlists
+          Music
         </NavLink>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/spotify`}>
-          <SpeakerHigh aria-hidden="true" />
-          Spotify
+          <SlidersHorizontal aria-hidden="true" />
+          Control
         </NavLink>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/share`}>
           <UsersThree aria-hidden="true" />
-          Inviter
+          Join
         </NavLink>
       </nav>
     </header>

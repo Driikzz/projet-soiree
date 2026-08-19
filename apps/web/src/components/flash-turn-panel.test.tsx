@@ -25,7 +25,7 @@ describe("FlashTurnPanel", () => {
       />,
     );
 
-    expect(screen.getByText("Musique Flash")).toBeInTheDocument();
+    expect(screen.getByText("Your turn")).toBeInTheDocument();
     expect(screen.getByText(/Prochain tirage vers/)).toBeInTheDocument();
   });
 
@@ -56,7 +56,7 @@ describe("FlashTurnPanel", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Camille choisit le prochain son" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Camille is picking." })).toBeVisible();
     expect(screen.getByText(/La playlist continue pendant son choix/)).toBeVisible();
   });
 });

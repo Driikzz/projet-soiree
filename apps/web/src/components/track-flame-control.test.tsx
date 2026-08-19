@@ -36,7 +36,7 @@ const budget: TrackFlameBudget = {
 };
 
 describe("TrackFlameControl", () => {
-  it("shows priority and lets the participant move flames", async () => {
+  it("shows the vote state and lets the participant move PRESS", async () => {
     const onAdd = vi.fn();
     const onRemove = vi.fn();
     const user = userEvent.setup();
@@ -45,13 +45,9 @@ describe("TrackFlameControl", () => {
       <TrackFlameControl track={track} flameBudget={budget} onAdd={onAdd} onRemove={onRemove} />,
     );
 
-    expect(
-      screen.getByRole("progressbar", { name: "Priorité de Around the World" }),
-    ).toHaveAttribute("aria-valuenow", "63");
-    await user.click(screen.getByRole("button", { name: "Ajouter une flamme à Around the World" }));
-    await user.click(
-      screen.getByRole("button", { name: "Retirer une flamme de Around the World" }),
-    );
+    expect(screen.getByRole("button", { name: "Voted" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(screen.getByRole("button", { name: "Ajouter un PRESS à Around the World" }));
+    await user.click(screen.getByRole("button", { name: "Retirer un PRESS de Around the World" }));
 
     expect(onAdd).toHaveBeenCalledOnce();
     expect(onRemove).toHaveBeenCalledOnce();
@@ -68,7 +64,7 @@ describe("TrackFlameControl", () => {
     );
 
     expect(
-      screen.getByRole("button", { name: "Ajouter une flamme à Around the World" }),
+      screen.getByRole("button", { name: "Ajouter un PRESS à Around the World" }),
     ).toBeDisabled();
   });
 });

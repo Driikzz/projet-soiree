@@ -81,9 +81,7 @@ describe("SpotifySearch", () => {
       await screen.findByRole("button", { name: "Ajouter : Around the World" }, { timeout: 2_000 }),
     );
 
-    expect(
-      await screen.findByText("Around the World a été ajouté à la playlist."),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Around the World — added to rotation.")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
       `/api/playlists/${playlistId}/tracks`,

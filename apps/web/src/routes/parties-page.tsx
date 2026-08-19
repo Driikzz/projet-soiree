@@ -5,6 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import type { PartySummary } from "@songfest/shared";
 
 import { LoadingPage } from "../components/loading-page";
+import { RecordStamp } from "../components/record-stamp";
+import { RotateBrand } from "../components/rotate-brand";
+import { RotReference } from "../components/rot-reference";
 import { getUserSession, logoutUser } from "../lib/api/auth";
 import { listOwnedParties } from "../lib/api/parties";
 
@@ -53,21 +56,21 @@ export function PartiesPage() {
   }
 
   const parties = partiesQuery.data.parties;
+  const liveParties = parties.filter((party) => party.status !== "ENDED");
+  const records = parties.filter((party) => party.status === "ENDED");
 
   return (
-    <main className="page-shell account-shell">
+    <main className="page-shell account-shell rotate-library-shell">
       <header className="account-header">
         <div>
-          <Link className="brand-link" to="/">
-            SongFest
-          </Link>
-          <p className="eyebrow">Bonjour {sessionQuery.data.user.displayName}</p>
-          <h1>Mes soirées</h1>
+          <RotateBrand />
+          <p className="eyebrow">Bonsoir {sessionQuery.data.user.displayName}</p>
+          <h1>Your records.</h1>
         </div>
         <div className="account-actions">
           <Link className="primary-link" to="/parties/new">
             <CalendarPlus aria-hidden="true" weight="bold" />
-            Nouvelle soirée
+            New rotation
           </Link>
           <button
             className="text-button"
@@ -83,37 +86,77 @@ export function PartiesPage() {
 
       {parties.length === 0 ? (
         <section className="account-empty-state">
-          <span>01</span>
+          <RecordStamp compact />
           <div>
-            <p className="eyebrow">Première soirée</p>
-            <h2>Commence par lui donner un nom.</h2>
+            <p className="eyebrow">Première édition</p>
+            <h2>Ta première nuit commence ici.</h2>
             <p>
               Tu pourras ensuite préparer les ambiances, connecter Spotify et inviter le groupe.
             </p>
           </div>
           <Link className="primary-link" to="/parties/new">
-            Créer ma soirée
+            Créer une rotation
             <ArrowRight aria-hidden="true" weight="bold" />
           </Link>
         </section>
       ) : (
-        <section className="party-library" aria-label="Tes soirées">
-          {parties.map((party, index) => (
-            <Link className="party-library-row" to={getPartyDestination(party)} key={party.id}>
-              <span className="party-library-index">{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <h2>{party.name}</h2>
-                <p>
-                  {statusLabel[party.status]} · code {party.code}
-                </p>
+        <div className="rotate-record-groups">
+          {liveParties.length > 0 && (
+            <section className="party-library" aria-labelledby="active-rotations-title">
+              <div className="library-section-heading">
+                <span>01</span>
+                <h2 id="active-rotations-title">Active rotation</h2>
               </div>
-              <div className="party-library-meta">
-                <span>{party.activeParticipantCount} participant(s)</span>
-                <ArrowRight aria-hidden="true" weight="bold" />
-              </div>
-            </Link>
-          ))}
-        </section>
+              {liveParties.map((party) => (
+                <Link
+                  className="party-library-row active-record-row"
+                  to={getPartyDestination(party)}
+                  key={party.id}
+                >
+                  <RotReference code={party.code} live={party.status === "ACTIVE"} />
+                  <div>
+                    <h3>{party.name}</h3>
+                    <p>{statusLabel[party.status]}</p>
+                  </div>
+                  <div className="party-library-meta">
+                    <span>{party.activeParticipantCount} people</span>
+                    <ArrowRight aria-hidden="true" weight="bold" />
+                  </div>
+                </Link>
+              ))}
+            </section>
+          )}
+
+          <section className="party-library" aria-labelledby="your-records-title">
+            <div className="library-section-heading">
+              <span>02</span>
+              <h2 id="your-records-title">Your records</h2>
+            </div>
+            {records.length === 0 ? (
+              <p className="records-empty">Les rotations terminées seront conservées ici.</p>
+            ) : (
+              records.map((party) => (
+                <Link className="party-library-row" to={getPartyDestination(party)} key={party.id}>
+                  <RotReference code={party.code} />
+                  <div>
+                    <h3>{party.name}</h3>
+                    <p>
+                      {new Intl.DateTimeFormat("fr-FR", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(party.createdAt))}
+                    </p>
+                  </div>
+                  <div className="party-library-meta">
+                    <span>{party.activeParticipantCount} people</span>
+                    <ArrowRight aria-hidden="true" weight="bold" />
+                  </div>
+                </Link>
+              ))
+            )}
+          </section>
+        </div>
       )}
     </main>
   );

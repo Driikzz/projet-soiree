@@ -32,7 +32,7 @@ export function SpotifySearch({
   remainingQuota,
   explicitContentAllowed,
   existingTrackIds,
-  title = "Quel son tu veux entendre ?",
+  title = "What’s next?",
   description = "Recherche dans Spotify. Aucun compte n’est nécessaire pour proposer un titre.",
   addTrack,
   onTrackAdded,
@@ -66,9 +66,7 @@ export function SpotifySearch({
           })
         : addTrack(spotifyTrackId),
     onSuccess: async ({ track }) => {
-      setAnnouncement(
-        successMessage?.(track.title) ?? `${track.title} a été ajouté à la playlist.`,
-      );
+      setAnnouncement(successMessage?.(track.title) ?? `${track.title} — added to rotation.`);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] }),
         queryClient.invalidateQueries({ queryKey: ["participant-playlists", partyId] }),
@@ -131,7 +129,7 @@ export function SpotifySearch({
           const cannotAdd = remainingQuota === 0 || isAlreadyAdded || explicitIsBlocked;
           const isAdding = addMutation.isPending && addMutation.variables === track.spotifyTrackId;
           const buttonLabel = isAlreadyAdded
-            ? "Déjà ajouté"
+            ? "Already in rotation"
             : explicitIsBlocked
               ? "Explicite interdit"
               : remainingQuota === 0

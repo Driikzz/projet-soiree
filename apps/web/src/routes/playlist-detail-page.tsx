@@ -1,12 +1,13 @@
-import { ArrowLeft, ArrowSquareOut, LockKey, MusicNotes, UsersThree } from "@phosphor-icons/react";
+import { ArrowLeft, LockKey, MusicNotes, UsersThree } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Navigate, useParams } from "react-router-dom";
 
 import { LoadingPage } from "../components/loading-page";
 import { FormError } from "../components/form-error";
 import { PlaylistVisual } from "../components/playlist-visual";
+import { RotationTrackCard } from "../components/rotation-track-card";
 import { SpotifySearch } from "../components/spotify-search";
-import { FlameBudgetSummary, TrackFlameControl } from "../components/track-flame-control";
+import { FlameBudgetSummary } from "../components/track-flame-control";
 import { TrackRewardPanel } from "../components/track-reward-panel";
 import { ApiError } from "../lib/api/client";
 import { getParticipantPlaylists } from "../lib/api/playlists";
@@ -107,6 +108,13 @@ export function PlaylistDetailPage() {
     maxPerTrack: 3,
   };
   const existingTrackIds = new Set(tracks.map((track) => track.spotifyTrackId));
+  const orderedTracks = [...tracks].sort(
+    (left, right) =>
+      Number(right.status === "PENDING") - Number(left.status === "PENDING") ||
+      right.voteScore - left.voteScore ||
+      right.voteSupporterCount - left.voteSupporterCount ||
+      new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime(),
+  );
 
   return (
     <main className="playlist-detail-shell">
@@ -205,61 +213,21 @@ export function PlaylistDetailPage() {
               {tracks.length} morceau{tracks.length === 1 ? "" : "x"} dans cette ambiance.
             </p>
           </div>
-          <div className="playlist-track-list">
-            {tracks.map((track) => (
-              <article className="playlist-track-row" key={track.id}>
-                {track.coverUrl === null ? (
-                  <span className="playlist-track-cover cover-fallback">
-                    <MusicNotes aria-hidden="true" />
-                  </span>
-                ) : (
-                  <img
-                    className="playlist-track-cover"
-                    src={track.coverUrl}
-                    alt={`Pochette de ${track.title}`}
-                    loading="lazy"
-                  />
-                )}
-                <div className="playlist-track-copy">
-                  <strong>{track.title}</strong>
-                  <span>{track.artistNames.join(", ")}</span>
-                  <small>
-                    {formatDuration(track.durationMs)} · proposé par{" "}
-                    {track.proposedBy?.nickname ?? "l’organisateur"}
-                  </small>
-                </div>
-                <div className="playlist-track-meta">
-                  <span className="track-status">{trackStatusLabels[track.status]}</span>
-                  <TrackFlameControl
-                    track={track}
-                    flameBudget={flameBudget}
-                    disabled={
-                      !playlist.isActive ||
-                      !playlist.trackVotesEnabled ||
-                      track.status !== "PENDING"
-                    }
-                    pending={trackVoteMutation.isPending}
-                    onAdd={() =>
-                      trackVoteMutation.mutate({
-                        trackId: track.id,
-                        action: "add",
-                      })
-                    }
-                    onRemove={() =>
-                      trackVoteMutation.mutate({ trackId: track.id, action: "remove" })
-                    }
-                  />
-                  <a
-                    href={track.spotifyUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={`Ouvrir ${track.title} dans Spotify`}
-                  >
-                    Spotify
-                    <ArrowSquareOut aria-hidden="true" />
-                  </a>
-                </div>
-              </article>
+          <div className="playlist-track-list rotation-detail-list">
+            {orderedTracks.map((track, index) => (
+              <RotationTrackCard
+                key={track.id}
+                track={track}
+                position={index + 1}
+                label={`${trackStatusLabels[track.status]} · ${formatDuration(track.durationMs)}`}
+                flameBudget={flameBudget}
+                disabled={
+                  !playlist.isActive || !playlist.trackVotesEnabled || track.status !== "PENDING"
+                }
+                pending={trackVoteMutation.isPending}
+                onAdd={() => trackVoteMutation.mutate({ trackId: track.id, action: "add" })}
+                onRemove={() => trackVoteMutation.mutate({ trackId: track.id, action: "remove" })}
+              />
             ))}
           </div>
         </section>

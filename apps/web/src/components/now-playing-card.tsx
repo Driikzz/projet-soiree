@@ -44,7 +44,7 @@ function SkipVoteControl({ partyId, playback }: { partyId: string; playback: Par
   return (
     <div className="skip-vote-panel">
       <div>
-        <strong>Ce son ne passe pas ?</strong>
+        <strong>Skip this track?</strong>
         <span>
           {missingVotes === 0
             ? "Passage au morceau suivant…"
@@ -87,7 +87,7 @@ export function NowPlayingCard({
           <MusicNotes aria-hidden="true" weight="duotone" />
         </span>
         <div>
-          <p className="eyebrow">Lecture SongFest</p>
+          <p className="eyebrow">Now playing</p>
           <h2 id="now-playing-title">La musique arrive.</h2>
           <p>
             {playback.queuedTrack === null
@@ -114,7 +114,7 @@ export function NowPlayingCard({
         />
       )}
       <div className="now-playing-copy">
-        <p className="eyebrow">{playback.isPlaying ? "En cours" : "En pause"}</p>
+        <p className="eyebrow">{playback.isPlaying ? "Now playing" : "Paused"}</p>
         <h2 id="now-playing-title">{track.title}</h2>
         <p>{track.artistNames.join(", ")}</p>
         {track.proposedBy !== null && <small>Proposé par {track.proposedBy.nickname}</small>}

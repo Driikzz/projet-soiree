@@ -50,12 +50,12 @@ export function FlashTurnPanel({
   const turn = flash.turn;
   if (turn === null) {
     return (
-      <aside className="flash-panel flash-panel-upcoming" aria-label="Prochaine Musique Flash">
+      <aside className="flash-panel flash-panel-upcoming" aria-label="Prochain YOUR TURN">
         <span className="flash-icon" aria-hidden="true">
           <Lightning weight="fill" />
         </span>
         <div>
-          <strong>Musique Flash</strong>
+          <strong>Your turn</strong>
           <p>
             {flash.nextFlashTurnAt === null
               ? "Le prochain tirage se prépare."
@@ -81,13 +81,13 @@ export function FlashTurnPanel({
           <Lightning weight="fill" />
         </span>
         <div>
-          <p className="eyebrow">Musique Flash</p>
+          <p className="eyebrow">Your turn</p>
           <h2 id="flash-title">
             {turn.status === "SUBMITTED"
               ? `${turn.participant.nickname} a choisi son son`
               : flash.isCurrentParticipant
-                ? "C’est ton moment"
-                : `${turn.participant.nickname} choisit le prochain son`}
+                ? "YOUR TURN."
+                : `${turn.participant.nickname} is picking.`}
           </h2>
         </div>
         {isActive && (
@@ -120,8 +120,7 @@ export function FlashTurnPanel({
       ) : flash.isCurrentParticipant && !hasExpiredLocally ? (
         <>
           <p className="flash-explanation">
-            Tu as été tiré au sort. Ton choix ne consomme pas ton quota : il coupe le morceau en
-            cours et démarre immédiatement.
+            The room is yours. Ton choix ne consomme pas ton quota et démarre immédiatement.
           </p>
           <SpotifySearch
             partyId={partyId}
@@ -129,9 +128,9 @@ export function FlashTurnPanel({
             remainingQuota={1}
             explicitContentAllowed={explicitContentAllowed}
             existingTrackIds={existingTrackIds}
-            title="Choisis ton son Flash"
+            title="Pick one track"
             description="Les règles de durée, de doublon et de contenu explicite restent actives."
-            successMessage={(trackTitle) => `${trackTitle} démarre en Musique Flash.`}
+            successMessage={(trackTitle) => `${trackTitle} démarre pour YOUR TURN.`}
             addTrack={(spotifyTrackId) => submitParticipantFlashTrack(partyId, { spotifyTrackId })}
           />
         </>

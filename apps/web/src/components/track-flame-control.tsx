@@ -1,4 +1,4 @@
-import { Fire, Minus, Plus } from "@phosphor-icons/react";
+import { Check, Minus, Plus } from "@phosphor-icons/react";
 
 import type { ParticipantPlaylistTrack, TrackFlameBudget } from "@songfest/shared";
 
@@ -27,46 +27,44 @@ export function TrackFlameControl({
     flameBudget.remaining === 0 ||
     track.participantFlameCount >= flameBudget.maxPerTrack;
   const cannotRemove = disabled || pending || track.participantFlameCount === 0;
+  const hasVoted = track.participantFlameCount > 0;
+  const cannotToggleVote = disabled || pending || track.participantFlameCount > 1;
+  const pressSlots = Array.from({ length: flameBudget.maxPerTrack }, (_, index) => index);
 
   return (
     <div className={`track-flame-control${compact ? " compact" : ""}`}>
-      <div className="track-priority-label">
-        <span>Priorité</span>
-        <strong>{track.voteScore}</strong>
-      </div>
-      <div
-        className="track-priority-gauge"
-        role="progressbar"
-        aria-label={`Priorité de ${track.title}`}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={track.voteScore}
+      <button
+        type="button"
+        className={`track-vote-action${hasVoted ? " voted" : ""}`}
+        aria-pressed={hasVoted}
+        disabled={cannotToggleVote}
+        onClick={hasVoted ? onRemove : onAdd}
       >
-        <span style={{ width: `${track.voteScore}%` }} />
-      </div>
-      {!compact && (
-        <small>
-          {track.voteCount} flamme{track.voteCount === 1 ? "" : "s"} · {track.voteSupporterCount}{" "}
-          soutien{track.voteSupporterCount === 1 ? "" : "s"}
-        </small>
-      )}
-      <div className="track-flame-actions">
+        {hasVoted ? <Check aria-hidden="true" weight="bold" /> : <Plus aria-hidden="true" />}
+        {hasVoted ? "Voted" : "Vote"}
+      </button>
+      <div className="track-press-control">
+        <span className="track-press-label">Your press</span>
+        <span
+          className="track-press-dots"
+          aria-label={`${track.participantFlameCount} press placés sur ${track.title}`}
+        >
+          {pressSlots.map((slot) => (
+            <i key={slot} className={slot < track.participantFlameCount ? "used" : ""} />
+          ))}
+        </span>
         <button
           type="button"
-          aria-label={`Retirer une flamme de ${track.title}`}
-          disabled={cannotRemove}
+          aria-label={`Retirer un PRESS de ${track.title}`}
+          disabled={cannotRemove || track.participantFlameCount <= 1}
           onClick={onRemove}
         >
           <Minus aria-hidden="true" weight="bold" />
         </button>
-        <span aria-label={`${track.participantFlameCount} flammes placées sur ${track.title}`}>
-          <Fire aria-hidden="true" weight={track.participantFlameCount > 0 ? "fill" : "bold"} />
-          {track.participantFlameCount}/{flameBudget.maxPerTrack}
-        </span>
         <button
           type="button"
-          aria-label={`Ajouter une flamme à ${track.title}`}
-          disabled={cannotAdd}
+          aria-label={`Ajouter un PRESS à ${track.title}`}
+          disabled={cannotAdd || !hasVoted}
           onClick={onAdd}
         >
           <Plus aria-hidden="true" weight="bold" />
@@ -78,17 +76,17 @@ export function TrackFlameControl({
 
 export function FlameBudgetSummary({ budget }: { budget: TrackFlameBudget }) {
   return (
-    <div className="flame-budget-summary" aria-label="Budget de flammes">
-      <Fire aria-hidden="true" weight="fill" />
+    <div className="flame-budget-summary" aria-label="Budget de PRESS">
       <div>
+        <span>Your press</span>
         <strong>
-          {budget.remaining} flamme{budget.remaining === 1 ? "" : "s"} à distribuer
+          {budget.remaining} disponible{budget.remaining === 1 ? "" : "s"}
         </strong>
-        <span>Maximum {budget.maxPerTrack} par morceau, déplaçables à tout moment.</span>
       </div>
       <b>
         {budget.remaining}/{budget.total}
       </b>
+      <small>Maximum {budget.maxPerTrack} par morceau. Tu peux les déplacer.</small>
     </div>
   );
 }

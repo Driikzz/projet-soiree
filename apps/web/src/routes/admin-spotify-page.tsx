@@ -158,11 +158,11 @@ export function AdminSpotifyPage() {
         <span className="party-mark">
           <MusicNotes aria-hidden="true" weight="fill" />
         </span>
-        <p className="eyebrow">{party.name}</p>
-        <h1 className="screen-title">Connecte la source musicale.</h1>
+        <p className="eyebrow">Spotify & device</p>
+        <h1 className="screen-title">Control.</h1>
         <p className="screen-copy">
           Clique sur le bouton, connecte-toi directement chez Spotify et accepte les autorisations.
-          Aucun token n’est à copier : SongFest utilisera uniquement le compte du créateur de cette
+          Aucun token n’est à copier : ROTATE utilisera uniquement le compte du créateur de cette
           soirée.
         </p>
       </section>
@@ -190,14 +190,14 @@ export function AdminSpotifyPage() {
         <section className="spotify-setup-card">
           <h2>Configuration serveur requise</h2>
           <p>
-            Le développeur doit d’abord configurer l’application Spotify de SongFest sur le serveur.
+            Le développeur doit d’abord configurer l’application Spotify de ROTATE sur le serveur.
             L’organisateur n’aura jamais de token à saisir ou à copier.
           </p>
         </section>
       ) : !status.isConnected ? (
         <section className="spotify-connect-card">
           <div>
-            <h2>Autoriser SongFest</h2>
+            <h2>Autoriser ROTATE</h2>
             <p>
               Spotify demandera l’accès à l’état de lecture, aux appareils et aux commandes du
               player.

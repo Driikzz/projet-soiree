@@ -1,12 +1,12 @@
 import {
   CheckCircle,
   Clock,
-  Fire,
-  ListHeart,
+  Disc,
+  ListNumbers,
   MusicNotes,
   Plus,
   SignOut,
-  Sparkle,
+  UsersThree,
   X,
 } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 
 import { ActiveTrackPreview } from "../components/active-track-preview";
+import { AvatarMark } from "../components/avatar-mark";
 import { FlashTurnPanel } from "../components/flash-turn-panel";
 import { FormError } from "../components/form-error";
 import { LoadingPage } from "../components/loading-page";
@@ -21,6 +22,8 @@ import { NowPlayingCard } from "../components/now-playing-card";
 import { PlaylistCard } from "../components/playlist-card";
 import { PlaylistRewardPanel } from "../components/playlist-reward-panel";
 import { RealtimeStatus } from "../components/realtime-status";
+import { RotateBrand } from "../components/rotate-brand";
+import { RotReference } from "../components/rot-reference";
 import { ApiError } from "../lib/api/client";
 import { getParticipantFlashState } from "../lib/api/flash";
 import { getParticipantSession, leaveParty } from "../lib/api/parties";
@@ -140,10 +143,12 @@ export function GuestPartyPage() {
 
   return (
     <main className="guest-shell">
-      <header className="guest-header">
-        <Link className="brand-link" to="/">
-          SongFest
-        </Link>
+      <header className="guest-header rotate-guest-header">
+        <RotateBrand compact />
+        <div className="guest-party-context">
+          <RotReference code={session.party.code} live={session.party.status === "ACTIVE"} />
+          <span>{session.party.name}</span>
+        </div>
         <div className="guest-header-actions">
           <RealtimeStatus status={realtimeStatus} />
           <button
@@ -157,20 +162,26 @@ export function GuestPartyPage() {
         </div>
       </header>
 
-      <section className="guest-welcome">
+      <section className="guest-welcome rotate-live-heading" id="guest-live">
         <div>
-          <p className="eyebrow">{session.party.name}</p>
-          <h1>Salut {session.participant.nickname}, à toi de jouer.</h1>
+          <p className="eyebrow">Live rotation</p>
+          <h1>{session.party.name}</h1>
         </div>
-        <p>Propose des sons, distribue tes flammes et aide le groupe à choisir l’ambiance.</p>
+        <div className="guest-you-chip">
+          <AvatarMark seed={session.participant.nickname} label={session.participant.nickname} />
+          <span>
+            <small>You</small>
+            {session.participant.nickname}
+          </span>
+        </div>
       </section>
 
       {showGuide && (
         <section className="guest-guide" aria-labelledby="guest-guide-title">
           <div className="guest-guide-heading">
             <div>
-              <p className="eyebrow">Le principe en 20 secondes</p>
-              <h2 id="guest-guide-title">Trois gestes, une playlist collective</h2>
+              <p className="eyebrow">First press</p>
+              <h2 id="guest-guide-title">Vote. Press. Listen.</h2>
             </div>
             <button
               type="button"
@@ -188,22 +199,22 @@ export function GuestPartyPage() {
             <li>
               <span>1</span>
               <div>
-                <strong>Propose</strong>
-                <small>Ajoute un morceau dans l’ambiance de ton choix.</small>
+                <strong>Vote</strong>
+                <small>Soutiens les morceaux que tu veux entendre.</small>
               </div>
             </li>
             <li>
               <span>2</span>
               <div>
-                <strong>Priorise</strong>
-                <small>Distribue tes 5 flammes sur les morceaux que tu veux entendre.</small>
+                <strong>Press</strong>
+                <small>Dépense ta ressource limitée pour augmenter leur poids.</small>
               </div>
             </li>
             <li>
               <span>3</span>
               <div>
-                <strong>Change d’ambiance</strong>
-                <small>Vote pour la playlist qui prendra le relais.</small>
+                <strong>Mood</strong>
+                <small>Choisis l’ambiance qui prendra le relais.</small>
               </div>
             </li>
           </ol>
@@ -217,16 +228,16 @@ export function GuestPartyPage() {
         message={playbackQuery.error instanceof Error ? playbackQuery.error.message : undefined}
       />
       {playbackQuery.data !== undefined && (
-        <NowPlayingCard playback={playbackQuery.data} partyId={session.party.id} />
+        <div className="guest-now-playing">
+          <NowPlayingCard playback={playbackQuery.data} partyId={session.party.id} />
+        </div>
       )}
 
       <section className="guest-action-panel" aria-labelledby="guest-actions-title">
         <div>
-          <p className="eyebrow">Que veux-tu faire maintenant ?</p>
+          <p className="eyebrow">Current mood</p>
           <h2 id="guest-actions-title">
-            {activePlaylist === undefined
-              ? "La soirée se prépare"
-              : `${activePlaylist.name} est l’ambiance active`}
+            {activePlaylist === undefined ? "La soirée se prépare" : activePlaylist.name}
           </h2>
           {proposalPlaylist !== undefined && (
             <p>
@@ -239,7 +250,7 @@ export function GuestPartyPage() {
           {proposalPlaylist === undefined ? (
             <button className="primary-button" disabled>
               <Plus aria-hidden="true" />
-              Proposer un son
+              Ajouter un morceau
             </button>
           ) : (
             <Link
@@ -247,16 +258,14 @@ export function GuestPartyPage() {
               to={`/party/${session.party.id}/playlists/${proposalPlaylist.id}#spotify-search-title`}
             >
               <Plus aria-hidden="true" weight="bold" />
-              Proposer un son
+              Ajouter un morceau
               <span>{proposalPlaylist.remainingTrackQuota} restants</span>
             </Link>
           )}
           <a className="guest-secondary-action" href="#guest-track-votes">
-            <Fire aria-hidden="true" />
-            Distribuer mes flammes
+            Voir la rotation
           </a>
           <a className="guest-secondary-action" href="#guest-playlists-title">
-            <ListHeart aria-hidden="true" />
             Changer d’ambiance
           </a>
         </div>
@@ -295,8 +304,8 @@ export function GuestPartyPage() {
       <section className="guest-playlists" aria-labelledby="guest-playlists-title">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Les ambiances</p>
-            <h2 id="guest-playlists-title">Explore ou vote pour la suite</h2>
+            <p className="eyebrow">Mood shift</p>
+            <h2 id="guest-playlists-title">Choisis la suite</h2>
             <p>
               Ouvre une carte pour ajouter des sons. Le bouton de vote sert uniquement à choisir la
               prochaine ambiance.
@@ -373,27 +382,48 @@ export function GuestPartyPage() {
         <PlaylistRewardPanel partyId={session.party.id} playlists={playlists} />
       </section>
 
-      <nav className="guest-mobile-nav" aria-label="Actions principales">
-        {proposalPlaylist === undefined ? (
-          <span aria-disabled="true">
-            <Plus aria-hidden="true" />
-            Proposer
+      <section className="guest-people" id="guest-people" aria-labelledby="guest-people-title">
+        <div>
+          <p className="eyebrow">People</p>
+          <h2 id="guest-people-title">Dans la rotation</h2>
+          <p>
+            {playlistChange?.activeParticipantCount ?? 1} personne
+            {(playlistChange?.activeParticipantCount ?? 1) === 1 ? "" : "s"} participe
+            {(playlistChange?.activeParticipantCount ?? 1) === 1 ? "" : "nt"} maintenant.
+          </p>
+        </div>
+        <div className="guest-current-person">
+          <AvatarMark seed={session.participant.nickname} label={session.participant.nickname} />
+          <span>
+            <strong>{session.participant.nickname}</strong>
+            You · in the rotation
           </span>
-        ) : (
-          <Link to={`/party/${session.party.id}/playlists/${proposalPlaylist.id}`}>
-            <Plus aria-hidden="true" />
-            Proposer
-          </Link>
-        )}
-        <a href="#guest-track-votes">
-          <Fire aria-hidden="true" />
-          Flammes
+        </div>
+      </section>
+
+      <nav className="guest-mobile-nav" aria-label="Actions principales">
+        <a href="#guest-live">
+          <Disc aria-hidden="true" />
+          Live
         </a>
-        <a href="#guest-playlists-title">
-          <Sparkle aria-hidden="true" />
-          Ambiances
+        <a href="#guest-track-votes">
+          <ListNumbers aria-hidden="true" />
+          Rotation
+        </a>
+        <a href="#guest-people">
+          <UsersThree aria-hidden="true" />
+          People
         </a>
       </nav>
+      {proposalPlaylist !== undefined && (
+        <Link
+          className="guest-add-fab"
+          to={`/party/${session.party.id}/playlists/${proposalPlaylist.id}#spotify-search-title`}
+          aria-label="Ajouter un morceau"
+        >
+          <Plus aria-hidden="true" weight="bold" />
+        </Link>
+      )}
     </main>
   );
 }

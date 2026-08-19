@@ -57,7 +57,7 @@ export function PartySettingsForm({
           />
         </label>
         <label>
-          Flammes par participant
+          PRESS par participant
           <input
             type="number"
             min={1}
@@ -121,7 +121,7 @@ export function PartySettingsForm({
         Verrouiller temporairement l’ambiance active
       </label>
       <fieldset className="flash-settings-fieldset">
-        <legend>Musique Flash</legend>
+        <legend>Your turn</legend>
         <label className="check-field">
           <input type="checkbox" {...register("flashModeEnabled")} />
           Tirer régulièrement un participant au sort

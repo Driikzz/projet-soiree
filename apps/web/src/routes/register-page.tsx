@@ -8,6 +8,7 @@ import { z } from "zod";
 import { userRegistrationRequestSchema, type UserSession } from "@songfest/shared";
 
 import { FormError } from "../components/form-error";
+import { RotateBrand } from "../components/rotate-brand";
 import { registerUser } from "../lib/api/auth";
 
 const registrationFormSchema = userRegistrationRequestSchema
@@ -39,16 +40,14 @@ export function RegisterPage() {
 
   return (
     <main className="page-shell compact-shell">
-      <Link className="brand-link" to="/">
-        SongFest
-      </Link>
+      <RotateBrand />
       <section className="form-card" aria-labelledby="register-title">
         <span className="icon-chip accent-chip">
           <UserPlus aria-hidden="true" weight="bold" />
         </span>
         <p className="eyebrow">Ton espace</p>
         <h1 className="screen-title" id="register-title">
-          Crée tes soirées.
+          Create your records.
         </h1>
         <p className="screen-copy">
           Un seul compte pour préparer, lancer et retrouver toutes tes soirées.
