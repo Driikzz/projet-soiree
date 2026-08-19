@@ -30,6 +30,7 @@ import {
   getParticipantSession,
   getPublicParty,
   joinParty,
+  listPartyPeople,
   listAdminParties,
   openParty,
 } from "./party.service.js";
@@ -113,6 +114,12 @@ export const createParticipantRouter = () => {
   router.get("/me", requireParticipant, async (request, response) => {
     const session = await getParticipantSession(request.participantAuth!.participant.id);
     response.json(session);
+  });
+
+  router.get("/parties/:partyId/people", requireParticipant, async (request, response) => {
+    const partyId = uuidSchema.parse(request.params.partyId);
+    const people = await listPartyPeople(request.participantAuth!.participant.id, partyId);
+    response.json(people);
   });
 
   router.post(

@@ -186,6 +186,38 @@ export function AdminSpotifyPage() {
         </div>
       )}
 
+      {status.isConnected &&
+        (devicesQuery.isError || playbackQuery.isError || partyPlaybackQuery.isError) && (
+          <section
+            className="spotify-incident"
+            role="alert"
+            aria-labelledby="spotify-incident-title"
+          >
+            <WarningCircle aria-hidden="true" weight="fill" />
+            <div>
+              <p className="eyebrow">Incident Spotify</p>
+              <h2 id="spotify-incident-title">Music stopped.</h2>
+              <p>La connexion Spotify a été perdue. Les votes et la rotation sont conservés.</p>
+            </div>
+            <div className="playback-controls">
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => {
+                  void devicesQuery.refetch();
+                  void playbackQuery.refetch();
+                  void partyPlaybackQuery.refetch();
+                }}
+              >
+                Réessayer
+              </button>
+              <a className="secondary-button" href="#devices-title">
+                Changer d’appareil
+              </a>
+            </div>
+          </section>
+        )}
+
       {!status.isConfigured ? (
         <section className="spotify-setup-card">
           <h2>Configuration serveur requise</h2>

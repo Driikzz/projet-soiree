@@ -61,6 +61,19 @@ export const participantSessionSchema = z.object({
   party: publicPartySchema,
 });
 
+export const partyPersonSchema = z.object({
+  id: uuidSchema,
+  nickname: nicknameSchema,
+  avatarSeed: z.string(),
+  contributionCount: z.number().int().nonnegative(),
+  isCurrent: z.boolean(),
+});
+
+export const partyPeopleSchema = z.object({
+  host: z.object({ displayName: z.string().min(1) }),
+  participants: z.array(partyPersonSchema),
+});
+
 export type CreatePartyRequest = z.infer<typeof createPartyRequestSchema>;
 export type JoinPartyRequest = z.infer<typeof joinPartyRequestSchema>;
 export type PartySettings = z.infer<typeof partySettingsSchema>;
@@ -68,3 +81,5 @@ export type PartySummary = z.infer<typeof partySummarySchema>;
 export type PublicParty = z.infer<typeof publicPartySchema>;
 export type ParticipantSummary = z.infer<typeof participantSummarySchema>;
 export type ParticipantSession = z.infer<typeof participantSessionSchema>;
+export type PartyPerson = z.infer<typeof partyPersonSchema>;
+export type PartyPeople = z.infer<typeof partyPeopleSchema>;

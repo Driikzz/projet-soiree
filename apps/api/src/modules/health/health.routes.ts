@@ -6,7 +6,7 @@ export type ReadinessCheck = () => Promise<boolean>;
 
 const createHealthResponse = (): HealthResponse => ({
   status: "ok",
-  service: "songfest-api",
+  service: "rotate-api",
   timestamp: new Date().toISOString(),
 });
 
@@ -27,7 +27,7 @@ export const createHealthRouter = (readinessCheck: ReadinessCheck) => {
     if (!ready) {
       response.status(503).json({
         status: "unavailable",
-        service: "songfest-api",
+        service: "rotate-api",
         timestamp: new Date().toISOString(),
       });
       return;

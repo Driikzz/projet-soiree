@@ -22,6 +22,7 @@ describe("realtime query resources", () => {
     ]);
 
     expect(keys).toContainEqual(["admin-party", "party-id"]);
+    expect(keys).toContainEqual(["party-people", "party-id"]);
     expect(keys).toContainEqual(["participant-playlists", "party-id"]);
     expect(keys).toContainEqual(["spotify-playback", "party-id"]);
     expect(keys).toContainEqual(["admin-rewards", "party-id"]);

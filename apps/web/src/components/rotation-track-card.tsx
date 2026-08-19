@@ -11,6 +11,7 @@ interface RotationTrackCardProps {
   flameBudget?: TrackFlameBudget;
   disabled?: boolean;
   pending?: boolean;
+  moving?: boolean;
   compact?: boolean;
   label?: string;
   actions?: ReactNode;
@@ -28,6 +29,7 @@ export function RotationTrackCard({
   flameBudget,
   disabled = false,
   pending = false,
+  moving = false,
   compact = false,
   label,
   actions,
@@ -40,7 +42,7 @@ export function RotationTrackCard({
 
   return (
     <article
-      className={`rotation-track-card${stateClass}${votedClass}${compact ? " is-compact" : ""}`}
+      className={`rotation-track-card${stateClass}${votedClass}${moving ? " is-moving" : ""}${compact ? " is-compact" : ""}`}
     >
       <span className="rotation-track-position">{String(position).padStart(2, "0")}</span>
       {track.coverUrl === null ? (

@@ -28,6 +28,13 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
           <MusicNotes aria-hidden="true" />
           Music
         </NavLink>
+        <Link
+          className="admin-party-nav-link"
+          to={`/organizer/parties/${partyId}/dashboard#host-people`}
+        >
+          <UsersThree aria-hidden="true" />
+          People
+        </Link>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/spotify`}>
           <SlidersHorizontal aria-hidden="true" />
           Control

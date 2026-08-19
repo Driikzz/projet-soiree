@@ -16,6 +16,9 @@ export function RecordSummary({
   const lastTrack = dashboard.recentTracks.find((track) =>
     ["PLAYED", "SKIPPED"].includes(track.status),
   );
+  const mostWanted = [...dashboard.recentTracks].sort(
+    (left, right) => right.voteCount - left.voteCount,
+  )[0];
 
   return (
     <section className="record-summary" aria-labelledby="record-title">
@@ -46,6 +49,28 @@ export function RecordSummary({
 
       <div className="record-liner-notes">
         <p className="eyebrow">The night, recorded.</p>
+        {mostWanted !== undefined && (
+          <article className="record-last-track record-most-wanted">
+            {mostWanted.coverUrl === null ? (
+              <span className="rotation-track-cover cover-fallback" aria-hidden="true">
+                <MusicNotes />
+              </span>
+            ) : (
+              <img
+                className="rotation-track-cover"
+                src={mostWanted.coverUrl}
+                alt={`Pochette de ${mostWanted.title}`}
+              />
+            )}
+            <div>
+              <small>Most wanted</small>
+              <strong>{mostWanted.title}</strong>
+              <span>
+                {mostWanted.artistNames.join(", ")} · {mostWanted.voteCount} PRESS
+              </span>
+            </div>
+          </article>
+        )}
         {lastTrack !== undefined && (
           <article className="record-last-track">
             <span className="rotation-track-cover cover-fallback" aria-hidden="true">

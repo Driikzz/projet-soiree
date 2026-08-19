@@ -1,9 +1,9 @@
 import type { ClientToServerEvents, ServerToClientEvents } from "@songfest/shared";
 import { io, type Socket } from "socket.io-client";
 
-export type SongFestSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
+export type RotateSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
-export const realtimeSocket: SongFestSocket = io({
+export const realtimeSocket: RotateSocket = io({
   autoConnect: false,
   withCredentials: true,
   reconnection: true,

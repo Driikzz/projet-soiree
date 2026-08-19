@@ -14,7 +14,7 @@ import { canSubscribeToParty, isTrustedSocketOrigin, loadSocketIdentity } from "
 import { getPartyRoom } from "./party-room.js";
 import { registerRealtimePublisher } from "./realtime-publisher.js";
 import { consumeSocketAction } from "./socket-rate-limit.js";
-import type { SongFestSocketServer } from "./socket.types.js";
+import type { RotateSocketServer } from "./socket.types.js";
 
 const invalidPayload: SocketActionResult = {
   ok: false,
@@ -59,7 +59,7 @@ const allRealtimeResources = [
 ] as const satisfies readonly RealtimeResource[];
 
 const emitFullResync = async (
-  socket: Parameters<Parameters<SongFestSocketServer["on"]>[1]>[0],
+  socket: Parameters<Parameters<RotateSocketServer["on"]>[1]>[0],
   partyId: string,
 ) => {
   const party = await prisma.party.findUnique({
@@ -78,8 +78,8 @@ const emitFullResync = async (
   });
 };
 
-export const createSocketServer = (httpServer: HttpServer): SongFestSocketServer => {
-  const io: SongFestSocketServer = new Server(httpServer, {
+export const createSocketServer = (httpServer: HttpServer): RotateSocketServer => {
+  const io: RotateSocketServer = new Server(httpServer, {
     cors: {
       origin: env.WEB_ORIGIN,
       credentials: true,

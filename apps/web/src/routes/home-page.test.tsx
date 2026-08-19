@@ -13,7 +13,7 @@ describe("HomePage", () => {
         new Response(
           JSON.stringify({
             status: "ok",
-            service: "songfest-api",
+            service: "rotate-api",
             timestamp: new Date().toISOString(),
           }),
           {

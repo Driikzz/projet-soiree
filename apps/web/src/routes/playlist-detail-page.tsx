@@ -12,7 +12,13 @@ import { TrackRewardPanel } from "../components/track-reward-panel";
 import { ApiError } from "../lib/api/client";
 import { getParticipantPlaylists } from "../lib/api/playlists";
 import { getParticipantSession } from "../lib/api/parties";
-import { addTrackVote, getPlaylistTracks, removeTrackVote } from "../lib/api/tracks";
+import {
+  addTrackVote,
+  applyTrackVoteResult,
+  getPlaylistTracks,
+  removeTrackVote,
+  type TrackListResponse,
+} from "../lib/api/tracks";
 import { usePartyRealtime } from "../lib/realtime/use-party-realtime";
 
 const formatDuration = (durationMs: number) => {
@@ -55,7 +61,10 @@ export function PlaylistDetailPage() {
   const trackVoteMutation = useMutation({
     mutationFn: ({ trackId, action }: { trackId: string; action: "add" | "remove" }) =>
       action === "add" ? addTrackVote(trackId) : removeTrackVote(trackId),
-    onSuccess: async () => {
+    onSuccess: async ({ vote }) => {
+      queryClient.setQueryData<TrackListResponse>(["playlist-tracks", playlistId], (current) =>
+        applyTrackVoteResult(current, vote),
+      );
       await queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] });
     },
   });
@@ -225,6 +234,9 @@ export function PlaylistDetailPage() {
                   !playlist.isActive || !playlist.trackVotesEnabled || track.status !== "PENDING"
                 }
                 pending={trackVoteMutation.isPending}
+                moving={
+                  trackVoteMutation.isPending && trackVoteMutation.variables?.trackId === track.id
+                }
                 onAdd={() => trackVoteMutation.mutate({ trackId: track.id, action: "add" })}
                 onRemove={() => trackVoteMutation.mutate({ trackId: track.id, action: "remove" })}
               />

@@ -1,6 +1,6 @@
-# SongFest
+# ROTATE
 
-SongFest est une application web collaborative de gestion musicale pour les soirées privées.
+ROTATE est une application web collaborative de gestion musicale pour les soirées privées.
 Les invités proposent et votent depuis leur navigateur. L’organisateur diffuse depuis son propre
 compte Spotify et conserve le contrôle final.
 

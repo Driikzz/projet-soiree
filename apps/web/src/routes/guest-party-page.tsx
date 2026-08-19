@@ -26,7 +26,7 @@ import { RotateBrand } from "../components/rotate-brand";
 import { RotReference } from "../components/rot-reference";
 import { ApiError } from "../lib/api/client";
 import { getParticipantFlashState } from "../lib/api/flash";
-import { getParticipantSession, leaveParty } from "../lib/api/parties";
+import { getParticipantSession, getPartyPeople, leaveParty } from "../lib/api/parties";
 import { getParticipantPlayback } from "../lib/api/playback";
 import { addPlaylistVote, getParticipantPlaylists, removePlaylistVote } from "../lib/api/playlists";
 import { getPlaylistTracks } from "../lib/api/tracks";
@@ -36,7 +36,8 @@ export function GuestPartyPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { partyId } = useParams();
-  const guideStorageKey = `songfest_guest_guide_seen:${partyId ?? "unknown"}`;
+  const [activeTab, setActiveTab] = useState<"live" | "rotation" | "people">("live");
+  const guideStorageKey = `rotate_guest_guide_seen:${partyId ?? "unknown"}`;
   const [showGuide, setShowGuide] = useState(
     () => window.localStorage.getItem(guideStorageKey) !== "true",
   );
@@ -63,6 +64,13 @@ export function GuestPartyPage() {
   const flashQuery = useQuery({
     queryKey: ["party-flash", partyId],
     queryFn: ({ signal }) => getParticipantFlashState(partyId ?? "", signal),
+    enabled: partyId !== undefined,
+    retry: false,
+    refetchInterval: 15_000,
+  });
+  const peopleQuery = useQuery({
+    queryKey: ["party-people", partyId],
+    queryFn: ({ signal }) => getPartyPeople(partyId ?? "", signal),
     enabled: partyId !== undefined,
     retry: false,
     refetchInterval: 15_000,
@@ -162,7 +170,7 @@ export function GuestPartyPage() {
         </div>
       </header>
 
-      <section className="guest-welcome rotate-live-heading" id="guest-live">
+      <section className="guest-welcome rotate-live-heading" hidden={activeTab !== "live"}>
         <div>
           <p className="eyebrow">Live rotation</p>
           <h1>{session.party.name}</h1>
@@ -176,7 +184,7 @@ export function GuestPartyPage() {
         </div>
       </section>
 
-      {showGuide && (
+      {showGuide && activeTab === "live" && (
         <section className="guest-guide" aria-labelledby="guest-guide-title">
           <div className="guest-guide-heading">
             <div>
@@ -228,12 +236,16 @@ export function GuestPartyPage() {
         message={playbackQuery.error instanceof Error ? playbackQuery.error.message : undefined}
       />
       {playbackQuery.data !== undefined && (
-        <div className="guest-now-playing">
+        <div className="guest-now-playing" hidden={activeTab !== "live"}>
           <NowPlayingCard playback={playbackQuery.data} partyId={session.party.id} />
         </div>
       )}
 
-      <section className="guest-action-panel" aria-labelledby="guest-actions-title">
+      <section
+        className="guest-action-panel"
+        aria-labelledby="guest-actions-title"
+        hidden={activeTab !== "live"}
+      >
         <div>
           <p className="eyebrow">Current mood</p>
           <h2 id="guest-actions-title">
@@ -262,9 +274,13 @@ export function GuestPartyPage() {
               <span>{proposalPlaylist.remainingTrackQuota} restants</span>
             </Link>
           )}
-          <a className="guest-secondary-action" href="#guest-track-votes">
+          <button
+            type="button"
+            className="guest-secondary-action"
+            onClick={() => setActiveTab("rotation")}
+          >
             Voir la rotation
-          </a>
+          </button>
           <a className="guest-secondary-action" href="#guest-playlists-title">
             Changer d’ambiance
           </a>
@@ -274,7 +290,7 @@ export function GuestPartyPage() {
       <FormError
         message={flashQuery.error instanceof Error ? flashQuery.error.message : undefined}
       />
-      {flashQuery.data !== undefined && (
+      {flashQuery.data !== undefined && activeTab === "live" && (
         <FlashTurnPanel
           partyId={session.party.id}
           flash={flashQuery.data.flash}
@@ -283,25 +299,37 @@ export function GuestPartyPage() {
         />
       )}
 
-      {activePlaylist !== undefined && (
-        <ActiveTrackPreview
-          partyId={session.party.id}
-          playlistId={activePlaylist.id}
-          playlistName={activePlaylist.name}
-          tracks={activeTracks}
-          flameBudget={
-            activeTracksQuery.data?.flameBudget ?? {
-              total: 5,
-              used: 0,
-              remaining: 5,
-              maxPerTrack: 3,
+      <div className="guest-tab-panel" hidden={activeTab !== "rotation"}>
+        {activePlaylist !== undefined ? (
+          <ActiveTrackPreview
+            partyId={session.party.id}
+            playlistId={activePlaylist.id}
+            playlistName={activePlaylist.name}
+            tracks={activeTracks}
+            flameBudget={
+              activeTracksQuery.data?.flameBudget ?? {
+                total: 5,
+                used: 0,
+                remaining: 5,
+                maxPerTrack: 3,
+              }
             }
-          }
-          votesEnabled={activePlaylist.trackVotesEnabled}
-        />
-      )}
+            votesEnabled={activePlaylist.trackVotesEnabled}
+          />
+        ) : (
+          <section className="tracks-empty-state">
+            <MusicNotes aria-hidden="true" />
+            <h2>La rotation se prépare.</h2>
+            <p>Le host choisit encore la première ambiance.</p>
+          </section>
+        )}
+      </div>
 
-      <section className="guest-playlists" aria-labelledby="guest-playlists-title">
+      <section
+        className="guest-playlists"
+        aria-labelledby="guest-playlists-title"
+        hidden={activeTab !== "live"}
+      >
         <div className="section-heading">
           <div>
             <p className="eyebrow">Mood shift</p>
@@ -382,38 +410,71 @@ export function GuestPartyPage() {
         <PlaylistRewardPanel partyId={session.party.id} playlists={playlists} />
       </section>
 
-      <section className="guest-people" id="guest-people" aria-labelledby="guest-people-title">
-        <div>
+      <section
+        className="guest-people"
+        aria-labelledby="guest-people-title"
+        hidden={activeTab !== "people"}
+      >
+        <header className="guest-people-heading">
+          <RotReference code={session.party.code} />
           <p className="eyebrow">People</p>
           <h2 id="guest-people-title">Dans la rotation</h2>
-          <p>
-            {playlistChange?.activeParticipantCount ?? 1} personne
-            {(playlistChange?.activeParticipantCount ?? 1) === 1 ? "" : "s"} participe
-            {(playlistChange?.activeParticipantCount ?? 1) === 1 ? "" : "nt"} maintenant.
-          </p>
-        </div>
-        <div className="guest-current-person">
-          <AvatarMark seed={session.participant.nickname} label={session.participant.nickname} />
-          <span>
-            <strong>{session.participant.nickname}</strong>
-            You · in the rotation
-          </span>
+          <p>{peopleQuery.data?.participants.length ?? 0} personnes participent maintenant.</p>
+        </header>
+        <FormError
+          message={peopleQuery.error instanceof Error ? peopleQuery.error.message : undefined}
+        />
+        <div className="people-list">
+          {peopleQuery.data !== undefined && (
+            <article className="people-row host-row">
+              <span className="host-mark" aria-hidden="true">
+                R.
+              </span>
+              <span>
+                <strong>{peopleQuery.data.host.displayName}</strong>
+                Host
+              </span>
+              <b>Host</b>
+            </article>
+          )}
+          {peopleQuery.data?.participants.map((person) => (
+            <article className={`people-row${person.isCurrent ? " is-you" : ""}`} key={person.id}>
+              <AvatarMark seed={person.avatarSeed} label={person.nickname} />
+              <span>
+                <strong>{person.nickname}</strong>
+                {person.contributionCount} morceau{person.contributionCount === 1 ? "" : "x"}
+              </span>
+              {person.isCurrent && <b>You</b>}
+            </article>
+          ))}
         </div>
       </section>
 
       <nav className="guest-mobile-nav" aria-label="Actions principales">
-        <a href="#guest-live">
+        <button
+          type="button"
+          aria-current={activeTab === "live" ? "page" : undefined}
+          onClick={() => setActiveTab("live")}
+        >
           <Disc aria-hidden="true" />
           Live
-        </a>
-        <a href="#guest-track-votes">
+        </button>
+        <button
+          type="button"
+          aria-current={activeTab === "rotation" ? "page" : undefined}
+          onClick={() => setActiveTab("rotation")}
+        >
           <ListNumbers aria-hidden="true" />
           Rotation
-        </a>
-        <a href="#guest-people">
+        </button>
+        <button
+          type="button"
+          aria-current={activeTab === "people" ? "page" : undefined}
+          onClick={() => setActiveTab("people")}
+        >
           <UsersThree aria-hidden="true" />
           People
-        </a>
+        </button>
       </nav>
       {proposalPlaylist !== undefined && (
         <Link

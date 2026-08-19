@@ -14,7 +14,7 @@ export interface SocketData {
   actionTimestamps: number[];
 }
 
-export type SongFestSocketServer = Server<
+export type RotateSocketServer = Server<
   ClientToServerEvents,
   ServerToClientEvents,
   Record<string, never>,

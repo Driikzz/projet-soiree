@@ -15,7 +15,7 @@ describe("health routes", () => {
 
       expect(response.body).toMatchObject({
         status: "ok",
-        service: "songfest-api",
+        service: "rotate-api",
       });
       expect(response.headers).toHaveProperty("x-request-id");
       expect(new Date(response.body.timestamp as string).toString()).not.toBe("Invalid Date");
@@ -48,7 +48,7 @@ describe("health routes", () => {
 
     expect(response.body).toMatchObject({
       status: "unavailable",
-      service: "songfest-api",
+      service: "rotate-api",
     });
   });
 });

@@ -8,10 +8,33 @@ import type {
 
 import { apiRequest } from "./client";
 
-interface TrackListResponse {
+export interface TrackListResponse {
   tracks: ParticipantPlaylistTrack[];
   flameBudget: TrackFlameBudget;
 }
+
+export const applyTrackVoteResult = (
+  current: TrackListResponse | undefined,
+  vote: TrackVoteResult,
+): TrackListResponse | undefined => {
+  if (current === undefined) return undefined;
+
+  return {
+    flameBudget: vote.flameBudget,
+    tracks: current.tracks.map((track) =>
+      track.id === vote.trackId
+        ? {
+            ...track,
+            voteCount: vote.voteCount,
+            participantHasVoted: vote.participantHasVoted,
+            participantFlameCount: vote.participantFlameCount,
+            voteSupporterCount: vote.voteSupporterCount,
+            voteScore: vote.voteScore,
+          }
+        : track,
+    ),
+  };
+};
 
 interface AddTrackResponse {
   track: ParticipantPlaylistTrack;

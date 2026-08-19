@@ -10,16 +10,16 @@ import type {
 import { logger } from "../lib/logger.js";
 import { prisma } from "../lib/prisma.js";
 import { getPartyRoom } from "./party-room.js";
-import type { SongFestSocketServer } from "./socket.types.js";
+import type { RotateSocketServer } from "./socket.types.js";
 
 interface PartyEventContext {
   partyId: string;
   version: number;
 }
 
-let socketServer: SongFestSocketServer | undefined;
+let socketServer: RotateSocketServer | undefined;
 
-export const registerRealtimePublisher = (io: SongFestSocketServer) => {
+export const registerRealtimePublisher = (io: RotateSocketServer) => {
   socketServer = io;
 };
 

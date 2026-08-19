@@ -86,11 +86,11 @@ async function seed() {
       code: "DEMO26",
     },
     update: {
-      name: "Soirée SongFest",
+      name: "ROTATE Opening Night",
     },
     create: {
       adminId: user.id,
-      name: "Soirée SongFest",
+      name: "ROTATE Opening Night",
       code: "DEMO26",
       settings: {
         create: {},

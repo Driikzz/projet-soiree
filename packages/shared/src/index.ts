@@ -18,4 +18,4 @@ export * from "./schemas/spotify.js";
 export * from "./schemas/tracks.js";
 export * from "./socket/events.js";
 
-export const APP_NAME = "SongFest";
+export const APP_NAME = "ROTATE";

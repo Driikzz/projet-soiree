@@ -7,7 +7,12 @@ import type { ParticipantPlaylistTrack, TrackFlameBudget } from "@songfest/share
 import { FormError } from "./form-error";
 import { FlameBudgetSummary } from "./track-flame-control";
 import { RotationTrackCard } from "./rotation-track-card";
-import { addTrackVote, removeTrackVote } from "../lib/api/tracks";
+import {
+  addTrackVote,
+  applyTrackVoteResult,
+  removeTrackVote,
+  type TrackListResponse,
+} from "../lib/api/tracks";
 
 interface ActiveTrackPreviewProps {
   partyId: string;
@@ -30,7 +35,10 @@ export function ActiveTrackPreview({
   const voteMutation = useMutation({
     mutationFn: ({ trackId, action }: { trackId: string; action: "add" | "remove" }) =>
       action === "add" ? addTrackVote(trackId) : removeTrackVote(trackId),
-    onSuccess: async () => {
+    onSuccess: async ({ vote }) => {
+      queryClient.setQueryData<TrackListResponse>(["playlist-tracks", playlistId], (current) =>
+        applyTrackVoteResult(current, vote),
+      );
       await queryClient.invalidateQueries({ queryKey: ["playlist-tracks", playlistId] });
     },
   });
@@ -89,6 +97,7 @@ export function ActiveTrackPreview({
                 compact
                 disabled={!votesEnabled}
                 pending={voteMutation.isPending}
+                moving={voteMutation.isPending && voteMutation.variables?.trackId === track.id}
                 onAdd={() => voteMutation.mutate({ trackId: track.id, action: "add" })}
                 onRemove={() => voteMutation.mutate({ trackId: track.id, action: "remove" })}
                 key={track.id}
@@ -106,6 +115,7 @@ export function ActiveTrackPreview({
                   compact
                   disabled={!votesEnabled}
                   pending={voteMutation.isPending}
+                  moving={voteMutation.isPending && voteMutation.variables?.trackId === track.id}
                   onAdd={() => voteMutation.mutate({ trackId: track.id, action: "add" })}
                   onRemove={() => voteMutation.mutate({ trackId: track.id, action: "remove" })}
                   key={track.id}

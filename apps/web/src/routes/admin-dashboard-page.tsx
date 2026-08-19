@@ -192,7 +192,8 @@ export function AdminDashboardPage() {
       <section className="admin-page-heading" hidden={party.status === "ENDED"}>
         <div>
           <RotReference code={party.code} live={party.status === "ACTIVE"} />
-          <h1 className="screen-title">Host live.</h1>
+          <p className="eyebrow">Host live</p>
+          <h1 className="screen-title">{party.name}</h1>
           <p className="screen-copy">Ce dont tu as besoin pour piloter la rotation, simplement.</p>
         </div>
         <span className={`status-badge ${party.status === "ACTIVE" ? "status-open" : ""}`}>
@@ -312,7 +313,7 @@ export function AdminDashboardPage() {
       </div>
       <FormError message={actionError instanceof Error ? actionError.message : undefined} />
 
-      <section className="dashboard-section" aria-labelledby="participants-title">
+      <section className="dashboard-section" id="host-people" aria-labelledby="participants-title">
         <div className="section-heading">
           <div>
             <h2 id="participants-title">Participants</h2>

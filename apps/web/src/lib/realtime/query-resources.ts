@@ -10,7 +10,7 @@ export const getQueryKeysForResources = (
   }
 
   if (resources.includes("party") || resources.includes("participants")) {
-    keys.push(["admin-party", partyId], ["participant-session"]);
+    keys.push(["admin-party", partyId], ["participant-session"], ["party-people", partyId]);
   }
   if (resources.includes("playlists")) {
     keys.push(["admin-playlists", partyId], ["participant-playlists", partyId]);

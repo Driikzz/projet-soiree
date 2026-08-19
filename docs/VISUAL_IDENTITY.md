@@ -1,84 +1,49 @@
-# Mini-charte visuelle SongFest
+# Identité visuelle ROTATE
 
-## Direction
+## Territoire
 
-SongFest reprend l’énergie directe des party games web sans imiter Spotify. L’interface doit rester
-lisible sur téléphone dans une pièce sombre, avec une hiérarchie nette, des actions tactiles larges
-et quelques formes expressives.
+ROTATE transforme chaque soirée en édition musicale : référence de catalogue, label, sleeve,
+stamp, Side A/Side B et liner notes. Ce vocabulaire reste contemporain et fonctionnel ;
+l'interface ne simule pas un objet rétro et ne ressemble ni à un dashboard SaaS ni à Spotify.
 
-## Palette
+Signature : **ROTATE — Record Culture**
 
-| Rôle                 | Couleur   | Usage                              |
-| -------------------- | --------- | ---------------------------------- |
-| Fond principal       | `#101719` | Pages sombres                      |
-| Surface              | `#182326` | Cartes et panneaux                 |
-| Bordure              | `#2A393C` | Séparation sans ombre forte        |
-| Texte principal      | `#F4F7F5` | Titres et contenus prioritaires    |
-| Texte secondaire     | `#A8B5B1` | Explications                       |
-| Primaire corail      | `#F47A55` | Action principale et identité      |
-| Secondaire turquoise | `#55C7B4` | Focus, statut et information       |
-| Accent ambre         | `#F8C66A` | Code de soirée et récompenses      |
-| Erreur               | `#FF9B8C` | Validation et refus                |
-| Succès               | `#7CE0CE` | Confirmation avec libellé ou icône |
+Tagline : **THE NIGHT, RECORDED.**
 
-Les couleurs fonctionnelles ne sont jamais le seul moyen de transmettre une information.
+## Tokens
 
-## Typographies
+| Rôle               | Token            | Valeur    |
+| ------------------ | ---------------- | --------- |
+| Rouge propriétaire | `--rotate-red`   | `#E53935` |
+| Noir disque        | `--record-black` | `#11100E` |
+| Papier sleeve      | `--sleeve`       | `#F1EEE6` |
+| Gris label         | `--label-grey`   | `#AAA69D` |
 
-- Titres : `Space Grotesk Variable`, puis pile sans-serif système. Graisse 700, chasse serrée.
-- Contenus : `Atkinson Hyperlegible Next Variable`, puis pile sans-serif système. Graisse 400 à 800.
-- Les fontes variables sont auto-hébergées par Fontsource avec `font-display: swap`. Aucune requête
-  vers un CDN de polices n’est effectuée par le navigateur.
+Les variables sont définies dans `apps/web/src/styles/index.css`. Les états utilisent toujours un
+libellé ou une icône en plus de la couleur.
 
-## Échelle
+## Typographie
 
-- Espacements : `4`, `8`, `12`, `16`, `24`, `32`, `48`, `64`, `96` px.
-- Cartes : rayon de `24` px.
-- Champs et boutons : rayon de `12` à `13` px.
-- Badges d’état : forme pilule, uniquement lorsqu’ils décrivent un statut.
-- Zones interactives : hauteur minimale de `48` px.
-- Focus : contour turquoise de `3` px avec un décalage de `4` px.
+- Display : Space Grotesk Variable, très grasse et compacte pour les grands moments de marque.
+- UI : Atkinson Hyperlegible Next Variable pour rester lisible dans une pièce sombre et en mouvement.
+- Les références et chiffres utilisent des graisses fortes et des chiffres tabulaires.
 
-## Ombres et surfaces
+## Composition
 
-- Ombre de carte : `0 24px 64px rgb(3 12 14 / 22%)`.
-- Les bordures légères définissent la majorité des surfaces.
-- Aucun effet de verre, halo néon ou dégradé décoratif systématique.
+- Structures éditoriales carrées, lignes et séparateurs nets.
+- Arrondis réservés aux interactions, avatars et éléments physiques comme le disque.
+- Rouge pour l'action et les moments de marque ; noir pour LIVE/CONTROL ; off-white pour JOIN et
+  certaines surfaces éditoriales.
+- Texture légère créée en CSS. Aucun grand asset décoratif n'est requis.
 
-## Composants
+## Interaction
 
-- Bouton primaire : fond corail, texte charbon, graisse 800, pression à `scale(0.98)`.
-- Bouton secondaire : surface sombre, bordure visible, texte clair.
-- Carte : surface sombre, bordure, rayon de 24 px, ombre teintée.
-- Champ : label au-dessus, erreur en dessous, fond plus sombre que la carte.
-- Badge : texte explicite comme « Entrées ouvertes » ou « Brouillon ».
-- Vote inactif : bouton secondaire avec libellé et compteur.
-- Vote actif : surface turquoise sombre, icône cochée et libellé « Ton vote ».
-- Playlist active : bordure corail et texte « En cours ».
-- Playlist programmée : accent ambre et texte « Prend le relais ensuite ».
-- Playlist verrouillée : contraste réduit, icône cadenas et durée restante en toutes lettres.
+- Cibles tactiles de 48 px minimum.
+- Feedback immédiat pour VOTE et PRESS, sans popup de confirmation.
+- Motion courte pour les micro-interactions et plus expressive pour YOUR TURN.
+- Toutes les animations respectent `prefers-reduced-motion`.
 
-## Illustration d’accueil
+## Parcours mobile invité
 
-`apps/web/public/images/songfest-hero.jpg` est une illustration originale générée pour SongFest.
-Elle utilise des volumes papier et argile, des enceintes, des disques et un groupe stylisé. Elle ne
-contient ni texte, ni logo, ni référence visuelle directe à Spotify.
-
-## Mouvement
-
-- Entrée de page courte par translation verticale et opacité.
-- Confirmation courte lors d’un ajout ou d’une programmation d’ambiance.
-- Survol réservé aux appareils qui le prennent en charge.
-- Retour tactile par réduction à `scale(0.98)`.
-- Aucun mouvement permanent hors squelettes de chargement.
-- Toutes les animations deviennent quasi instantanées avec `prefers-reduced-motion: reduce`.
-
-## Navigation et accessibilité
-
-- Lien d’évitement « Aller au contenu » visible au focus clavier.
-- Titre du document et annonce discrète actualisés à chaque changement de route.
-- Navigation organisateur horizontale et défilable sur mobile, avec `aria-current="page"`.
-- 404 dédiée avec un retour réel vers l’accueil.
-- États de chargement structurés et masqués aux technologies d’assistance ; une annonce textuelle
-  unique indique le chargement.
-- Écran de participation entièrement sombre pour rester confortable dans une pièce peu éclairée.
+Navigation principale : LIVE / ROTATION / PEOPLE, avec un bouton d'ajout persistant. Le player,
+la rotation sociale et l'action prioritaire doivent être compris en moins de trois secondes.

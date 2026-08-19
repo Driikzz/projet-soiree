@@ -5,7 +5,7 @@ import { env } from "../config/env.js";
 export const logger = pino({
   level: env.LOG_LEVEL,
   base: {
-    service: "songfest-api",
+    service: "rotate-api",
     environment: env.NODE_ENV,
   },
   redact: {

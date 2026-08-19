@@ -1,11 +1,11 @@
 import type { RealtimeResource } from "@songfest/shared";
 
-import type { SongFestSocket } from "./socket";
+import type { RotateSocket } from "./socket";
 
 type ResourceListener = (partyId: string, resources: readonly RealtimeResource[]) => void;
 
 export const bindRealtimeListeners = (
-  socket: SongFestSocket,
+  socket: RotateSocket,
   onResourcesChanged: ResourceListener,
 ) => {
   const handlePartyChange = (event: { partyId: string }) => {

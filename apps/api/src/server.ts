@@ -40,6 +40,6 @@ httpServer.listen(env.PORT, env.HOST, () => {
       spotifyRedirectUri: env.SPOTIFY_REDIRECT_URI ?? null,
       trustProxy: env.TRUST_PROXY,
     },
-    "SongFest API is ready",
+    "ROTATE API is ready",
   );
 });

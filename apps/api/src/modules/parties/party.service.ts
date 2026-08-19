@@ -276,3 +276,48 @@ export const getParticipantSession = async (participantId: string) => {
     party: toPublicParty(party),
   };
 };
+
+export const listPartyPeople = async (participantId: string, partyId: string) => {
+  const participant = await prisma.participant.findFirst({
+    where: { id: participantId, partyId, isActive: true, isBlocked: false },
+    select: { id: true },
+  });
+
+  if (participant === null) {
+    throw new AppError(403, "FORBIDDEN", "Tu n’appartiens pas à cette soirée.");
+  }
+
+  const party = await prisma.party.findUnique({
+    where: { id: partyId },
+    select: {
+      admin: { select: { displayName: true } },
+      participants: {
+        where: { isActive: true, isBlocked: false },
+        orderBy: { joinedAt: "asc" },
+        select: {
+          id: true,
+          nickname: true,
+          avatarSeed: true,
+          _count: {
+            select: { proposedTracks: { where: { status: { not: "REMOVED" } } } },
+          },
+        },
+      },
+    },
+  });
+
+  if (party === null) {
+    throw new AppError(404, "PARTY_NOT_FOUND", "Cette soirée n’existe pas.");
+  }
+
+  return {
+    host: party.admin,
+    participants: party.participants.map((person) => ({
+      id: person.id,
+      nickname: person.nickname,
+      avatarSeed: person.avatarSeed,
+      contributionCount: person._count.proposedTracks,
+      isCurrent: person.id === participantId,
+    })),
+  };
+};

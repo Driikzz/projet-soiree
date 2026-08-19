@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const healthResponseSchema = z.object({
   status: z.literal("ok"),
-  service: z.literal("songfest-api"),
+  service: z.literal("rotate-api"),
   timestamp: z.string().datetime(),
 });
 

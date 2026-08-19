@@ -2,6 +2,7 @@ import type {
   CreatePartyRequest,
   JoinPartyRequest,
   ParticipantSession,
+  PartyPeople,
   PartySummary,
   PublicParty,
 } from "@songfest/shared";
@@ -56,6 +57,11 @@ export const joinParty = (partyCode: string, input: JoinPartyRequest) =>
 
 export const getParticipantSession = (signal?: AbortSignal) =>
   apiRequest<ParticipantSession>("/api/participant/me", {
+    ...(signal === undefined ? {} : { signal }),
+  });
+
+export const getPartyPeople = (partyId: string, signal?: AbortSignal) =>
+  apiRequest<PartyPeople>(`/api/participant/parties/${partyId}/people`, {
     ...(signal === undefined ? {} : { signal }),
   });
 
