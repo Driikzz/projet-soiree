@@ -61,7 +61,7 @@ export function PlaylistForm({
           </p>
           <h2 id="playlist-form-title">
             {initialPlaylist === undefined
-              ? "Créer une playlist"
+              ? "Créer une ambiance"
               : `Modifier ${initialPlaylist.name}`}
           </h2>
         </div>
@@ -109,7 +109,7 @@ export function PlaylistForm({
         </label>
 
         <fieldset className="visual-picker">
-          <legend>Identité visuelle</legend>
+          <legend>Label du vinyle</legend>
           <div className="visual-options">
             {visualOptions.map((option) => (
               <label key={option.key} className="visual-option">

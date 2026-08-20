@@ -168,7 +168,7 @@ export function HostLiveScreen({
               </button>
               <a
                 className="host-live-control"
-                href="#host-actions"
+                href="#host-controls"
                 aria-label="Ouvrir les actions de la soirée"
               >
                 <DotsThree aria-hidden="true" weight="bold" />

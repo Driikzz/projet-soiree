@@ -8,8 +8,9 @@ const getPageTitle = (pathname: string) => {
   if (pathname === "/parties") return "Your Records";
   if (pathname === "/parties/new") return "New Rotation";
   if (pathname.includes("/dashboard")) return "Host Live";
-  if (pathname.includes("/playlists")) return "Music Control";
-  if (pathname.includes("/spotify")) return "Control";
+  if (pathname.includes("/playlists")) return "Ambiances";
+  if (pathname.includes("/people")) return "People";
+  if (pathname.includes("/spotify")) return "Spotify et appareil";
   if (pathname.includes("/share")) return "Inviter";
   if (pathname.startsWith("/join/")) return "Join the Rotation";
   if (pathname.startsWith("/party/")) return "Live Rotation";

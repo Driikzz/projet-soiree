@@ -1,28 +1,24 @@
 import {
   CheckCircle,
+  GearSix,
   Lightning,
-  LockKey,
+  MusicNotes,
+  SpeakerHigh,
   Trash,
   WarningCircle,
   Timer,
 } from "@phosphor-icons/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-
-import type { AssignRewardRequest, RewardType } from "@songfest/shared";
+import { Link, useParams } from "react-router-dom";
 
 import { AdminPartyNav } from "../components/admin-party-nav";
-import { AvatarMark } from "../components/avatar-mark";
 import { FormError } from "../components/form-error";
 import { HostLiveScreen } from "../components/host-live-screen";
 import { LoadingPage } from "../components/loading-page";
 import { PartySettingsForm } from "../components/party-settings-form";
-import { RewardAssignment } from "../components/reward-assignment";
 import { RecordSummary } from "../components/record-summary";
 import { RotationTrackCard } from "../components/rotation-track-card";
 import {
-  assignAdminReward,
-  blockAdminParticipant,
   endAdminParty,
   forceAdminTrack,
   getAdminDashboard,
@@ -35,13 +31,6 @@ import { cancelAdminFlashTurn, triggerAdminFlashTurn } from "../lib/api/flash";
 import { controlPartyPlayback, getAdminPlayback } from "../lib/api/playback";
 import { getAdminPlaylists } from "../lib/api/playlists";
 import { usePartyRealtime } from "../lib/realtime/use-party-realtime";
-
-const rewardShortLabels: Record<RewardType, string> = {
-  EXTRA_TRACK: "Ajout +1",
-  PRIORITY_TRACK: "Prioritaire",
-  DOUBLE_TRACK: "Double titre",
-  CHOOSE_NEXT_PLAYLIST: "Choix ambiance",
-};
 
 export function AdminDashboardPage() {
   const { partyId = "" } = useParams();
@@ -81,14 +70,6 @@ export function AdminDashboardPage() {
   const settingsMutation = useMutation({
     mutationFn: (input: Parameters<typeof updateAdminPartySettings>[1]) =>
       updateAdminPartySettings(partyId, input),
-    onSuccess: refreshDashboard,
-  });
-  const blockMutation = useMutation({
-    mutationFn: (participantId: string) => blockAdminParticipant(partyId, participantId),
-    onSuccess: refreshDashboard,
-  });
-  const rewardMutation = useMutation({
-    mutationFn: (input: AssignRewardRequest) => assignAdminReward(input),
     onSuccess: refreshDashboard,
   });
   const removeMutation = useMutation({
@@ -169,12 +150,7 @@ export function AdminDashboardPage() {
       ? pendingTracks
       : [nextTrack, ...pendingTracks.filter((track) => track.id !== nextTrack.id)];
   const actionError =
-    blockMutation.error ??
-    rewardMutation.error ??
-    removeMutation.error ??
-    forceMutation.error ??
-    flashMutation.error ??
-    endMutation.error;
+    removeMutation.error ?? forceMutation.error ?? flashMutation.error ?? endMutation.error;
 
   const requestEnd = () => {
     if (
@@ -187,7 +163,7 @@ export function AdminDashboardPage() {
   };
 
   return (
-    <main className="page-shell dashboard-shell">
+    <main className="page-shell host-party-shell dashboard-shell">
       <AdminPartyNav partyId={partyId} partyName={party.name} />
 
       {party.status === "ENDED" && <RecordSummary party={party} dashboard={dashboard} />}
@@ -212,8 +188,56 @@ export function AdminDashboardPage() {
         />
       )}
 
-      <div className="host-live-secondary" id="host-actions">
-        <section className="admin-flash-panel" aria-labelledby="admin-flash-title">
+      <div className="host-live-secondary">
+        <section
+          className="host-control-index"
+          id="host-controls"
+          aria-labelledby="host-control-title"
+        >
+          <header>
+            <div>
+              <p>ROT/HOST</p>
+              <h2 id="host-control-title">Contrôles de la soirée</h2>
+            </div>
+            <span>Tout reste dans Live.</span>
+          </header>
+          <nav aria-label="Contrôles de la soirée">
+            <Link to={`/organizer/parties/${partyId}/spotify`}>
+              <SpeakerHigh aria-hidden="true" weight="fill" />
+              <span>
+                <strong>Spotify & appareil</strong>
+                <small>Compte, sortie et volume</small>
+              </span>
+            </Link>
+            <a href="#host-rotation">
+              <MusicNotes aria-hidden="true" weight="fill" />
+              <span>
+                <strong>Music control</strong>
+                <small>File et modération</small>
+              </span>
+            </a>
+            <a href="#host-your-turn">
+              <Lightning aria-hidden="true" weight="fill" />
+              <span>
+                <strong>Your turn</strong>
+                <small>Tirage et tempo</small>
+              </span>
+            </a>
+            <a href="#host-settings">
+              <GearSix aria-hidden="true" weight="fill" />
+              <span>
+                <strong>Règles</strong>
+                <small>Votes, PRESS et limites</small>
+              </span>
+            </a>
+          </nav>
+        </section>
+
+        <section
+          className="admin-flash-panel"
+          id="host-your-turn"
+          aria-labelledby="admin-flash-title"
+        >
           <div className="admin-flash-icon" aria-hidden="true">
             <Lightning weight="fill" />
           </div>
@@ -269,68 +293,6 @@ export function AdminDashboardPage() {
           </div>
         </section>
         <FormError message={actionError instanceof Error ? actionError.message : undefined} />
-
-        <section
-          className="dashboard-section"
-          id="host-people"
-          aria-labelledby="participants-title"
-        >
-          <div className="section-heading">
-            <div>
-              <h2 id="participants-title">Participants</h2>
-            </div>
-          </div>
-          {dashboard.participants.length === 0 ? (
-            <p className="dashboard-empty">Personne n’a encore rejoint la soirée.</p>
-          ) : (
-            <div className="dashboard-participants">
-              {dashboard.participants.map((participant) => (
-                <article key={participant.id} className="dashboard-participant">
-                  <AvatarMark seed={participant.nickname} label={participant.nickname} />
-                  <div>
-                    <h3>{participant.nickname}</h3>
-                    <p>
-                      {participant.contributionCount} proposition
-                      {participant.contributionCount === 1 ? "" : "s"} ·{" "}
-                      {participant.isActive ? "connecté" : "hors ligne"}
-                    </p>
-                    <div className="reward-badges">
-                      {participant.rewards
-                        .filter((reward) => reward.status === "AVAILABLE")
-                        .map((reward) => (
-                          <span key={reward.id}>
-                            {rewardShortLabels[reward.type]} ×{reward.usesRemaining}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                  <div className="participant-actions">
-                    <RewardAssignment
-                      participantName={participant.nickname}
-                      disabled={rewardMutation.isPending || participant.isBlocked}
-                      onAssign={(type) =>
-                        rewardMutation.mutate({
-                          partyId,
-                          participantId: participant.id,
-                          type,
-                          uses: 1,
-                        })
-                      }
-                    />
-                    <button
-                      className="text-danger-button"
-                      disabled={participant.isBlocked || blockMutation.isPending}
-                      onClick={() => blockMutation.mutate(participant.id)}
-                    >
-                      <LockKey aria-hidden="true" />
-                      {participant.isBlocked ? "Bloqué" : "Bloquer"}
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
 
         <section className="dashboard-section" id="host-rotation" aria-labelledby="proposals-title">
           <div className="section-heading">
@@ -393,7 +355,7 @@ export function AdminDashboardPage() {
           />
         </section>
 
-        <section className="dashboard-danger-zone" aria-labelledby="danger-title">
+        <section className="dashboard-danger-zone" id="host-end" aria-labelledby="danger-title">
           <WarningCircle aria-hidden="true" weight="fill" />
           <div>
             <h2 id="danger-title">Fin de la rotation ?</h2>

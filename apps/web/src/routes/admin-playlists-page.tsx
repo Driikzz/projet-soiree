@@ -57,7 +57,7 @@ export function AdminPlaylistsPage() {
   const saveMutation = useMutation({
     mutationFn: (input: CreatePlaylistRequest) => {
       if (formPlaylist === null) {
-        throw new Error("Le formulaire de playlist est fermé.");
+        throw new Error("Le formulaire d’ambiance est fermé.");
       }
 
       return formPlaylist === "create"
@@ -121,18 +121,18 @@ export function AdminPlaylistsPage() {
   const hasActivePlaylist = playlists.some((playlist) => playlist.isActive);
 
   return (
-    <main className="page-shell admin-playlists-shell">
+    <main className="page-shell host-party-shell admin-playlists-shell">
       <AdminPartyNav partyId={partyId} partyName={party.name} />
 
-      <section className="admin-page-heading">
+      <section className="admin-moods-heading">
         <div>
-          <p className="eyebrow">Music control</p>
-          <h1 className="screen-title">Build the rotation.</h1>
+          <p className="eyebrow">Mood library</p>
+          <h1>Ambiances vinyle.</h1>
           <p className="screen-copy">
-            Chaque playlist a son propre quota, ses règles et son identité.
+            Chaque face installe une couleur musicale. Active celle qui doit prendre la salle.
           </p>
         </div>
-        <button className="primary-button" onClick={() => setFormPlaylist("create")}>
+        <button className="create-next-button" onClick={() => setFormPlaylist("create")}>
           <MusicNotesPlus aria-hidden="true" weight="bold" />
           Nouvelle ambiance
         </button>
@@ -162,19 +162,25 @@ export function AdminPlaylistsPage() {
           <h2>Crée la première ambiance.</h2>
           <p>Apéro, années 2000, rap ou playlist libre : commence avec ce qui lancera la soirée.</p>
           <button className="primary-button" onClick={() => setFormPlaylist("create")}>
-            Créer une playlist
+            Créer une ambiance
           </button>
         </section>
       ) : (
-        <div className="admin-playlist-list">
-          {playlists.map((playlist) => (
+        <section className="admin-mood-collection" aria-label="Collection des ambiances">
+          {playlists.map((playlist, index) => (
             <article
-              className={`admin-playlist-row${playlist.isActive ? " active-admin-playlist" : ""}`}
+              className={`admin-mood-sleeve${playlist.isActive ? " is-active" : ""}`}
               key={playlist.id}
             >
-              <PlaylistVisual visualKey={playlist.visualKey} label={playlist.name} compact />
-              <div className="admin-playlist-copy">
-                <div className="admin-playlist-title">
+              <header className="admin-mood-catalogue">
+                <span>Side {String.fromCharCode(65 + (index % 2))}</span>
+                <span>ROT/MOOD-{(index + 1).toString().padStart(2, "0")}</span>
+              </header>
+              <div className="admin-mood-record">
+                <PlaylistVisual visualKey={playlist.visualKey} label={playlist.name} />
+              </div>
+              <div className="admin-mood-copy">
+                <div className="admin-mood-title">
                   <h2>{playlist.name}</h2>
                   {playlist.isActive && (
                     <span className="active-label">
@@ -182,20 +188,23 @@ export function AdminPlaylistsPage() {
                       Current mood
                     </span>
                   )}
+                  {!playlist.isActive && playlist.isScheduled && (
+                    <span className="active-label">Up next</span>
+                  )}
                 </div>
-                <p>{playlist.description ?? "Aucune description."}</p>
-                <div className="admin-playlist-meta">
-                  <span>{playlist.quotaPerParticipant} ajouts par personne</span>
-                  <span>{playlist.isOpen ? "Ajouts ouverts" : "Ajouts verrouillés"}</span>
+                <p>{playlist.description ?? "Une ambiance à construire avec la salle."}</p>
+                <div className="admin-mood-meta">
                   <span>
                     {playlist.trackCount} morceau{playlist.trackCount === 1 ? "" : "x"}
                   </span>
+                  <span>{playlist.quotaPerParticipant} / personne</span>
+                  <span>{playlist.isOpen ? "Ajouts ouverts" : "Ajouts verrouillés"}</span>
                 </div>
               </div>
-              <div className="playlist-row-actions">
+              <footer className="admin-mood-actions">
                 {!playlist.isActive && (
                   <button
-                    className="secondary-button"
+                    className="admin-mood-activate"
                     onClick={() => activateMutation.mutate(playlist.id)}
                     disabled={activateMutation.isPending}
                   >
@@ -206,6 +215,7 @@ export function AdminPlaylistsPage() {
                 <button
                   className="icon-button"
                   onClick={() => toggleLockMutation.mutate(playlist)}
+                  disabled={toggleLockMutation.isPending}
                   aria-label={
                     playlist.isOpen ? `Verrouiller ${playlist.name}` : `Ouvrir ${playlist.name}`
                   }
@@ -227,10 +237,10 @@ export function AdminPlaylistsPage() {
                 >
                   <Trash aria-hidden="true" />
                 </button>
-              </div>
+              </footer>
             </article>
           ))}
-        </div>
+        </section>
       )}
     </main>
   );

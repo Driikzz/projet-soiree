@@ -31,11 +31,17 @@ export function PlaylistVisual({ visualKey, label, compact = false }: PlaylistVi
     <div
       className={`playlist-visual visual-${visualKey}${compact ? " compact-visual" : ""}`}
       role="img"
-      aria-label={`Illustration ${label}`}
+      aria-label={`Vinyle de l’ambiance ${label}`}
     >
-      <Icon aria-hidden="true" weight="fill" />
-      <span aria-hidden="true" />
-      <span aria-hidden="true" />
+      <span className="playlist-vinyl" aria-hidden="true">
+        <span className="playlist-vinyl-label">
+          <Icon weight="fill" />
+          <i />
+        </span>
+      </span>
+      <span className="playlist-visual-catalogue" aria-hidden="true">
+        ROT/MOOD
+      </span>
     </div>
   );
 }

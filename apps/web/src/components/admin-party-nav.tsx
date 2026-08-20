@@ -1,4 +1,4 @@
-import { ArrowLeft, Disc, MusicNotes, SlidersHorizontal, UsersThree } from "@phosphor-icons/react";
+import { ArrowLeft, Disc, QrCode, Record, UsersThree } from "@phosphor-icons/react";
 import { Link, NavLink } from "react-router-dom";
 
 import { RotateBrand } from "./rotate-brand";
@@ -25,19 +25,16 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
           Live
         </NavLink>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/playlists`}>
-          <MusicNotes aria-hidden="true" />
-          Rotation
+          <Record aria-hidden="true" />
+          Ambiances
         </NavLink>
-        <Link
-          className="admin-party-nav-link"
-          to={`/organizer/parties/${partyId}/dashboard#host-people`}
-        >
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/people`}>
           <UsersThree aria-hidden="true" />
           People
-        </Link>
-        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/spotify`}>
-          <SlidersHorizontal aria-hidden="true" />
-          Control
+        </NavLink>
+        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/share`}>
+          <QrCode aria-hidden="true" />
+          Inviter
         </NavLink>
       </nav>
     </header>

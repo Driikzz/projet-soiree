@@ -151,7 +151,7 @@ export function AdminSpotifyPage() {
         : "Spotify a refusé l’autorisation. Vérifie le compte Premium et son ajout aux utilisateurs autorisés de l’application Spotify.";
 
   return (
-    <main className="page-shell spotify-shell">
+    <main className="page-shell host-party-shell spotify-shell">
       <AdminPartyNav partyId={partyId} partyName={party.name} />
 
       <section className="spotify-heading">

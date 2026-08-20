@@ -117,10 +117,20 @@ Ordre à `390 × 844` selon `dashboardadmin.png` :
 5. Contrôles centrés : pause/reprise, morceau suivant, accès aux actions secondaires.
 6. Trois indicateurs compacts : votes, ambiance et people.
 7. `FILE D’ATTENTE / SIDE A`, puis une TrackCard partagée.
-8. Navigation basse `LIVE / ROTATION / PEOPLE / CONTROL`, 64 px hors safe area.
+8. Navigation basse `LIVE / AMBIANCES / PEOPLE / INVITER`, 64 px hors safe area.
 
-Les outils rares (YOUR TURN, modération, règles, fin de soirée) restent fonctionnels mais commencent
-sous le premier viewport ; ils ne concurrencent plus le morceau en cours.
+Les outils rares (Spotify/appareil, YOUR TURN, modération, règles, fin de soirée) sont centralisés
+dans LIVE sous le premier viewport ; ils ne concurrencent plus le morceau en cours. L’ancien onglet
+CONTROL est remplacé par INVITER, qui expose le QR code, le code court et le lien copiable.
+
+## Écrans HOST PEOPLE et AMBIANCES
+
+- PEOPLE est un registre humain, jamais un classement : grand titre éditorial, statut de présence,
+  contributions et ressources utiles. Les actions de modération restent repliées par défaut.
+- AMBIANCES remplace le langage de playlists de gestion par une collection de faces vinyle. Chaque
+  sleeve conserve les actions réelles d’activation, verrouillage, édition et suppression.
+- Le composant `PlaylistVisual` utilise un disque, ses sillons et un label propre à l’ambiance ; les
+  pictogrammes ne sont plus traités comme des illustrations principales.
 
 ## Viewports et adaptation
 

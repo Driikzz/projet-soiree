@@ -22,6 +22,11 @@ const AdminPlaylistsPage = lazy(() =>
     default: module.AdminPlaylistsPage,
   })),
 );
+const AdminPeoplePage = lazy(() =>
+  import("../routes/admin-people-page").then((module) => ({
+    default: module.AdminPeoplePage,
+  })),
+);
 const AdminSpotifyPage = lazy(() =>
   import("../routes/admin-spotify-page").then((module) => ({
     default: module.AdminSpotifyPage,
@@ -105,6 +110,14 @@ export function App() {
               element={
                 <ProtectedAdminRoute>
                   <AdminPlaylistsPage />
+                </ProtectedAdminRoute>
+              }
+            />
+            <Route
+              path="/organizer/parties/:partyId/people"
+              element={
+                <ProtectedAdminRoute>
+                  <AdminPeoplePage />
                 </ProtectedAdminRoute>
               }
             />

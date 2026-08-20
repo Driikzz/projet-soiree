@@ -105,7 +105,7 @@ export function SharePartyPage() {
   };
 
   return (
-    <main className="page-shell share-shell">
+    <main className="page-shell host-party-shell share-shell">
       <AdminPartyNav partyId={partyId} partyName={party.name} />
 
       <div className="share-party-status">
@@ -114,22 +114,37 @@ export function SharePartyPage() {
         </span>
       </div>
 
-      <div className="share-grid">
-        <section className="share-copy" aria-labelledby="share-title">
-          <RotReference code={party.code} live={party.status === "ACTIVE"} />
-          <p className="eyebrow">Join the rotation</p>
-          <h1 className="screen-title share-title" id="share-title">
-            Scan. Join. Rotate.
-          </h1>
-          <p className="screen-copy">
-            Aucun compte Spotify n’est demandé aux invités. Ils rejoignent directement{" "}
-            <strong>{party.name}</strong>.
-          </p>
+      <section className="share-intro" aria-labelledby="share-title">
+        <RotReference code={party.code} live={party.status === "ACTIVE"} />
+        <p className="eyebrow">Join the rotation</p>
+        <h1 className="screen-title share-title" id="share-title">
+          Scan. Join. Rotate.
+        </h1>
+        <p className="screen-copy">
+          Aucun compte Spotify n’est demandé aux invités. Ils rejoignent directement{" "}
+          <strong>{party.name}</strong>.
+        </p>
+      </section>
 
+      <div className="share-grid">
+        <section className="share-copy" aria-label="Informations d’invitation">
           <div className="party-code" aria-label={`Code de la soirée ${party.code}`}>
             <span>Code de la soirée</span>
             <strong>{party.code}</strong>
           </div>
+          <div className="share-join-link">
+            <span>Lien d’invitation</span>
+            <code>{joinUrl}</code>
+            <button type="button" onClick={() => void copyJoinUrl()}>
+              {copied ? (
+                <CheckCircle aria-hidden="true" weight="fill" />
+              ) : (
+                <Copy aria-hidden="true" weight="bold" />
+              )}
+              {copied ? "Copié" : "Copier"}
+            </button>
+          </div>
+          <FormError message={copyError} />
           <p className="participant-count" aria-live="polite">
             <UsersThree aria-hidden="true" weight="fill" />
             {party.activeParticipantCount === 0
@@ -182,19 +197,6 @@ export function SharePartyPage() {
           ) : (
             <img src={qrCodeUrl} alt={`QR code pour rejoindre ${party.name}`} />
           )}
-          <button
-            className="secondary-button full-button"
-            type="button"
-            onClick={() => void copyJoinUrl()}
-          >
-            {copied ? (
-              <CheckCircle aria-hidden="true" weight="fill" />
-            ) : (
-              <Copy aria-hidden="true" weight="bold" />
-            )}
-            {copied ? "Lien copié" : "Copier le lien"}
-          </button>
-          <FormError message={copyError} />
           <a className="text-link" href={joinUrl} target="_blank" rel="noreferrer">
             Tester la page invité
             <ShareNetwork aria-hidden="true" />
