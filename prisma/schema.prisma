@@ -98,6 +98,8 @@ model Party {
   activePlaylistId    String?         @db.Uuid
   scheduledPlaylistId String?         @db.Uuid
   selectedDeviceId    String?         @db.VarChar(255)
+  location            String?         @db.VarChar(160)
+  scheduledFor        DateTime?
   stateVersion        Int             @default(0)
   createdAt           DateTime        @default(now())
   startedAt           DateTime?

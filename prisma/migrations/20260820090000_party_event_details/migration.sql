@@ -1,0 +1,3 @@
+ALTER TABLE "Party"
+ADD COLUMN "location" VARCHAR(160),
+ADD COLUMN "scheduledFor" TIMESTAMP(3);

@@ -43,6 +43,8 @@ export type PartyMinAggregateOutputType = {
   activePlaylistId: string | null
   scheduledPlaylistId: string | null
   selectedDeviceId: string | null
+  location: string | null
+  scheduledFor: Date | null
   stateVersion: number | null
   createdAt: Date | null
   startedAt: Date | null
@@ -58,6 +60,8 @@ export type PartyMaxAggregateOutputType = {
   activePlaylistId: string | null
   scheduledPlaylistId: string | null
   selectedDeviceId: string | null
+  location: string | null
+  scheduledFor: Date | null
   stateVersion: number | null
   createdAt: Date | null
   startedAt: Date | null
@@ -73,6 +77,8 @@ export type PartyCountAggregateOutputType = {
   activePlaylistId: number
   scheduledPlaylistId: number
   selectedDeviceId: number
+  location: number
+  scheduledFor: number
   stateVersion: number
   createdAt: number
   startedAt: number
@@ -98,6 +104,8 @@ export type PartyMinAggregateInputType = {
   activePlaylistId?: true
   scheduledPlaylistId?: true
   selectedDeviceId?: true
+  location?: true
+  scheduledFor?: true
   stateVersion?: true
   createdAt?: true
   startedAt?: true
@@ -113,6 +121,8 @@ export type PartyMaxAggregateInputType = {
   activePlaylistId?: true
   scheduledPlaylistId?: true
   selectedDeviceId?: true
+  location?: true
+  scheduledFor?: true
   stateVersion?: true
   createdAt?: true
   startedAt?: true
@@ -128,6 +138,8 @@ export type PartyCountAggregateInputType = {
   activePlaylistId?: true
   scheduledPlaylistId?: true
   selectedDeviceId?: true
+  location?: true
+  scheduledFor?: true
   stateVersion?: true
   createdAt?: true
   startedAt?: true
@@ -230,6 +242,8 @@ export type PartyGroupByOutputType = {
   activePlaylistId: string | null
   scheduledPlaylistId: string | null
   selectedDeviceId: string | null
+  location: string | null
+  scheduledFor: Date | null
   stateVersion: number
   createdAt: Date
   startedAt: Date | null
@@ -268,6 +282,8 @@ export type PartyWhereInput = {
   activePlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   scheduledPlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   selectedDeviceId?: Prisma.StringNullableFilter<"Party"> | string | null
+  location?: Prisma.StringNullableFilter<"Party"> | string | null
+  scheduledFor?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   stateVersion?: Prisma.IntFilter<"Party"> | number
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
@@ -295,6 +311,8 @@ export type PartyOrderByWithRelationInput = {
   activePlaylistId?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledPlaylistId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduledFor?: Prisma.SortOrderInput | Prisma.SortOrder
   stateVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -325,6 +343,8 @@ export type PartyWhereUniqueInput = Prisma.AtLeast<{
   activePlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   scheduledPlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   selectedDeviceId?: Prisma.StringNullableFilter<"Party"> | string | null
+  location?: Prisma.StringNullableFilter<"Party"> | string | null
+  scheduledFor?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   stateVersion?: Prisma.IntFilter<"Party"> | number
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
@@ -352,6 +372,8 @@ export type PartyOrderByWithAggregationInput = {
   activePlaylistId?: Prisma.SortOrderInput | Prisma.SortOrder
   scheduledPlaylistId?: Prisma.SortOrderInput | Prisma.SortOrder
   selectedDeviceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduledFor?: Prisma.SortOrderInput | Prisma.SortOrder
   stateVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -375,6 +397,8 @@ export type PartyScalarWhereWithAggregatesInput = {
   activePlaylistId?: Prisma.UuidNullableWithAggregatesFilter<"Party"> | string | null
   scheduledPlaylistId?: Prisma.UuidNullableWithAggregatesFilter<"Party"> | string | null
   selectedDeviceId?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Party"> | string | null
+  scheduledFor?: Prisma.DateTimeNullableWithAggregatesFilter<"Party"> | Date | string | null
   stateVersion?: Prisma.IntWithAggregatesFilter<"Party"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Party"> | Date | string | null
@@ -387,6 +411,8 @@ export type PartyCreateInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -414,6 +440,8 @@ export type PartyUncheckedCreateInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -435,6 +463,8 @@ export type PartyUpdateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -462,6 +492,8 @@ export type PartyUncheckedUpdateInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -486,6 +518,8 @@ export type PartyCreateManyInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -498,6 +532,8 @@ export type PartyUpdateManyMutationInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -513,6 +549,8 @@ export type PartyUncheckedUpdateManyInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -538,6 +576,8 @@ export type PartyCountOrderByAggregateInput = {
   activePlaylistId?: Prisma.SortOrder
   scheduledPlaylistId?: Prisma.SortOrder
   selectedDeviceId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  scheduledFor?: Prisma.SortOrder
   stateVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -557,6 +597,8 @@ export type PartyMaxOrderByAggregateInput = {
   activePlaylistId?: Prisma.SortOrder
   scheduledPlaylistId?: Prisma.SortOrder
   selectedDeviceId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  scheduledFor?: Prisma.SortOrder
   stateVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -572,6 +614,8 @@ export type PartyMinOrderByAggregateInput = {
   activePlaylistId?: Prisma.SortOrder
   scheduledPlaylistId?: Prisma.SortOrder
   selectedDeviceId?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  scheduledFor?: Prisma.SortOrder
   stateVersion?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -638,16 +682,16 @@ export type EnumPartyStatusFieldUpdateOperationsInput = {
   set?: $Enums.PartyStatus
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type IntFieldUpdateOperationsInput = {
   set?: number
   increment?: number
   decrement?: number
   multiply?: number
   divide?: number
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
 }
 
 export type PartyCreateNestedOneWithoutSettingsInput = {
@@ -868,6 +912,8 @@ export type PartyCreateWithoutAdminInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -893,6 +939,8 @@ export type PartyUncheckedCreateWithoutAdminInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -946,6 +994,8 @@ export type PartyScalarWhereInput = {
   activePlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   scheduledPlaylistId?: Prisma.UuidNullableFilter<"Party"> | string | null
   selectedDeviceId?: Prisma.StringNullableFilter<"Party"> | string | null
+  location?: Prisma.StringNullableFilter<"Party"> | string | null
+  scheduledFor?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
   stateVersion?: Prisma.IntFilter<"Party"> | number
   createdAt?: Prisma.DateTimeFilter<"Party"> | Date | string
   startedAt?: Prisma.DateTimeNullableFilter<"Party"> | Date | string | null
@@ -958,6 +1008,8 @@ export type PartyCreateWithoutSettingsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -984,6 +1036,8 @@ export type PartyUncheckedCreateWithoutSettingsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1020,6 +1074,8 @@ export type PartyUpdateWithoutSettingsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1046,6 +1102,8 @@ export type PartyUncheckedUpdateWithoutSettingsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1066,6 +1124,8 @@ export type PartyCreateWithoutParticipantsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1092,6 +1152,8 @@ export type PartyUncheckedCreateWithoutParticipantsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1128,6 +1190,8 @@ export type PartyUpdateWithoutParticipantsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1154,6 +1218,8 @@ export type PartyUncheckedUpdateWithoutParticipantsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1174,6 +1240,8 @@ export type PartyCreateWithoutPlaylistsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1200,6 +1268,8 @@ export type PartyUncheckedCreateWithoutPlaylistsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1225,6 +1295,8 @@ export type PartyCreateWithoutActivePlaylistInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1250,6 +1322,8 @@ export type PartyUncheckedCreateWithoutActivePlaylistInput = {
   status?: $Enums.PartyStatus
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1281,6 +1355,8 @@ export type PartyCreateWithoutScheduledPlaylistInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1306,6 +1382,8 @@ export type PartyUncheckedCreateWithoutScheduledPlaylistInput = {
   status?: $Enums.PartyStatus
   activePlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1348,6 +1426,8 @@ export type PartyUpdateWithoutPlaylistsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1374,6 +1454,8 @@ export type PartyUncheckedUpdateWithoutPlaylistsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1426,6 +1508,8 @@ export type PartyCreateWithoutTrackSkipVotesInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1452,6 +1536,8 @@ export type PartyUncheckedCreateWithoutTrackSkipVotesInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1488,6 +1574,8 @@ export type PartyUpdateWithoutTrackSkipVotesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1514,6 +1602,8 @@ export type PartyUncheckedUpdateWithoutTrackSkipVotesInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1534,6 +1624,8 @@ export type PartyCreateWithoutPlaylistVotesInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1560,6 +1652,8 @@ export type PartyUncheckedCreateWithoutPlaylistVotesInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1596,6 +1690,8 @@ export type PartyUpdateWithoutPlaylistVotesInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1622,6 +1718,8 @@ export type PartyUncheckedUpdateWithoutPlaylistVotesInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1642,6 +1740,8 @@ export type PartyCreateWithoutRewardsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1668,6 +1768,8 @@ export type PartyUncheckedCreateWithoutRewardsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1704,6 +1806,8 @@ export type PartyUpdateWithoutRewardsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1730,6 +1834,8 @@ export type PartyUncheckedUpdateWithoutRewardsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1750,6 +1856,8 @@ export type PartyCreateWithoutFlashTurnsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1776,6 +1884,8 @@ export type PartyUncheckedCreateWithoutFlashTurnsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1812,6 +1922,8 @@ export type PartyUpdateWithoutFlashTurnsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1838,6 +1950,8 @@ export type PartyUncheckedUpdateWithoutFlashTurnsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1858,6 +1972,8 @@ export type PartyCreateWithoutPlaybackStateInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1884,6 +2000,8 @@ export type PartyUncheckedCreateWithoutPlaybackStateInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1920,6 +2038,8 @@ export type PartyUpdateWithoutPlaybackStateInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1946,6 +2066,8 @@ export type PartyUncheckedUpdateWithoutPlaybackStateInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1966,6 +2088,8 @@ export type PartyCreateWithoutAuditLogsInput = {
   code: string
   status?: $Enums.PartyStatus
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -1992,6 +2116,8 @@ export type PartyUncheckedCreateWithoutAuditLogsInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -2028,6 +2154,8 @@ export type PartyUpdateWithoutAuditLogsInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2054,6 +2182,8 @@ export type PartyUncheckedUpdateWithoutAuditLogsInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2076,6 +2206,8 @@ export type PartyCreateManyAdminInput = {
   activePlaylistId?: string | null
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -2088,6 +2220,8 @@ export type PartyUpdateWithoutAdminInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2113,6 +2247,8 @@ export type PartyUncheckedUpdateWithoutAdminInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2136,6 +2272,8 @@ export type PartyUncheckedUpdateManyWithoutAdminInput = {
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2150,6 +2288,8 @@ export type PartyCreateManyActivePlaylistInput = {
   status?: $Enums.PartyStatus
   scheduledPlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -2164,6 +2304,8 @@ export type PartyCreateManyScheduledPlaylistInput = {
   status?: $Enums.PartyStatus
   activePlaylistId?: string | null
   selectedDeviceId?: string | null
+  location?: string | null
+  scheduledFor?: Date | string | null
   stateVersion?: number
   createdAt?: Date | string
   startedAt?: Date | string | null
@@ -2176,6 +2318,8 @@ export type PartyUpdateWithoutActivePlaylistInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2201,6 +2345,8 @@ export type PartyUncheckedUpdateWithoutActivePlaylistInput = {
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2224,6 +2370,8 @@ export type PartyUncheckedUpdateManyWithoutActivePlaylistInput = {
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   scheduledPlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2236,6 +2384,8 @@ export type PartyUpdateWithoutScheduledPlaylistInput = {
   code?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2261,6 +2411,8 @@ export type PartyUncheckedUpdateWithoutScheduledPlaylistInput = {
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2284,6 +2436,8 @@ export type PartyUncheckedUpdateManyWithoutScheduledPlaylistInput = {
   status?: Prisma.EnumPartyStatusFieldUpdateOperationsInput | $Enums.PartyStatus
   activePlaylistId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   selectedDeviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledFor?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   stateVersion?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2384,6 +2538,8 @@ export type PartySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   activePlaylistId?: boolean
   scheduledPlaylistId?: boolean
   selectedDeviceId?: boolean
+  location?: boolean
+  scheduledFor?: boolean
   stateVersion?: boolean
   createdAt?: boolean
   startedAt?: boolean
@@ -2412,6 +2568,8 @@ export type PartySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   activePlaylistId?: boolean
   scheduledPlaylistId?: boolean
   selectedDeviceId?: boolean
+  location?: boolean
+  scheduledFor?: boolean
   stateVersion?: boolean
   createdAt?: boolean
   startedAt?: boolean
@@ -2430,6 +2588,8 @@ export type PartySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   activePlaylistId?: boolean
   scheduledPlaylistId?: boolean
   selectedDeviceId?: boolean
+  location?: boolean
+  scheduledFor?: boolean
   stateVersion?: boolean
   createdAt?: boolean
   startedAt?: boolean
@@ -2448,13 +2608,15 @@ export type PartySelectScalar = {
   activePlaylistId?: boolean
   scheduledPlaylistId?: boolean
   selectedDeviceId?: boolean
+  location?: boolean
+  scheduledFor?: boolean
   stateVersion?: boolean
   createdAt?: boolean
   startedAt?: boolean
   endedAt?: boolean
 }
 
-export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "adminId" | "name" | "code" | "status" | "activePlaylistId" | "scheduledPlaylistId" | "selectedDeviceId" | "stateVersion" | "createdAt" | "startedAt" | "endedAt", ExtArgs["result"]["party"]>
+export type PartyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "adminId" | "name" | "code" | "status" | "activePlaylistId" | "scheduledPlaylistId" | "selectedDeviceId" | "location" | "scheduledFor" | "stateVersion" | "createdAt" | "startedAt" | "endedAt", ExtArgs["result"]["party"]>
 export type PartyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   settings?: boolean | Prisma.Party$settingsArgs<ExtArgs>
@@ -2506,6 +2668,8 @@ export type $PartyPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     activePlaylistId: string | null
     scheduledPlaylistId: string | null
     selectedDeviceId: string | null
+    location: string | null
+    scheduledFor: Date | null
     stateVersion: number
     createdAt: Date
     startedAt: Date | null
@@ -2953,6 +3117,8 @@ export interface PartyFieldRefs {
   readonly activePlaylistId: Prisma.FieldRef<"Party", 'String'>
   readonly scheduledPlaylistId: Prisma.FieldRef<"Party", 'String'>
   readonly selectedDeviceId: Prisma.FieldRef<"Party", 'String'>
+  readonly location: Prisma.FieldRef<"Party", 'String'>
+  readonly scheduledFor: Prisma.FieldRef<"Party", 'DateTime'>
   readonly stateVersion: Prisma.FieldRef<"Party", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Party", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"Party", 'DateTime'>

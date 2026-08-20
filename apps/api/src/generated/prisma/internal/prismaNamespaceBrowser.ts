@@ -120,6 +120,8 @@ export const PartyScalarFieldEnum = {
   activePlaylistId: 'activePlaylistId',
   scheduledPlaylistId: 'scheduledPlaylistId',
   selectedDeviceId: 'selectedDeviceId',
+  location: 'location',
+  scheduledFor: 'scheduledFor',
   stateVersion: 'stateVersion',
   createdAt: 'createdAt',
   startedAt: 'startedAt',

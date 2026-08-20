@@ -18,6 +18,8 @@ const toPartySummary = (party: {
   scheduledPlaylistId: string | null;
   stateVersion: number;
   createdAt: Date;
+  location: string | null;
+  scheduledFor: Date | null;
   _count: {
     participants: number;
   };
@@ -31,6 +33,8 @@ const toPartySummary = (party: {
   scheduledPlaylistId: party.scheduledPlaylistId,
   stateVersion: party.stateVersion,
   createdAt: party.createdAt.toISOString(),
+  location: party.location,
+  scheduledFor: party.scheduledFor?.toISOString() ?? null,
   activeParticipantCount: party._count.participants,
   selectedDeviceId: party.selectedDeviceId,
 });
@@ -44,6 +48,8 @@ const toPublicParty = (party: {
   scheduledPlaylistId: string | null;
   stateVersion: number;
   createdAt: Date;
+  location: string | null;
+  scheduledFor: Date | null;
   _count: { participants: number };
   participants: { nickname: string; avatarSeed: string }[];
 }) => ({
@@ -55,6 +61,8 @@ const toPublicParty = (party: {
   scheduledPlaylistId: party.scheduledPlaylistId,
   stateVersion: party.stateVersion,
   createdAt: party.createdAt.toISOString(),
+  location: party.location,
+  scheduledFor: party.scheduledFor?.toISOString() ?? null,
   activeParticipantCount: party._count.participants,
   participantPreview: party.participants,
 });
@@ -68,6 +76,8 @@ const partySummarySelect = {
   scheduledPlaylistId: true,
   stateVersion: true,
   createdAt: true,
+  location: true,
+  scheduledFor: true,
   selectedDeviceId: true,
   _count: {
     select: {
@@ -90,6 +100,8 @@ const publicPartySelect = {
   scheduledPlaylistId: true,
   stateVersion: true,
   createdAt: true,
+  location: true,
+  scheduledFor: true,
   _count: {
     select: {
       participants: { where: { isActive: true, isBlocked: false } },
@@ -109,7 +121,9 @@ export const createParty = async (adminId: string, input: CreatePartyRequest) =>
       const party = await prisma.party.create({
         data: {
           adminId,
-          name: input.name,
+          name: input.name.trim(),
+          location: input.location?.trim() || null,
+          scheduledFor: input.scheduledFor === undefined ? null : new Date(input.scheduledFor),
           code: generatePartyCode(),
           settings: { create: {} },
           playbackState: { create: {} },

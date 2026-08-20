@@ -45,8 +45,9 @@ Gutter JOIN : `14–16px`. Gutter LIVE : `14px`. Les séparations internes utili
 | `label`      | `10px`                    | 800, tracking `.08em`, uppercase           |
 | `metadata`   | `10–11px`                 | 500, tabular figures                       |
 
-Display : Space Grotesk Variable, comprimée optiquement par tracking serré. UI : Atkinson
-Hyperlegible Next Variable.
+Display et UI : Barlow Condensed. Les titres utilisent 700–900, l’UI 400–600. La condensation
+provient de la fonte elle-même ; le tracking n’est resserré que sur les grands titres.
+Le wordmark `ROTATE` utilise Barlow 800–900, plus large comme sur les planches.
 
 ### Surfaces, bordures et radius
 

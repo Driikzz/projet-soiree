@@ -4,6 +4,8 @@ import { nicknameSchema, partyCodeSchema, partyStatusSchema, uuidSchema } from "
 
 export const createPartyRequestSchema = z.object({
   name: z.string().trim().min(3).max(120),
+  location: z.string().trim().max(160).optional(),
+  scheduledFor: z.string().datetime().optional(),
 });
 
 export const joinPartyRequestSchema = z.object({
@@ -36,6 +38,8 @@ export const partySummarySchema = z.object({
   scheduledPlaylistId: uuidSchema.nullable(),
   stateVersion: z.number().int().nonnegative(),
   createdAt: z.string().datetime(),
+  location: z.string().nullable(),
+  scheduledFor: z.string().datetime().nullable(),
   activeParticipantCount: z.number().int().nonnegative(),
   selectedDeviceId: z.string().nullable(),
 });
@@ -50,6 +54,8 @@ export const publicPartySchema = partySummarySchema
     scheduledPlaylistId: true,
     stateVersion: true,
     createdAt: true,
+    location: true,
+    scheduledFor: true,
     activeParticipantCount: true,
   })
   .extend({

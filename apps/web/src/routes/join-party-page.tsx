@@ -72,7 +72,7 @@ export function JoinPartyPage() {
     month: "short",
     year: "numeric",
   })
-    .format(new Date(party.createdAt))
+    .format(new Date(party.scheduledFor ?? party.createdAt))
     .replaceAll(".", "")
     .toUpperCase();
 
