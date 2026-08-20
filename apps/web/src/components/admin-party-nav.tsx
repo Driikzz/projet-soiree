@@ -26,7 +26,7 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
         </NavLink>
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/playlists`}>
           <MusicNotes aria-hidden="true" />
-          Music
+          Rotation
         </NavLink>
         <Link
           className="admin-party-nav-link"
@@ -38,10 +38,6 @@ export function AdminPartyNav({ partyId, partyName }: { partyId: string; partyNa
         <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/spotify`}>
           <SlidersHorizontal aria-hidden="true" />
           Control
-        </NavLink>
-        <NavLink className={getNavClassName} to={`/organizer/parties/${partyId}/share`}>
-          <UsersThree aria-hidden="true" />
-          Join
         </NavLink>
       </nav>
     </header>

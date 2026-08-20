@@ -1,6 +1,7 @@
 # ROTATE — Visual Specification
 
-Référence principale : `Maquette/inviteuser.png`, écran mobile de travail `390 × 844 px`.
+Références principales : `Maquette/inviteuser.png` pour Guest et
+`Maquette/dashboardadmin.png` pour Host, écran mobile de travail `390 × 844 px`.
 
 ## Fondations
 
@@ -48,6 +49,10 @@ Gutter JOIN : `14–16px`. Gutter LIVE : `14px`. Les séparations internes utili
 Display et UI : Barlow Condensed. Les titres utilisent 700–900, l’UI 400–600. La condensation
 provient de la fonte elle-même ; le tracking n’est resserré que sur les grands titres.
 Le wordmark `ROTATE` utilise Barlow 800–900, plus large comme sur les planches.
+
+Le HOST emploie une paire volontairement plus souple : Outfit Variable 650–750 pour les grands
+titres musicaux (`EN COURS`, morceau) et Barlow 400–600 pour l’UI. Barlow Condensed n’est pas
+utilisée comme display sur HOST LIVE.
 
 ### Surfaces, bordures et radius
 
@@ -99,6 +104,23 @@ Ordre à `390 × 844` :
 
 Le guide d'utilisation, le profil courant, les panneaux Mood et les cartes secondaires ne doivent
 pas interrompre le premier viewport LIVE. Ils restent accessibles ailleurs dans le parcours.
+
+## Écran HOST LIVE
+
+Ordre à `390 × 844` selon `dashboardadmin.png` :
+
+1. Ligne `ROT/XXXX`, `● LIVE` et compteur People.
+2. Titre arrondi `EN COURS.` et index `SIDE A` discret.
+3. Artwork carré dominant avec vinyle partiellement sorti et ambiance colorée très diffuse issue de
+   la pochette.
+4. `NOW PLAYING`, titre, artiste, progression et durées.
+5. Contrôles centrés : pause/reprise, morceau suivant, accès aux actions secondaires.
+6. Trois indicateurs compacts : votes, ambiance et people.
+7. `FILE D’ATTENTE / SIDE A`, puis une TrackCard partagée.
+8. Navigation basse `LIVE / ROTATION / PEOPLE / CONTROL`, 64 px hors safe area.
+
+Les outils rares (YOUR TURN, modération, règles, fin de soirée) restent fonctionnels mais commencent
+sous le premier viewport ; ils ne concurrencent plus le morceau en cours.
 
 ## Viewports et adaptation
 

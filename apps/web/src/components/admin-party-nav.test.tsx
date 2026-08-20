@@ -14,7 +14,7 @@ describe("AdminPartyNav", () => {
 
     expect(screen.getByRole("navigation", { name: "Navigation organisateur" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Your records" })).toHaveAttribute("href", "/parties");
-    expect(screen.getByRole("link", { name: "Music" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Rotation" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByText("Anniversaire de Léa")).toBeInTheDocument();
   });
 });

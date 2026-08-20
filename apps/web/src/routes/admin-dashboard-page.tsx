@@ -2,10 +2,7 @@ import {
   CheckCircle,
   Lightning,
   LockKey,
-  MusicNotes,
-  SkipForward,
   Trash,
-  UsersThree,
   WarningCircle,
   Timer,
 } from "@phosphor-icons/react";
@@ -17,13 +14,12 @@ import type { AssignRewardRequest, RewardType } from "@songfest/shared";
 import { AdminPartyNav } from "../components/admin-party-nav";
 import { AvatarMark } from "../components/avatar-mark";
 import { FormError } from "../components/form-error";
+import { HostLiveScreen } from "../components/host-live-screen";
 import { LoadingPage } from "../components/loading-page";
-import { NowPlayingCard } from "../components/now-playing-card";
 import { PartySettingsForm } from "../components/party-settings-form";
 import { RewardAssignment } from "../components/reward-assignment";
 import { RecordSummary } from "../components/record-summary";
 import { RotationTrackCard } from "../components/rotation-track-card";
-import { RotReference } from "../components/rot-reference";
 import {
   assignAdminReward,
   blockAdminParticipant,
@@ -164,12 +160,19 @@ export function AdminDashboardPage() {
 
   const activePlaylist = playlists.find((playlist) => playlist.id === party.activePlaylistId);
   const nextTrack = dashboard.recentTracks.find((track) => track.id === dashboard.nextTrackId);
+  const currentDashboardTrack = dashboard.recentTracks.find(
+    (track) => track.id === playback.currentTrack?.id,
+  );
+  const pendingTracks = dashboard.recentTracks.filter((track) => track.status === "PENDING");
+  const upNextTracks =
+    nextTrack === undefined
+      ? pendingTracks
+      : [nextTrack, ...pendingTracks.filter((track) => track.id !== nextTrack.id)];
   const actionError =
     blockMutation.error ??
     rewardMutation.error ??
     removeMutation.error ??
     forceMutation.error ??
-    playbackMutation.error ??
     flashMutation.error ??
     endMutation.error;
 
@@ -189,264 +192,223 @@ export function AdminDashboardPage() {
 
       {party.status === "ENDED" && <RecordSummary party={party} dashboard={dashboard} />}
 
-      <section className="admin-page-heading" hidden={party.status === "ENDED"}>
-        <div>
-          <RotReference code={party.code} live={party.status === "ACTIVE"} />
-          <p className="eyebrow">Host live</p>
-          <h1 className="screen-title">{party.name}</h1>
-          <p className="screen-copy">Ce dont tu as besoin pour piloter la rotation, simplement.</p>
-        </div>
-        <span className={`status-badge ${party.status === "ACTIVE" ? "status-open" : ""}`}>
-          {party.status === "ACTIVE"
-            ? "Soirée active"
-            : party.status === "ENDED"
-              ? "Terminée"
-              : "Prête"}
-        </span>
-      </section>
-
-      <section className="dashboard-overview" aria-label="Résumé de la soirée">
-        <article>
-          <UsersThree aria-hidden="true" weight="fill" />
-          <strong>{party.activeParticipantCount}</strong>
-          <span>people</span>
-        </article>
-        <article>
-          <MusicNotes aria-hidden="true" weight="fill" />
-          <strong>{activePlaylist?.name ?? "Aucune"}</strong>
-          <span>current mood</span>
-        </article>
-        <article>
-          <SkipForward aria-hidden="true" weight="fill" />
-          <strong>
-            {nextTrack?.title ?? (dashboard.nextTrackId === null ? "Aucun" : "Calculé")}
-          </strong>
-          <span>up next</span>
-        </article>
-      </section>
-
-      <section className="admin-flash-panel" aria-labelledby="admin-flash-title">
-        <div className="admin-flash-icon" aria-hidden="true">
-          <Lightning weight="fill" />
-        </div>
-        <div className="admin-flash-copy">
-          <p className="eyebrow">Brand moment</p>
-          <h2 id="admin-flash-title">Your turn</h2>
-          {dashboard.flash.turn === null ? (
-            <p>
-              {dashboard.flash.enabled
-                ? dashboard.flash.nextFlashTurnAt === null
-                  ? "Le prochain tirage se prépare."
-                  : `Prochain tirage vers ${new Intl.DateTimeFormat("fr-FR", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }).format(new Date(dashboard.flash.nextFlashTurnAt))}.`
-                : "Les tirages automatiques sont désactivés dans les réglages."}
-            </p>
-          ) : (
-            <p>
-              <strong>{dashboard.flash.turn.participant.nickname}</strong>{" "}
-              {dashboard.flash.turn.status === "SUBMITTED"
-                ? `a choisi ${dashboard.flash.turn.track?.title ?? "un morceau"}.`
-                : "a été tiré au sort et choisit son morceau."}
-            </p>
-          )}
-          <small>
-            <Timer aria-hidden="true" />
-            {dashboard.flash.intervalMinutes} min entre les tirages ·{" "}
-            {dashboard.flash.selectionWindowSeconds} s pour répondre
-          </small>
-        </div>
-        <div className="admin-flash-actions">
-          {dashboard.flash.turn === null ? (
-            <button
-              type="button"
-              className="secondary-button"
-              disabled={party.status !== "ACTIVE" || flashMutation.isPending}
-              onClick={() => flashMutation.mutate("trigger")}
-            >
-              <Lightning aria-hidden="true" />
-              Tirer maintenant
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="secondary-button"
-              disabled={flashMutation.isPending}
-              onClick={() => flashMutation.mutate("cancel")}
-            >
-              Annuler ce tour
-            </button>
-          )}
-        </div>
-      </section>
-
-      <NowPlayingCard playback={playback} />
-      <div className="dashboard-playback-actions">
-        {party.status !== "ACTIVE" ? (
-          <button
-            className="primary-button"
-            disabled={party.status === "ENDED" || playbackMutation.isPending}
-            onClick={() => playbackMutation.mutate("start")}
-          >
-            Lancer la soirée
-          </button>
-        ) : (
-          <>
-            <button
-              className="secondary-button"
-              disabled={playbackMutation.isPending}
-              onClick={() => playbackMutation.mutate(playback.isPlaying ? "pause" : "resume")}
-            >
-              {playback.isPlaying ? "Mettre en pause" : "Reprendre"}
-            </button>
-            <button
-              className="secondary-button"
-              disabled={playbackMutation.isPending}
-              onClick={() => playbackMutation.mutate("skip")}
-            >
-              <SkipForward aria-hidden="true" />
-              Morceau suivant
-            </button>
-          </>
-        )}
-      </div>
-      <FormError message={actionError instanceof Error ? actionError.message : undefined} />
-
-      <section className="dashboard-section" id="host-people" aria-labelledby="participants-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="participants-title">Participants</h2>
-          </div>
-        </div>
-        {dashboard.participants.length === 0 ? (
-          <p className="dashboard-empty">Personne n’a encore rejoint la soirée.</p>
-        ) : (
-          <div className="dashboard-participants">
-            {dashboard.participants.map((participant) => (
-              <article key={participant.id} className="dashboard-participant">
-                <AvatarMark seed={participant.nickname} label={participant.nickname} />
-                <div>
-                  <h3>{participant.nickname}</h3>
-                  <p>
-                    {participant.contributionCount} proposition
-                    {participant.contributionCount === 1 ? "" : "s"} ·{" "}
-                    {participant.isActive ? "connecté" : "hors ligne"}
-                  </p>
-                  <div className="reward-badges">
-                    {participant.rewards
-                      .filter((reward) => reward.status === "AVAILABLE")
-                      .map((reward) => (
-                        <span key={reward.id}>
-                          {rewardShortLabels[reward.type]} ×{reward.usesRemaining}
-                        </span>
-                      ))}
-                  </div>
-                </div>
-                <div className="participant-actions">
-                  <RewardAssignment
-                    participantName={participant.nickname}
-                    disabled={rewardMutation.isPending || participant.isBlocked}
-                    onAssign={(type) =>
-                      rewardMutation.mutate({
-                        partyId,
-                        participantId: participant.id,
-                        type,
-                        uses: 1,
-                      })
-                    }
-                  />
-                  <button
-                    className="text-danger-button"
-                    disabled={participant.isBlocked || blockMutation.isPending}
-                    onClick={() => blockMutation.mutate(participant.id)}
-                  >
-                    <LockKey aria-hidden="true" />
-                    {participant.isBlocked ? "Bloqué" : "Bloquer"}
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="dashboard-section" aria-labelledby="proposals-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="proposals-title">Music control</h2>
-          </div>
-        </div>
-        <div className="dashboard-track-list">
-          {dashboard.recentTracks.length === 0 ? (
-            <p className="dashboard-empty">
-              Les propositions apparaîtront ici dès qu’un invité ajoute un morceau.
-            </p>
-          ) : (
-            dashboard.recentTracks.map((track, index) => (
-              <RotationTrackCard
-                key={track.id}
-                track={track}
-                position={index + 1}
-                label={`${track.playlistName} · ${track.status}`}
-                actions={
-                  track.status === "PENDING" ? (
-                    <>
-                      <button
-                        className="secondary-button"
-                        disabled={forceMutation.isPending}
-                        onClick={() => forceMutation.mutate(track.id)}
-                      >
-                        <CheckCircle aria-hidden="true" />
-                        Forcer ensuite
-                      </button>
-                      <button
-                        className="icon-button danger-button"
-                        aria-label={`Supprimer ${track.title}`}
-                        disabled={removeMutation.isPending}
-                        onClick={() => removeMutation.mutate(track.id)}
-                      >
-                        <Trash aria-hidden="true" />
-                      </button>
-                    </>
-                  ) : undefined
-                }
-              />
-            ))
-          )}
-        </div>
-      </section>
-
-      <section className="dashboard-section" aria-labelledby="settings-title">
-        <div className="section-heading">
-          <div>
-            <h2 id="settings-title">Rules</h2>
-          </div>
-        </div>
-        <PartySettingsForm
-          settings={dashboard.settings}
-          isPending={settingsMutation.isPending}
-          {...(settingsMutation.error instanceof Error
-            ? { errorMessage: settingsMutation.error.message }
-            : {})}
-          onSubmit={(input) => settingsMutation.mutate(input)}
+      {party.status !== "ENDED" && (
+        <HostLiveScreen
+          party={party}
+          playback={playback}
+          moodName={activePlaylist?.name}
+          moodVisualKey={activePlaylist?.visualKey}
+          currentVoteCount={
+            currentDashboardTrack?.voteCount ?? playback.currentTrack?.voteCount ?? 0
+          }
+          upNext={upNextTracks}
+          playbackPending={playbackMutation.isPending}
+          errorMessage={
+            playbackMutation.error instanceof Error ? playbackMutation.error.message : undefined
+          }
+          onStart={() => playbackMutation.mutate("start")}
+          onTogglePlayback={() => playbackMutation.mutate(playback.isPlaying ? "pause" : "resume")}
+          onSkip={() => playbackMutation.mutate("skip")}
         />
-      </section>
+      )}
 
-      <section className="dashboard-danger-zone" aria-labelledby="danger-title">
-        <WarningCircle aria-hidden="true" weight="fill" />
-        <div>
-          <h2 id="danger-title">Fin de la rotation ?</h2>
-          <p>Les invités seront déconnectés et aucune nouvelle proposition ne sera acceptée.</p>
-        </div>
-        <button
-          className="danger-action-button"
-          disabled={party.status === "ENDED" || endMutation.isPending}
-          onClick={requestEnd}
+      <div className="host-live-secondary" id="host-actions">
+        <section className="admin-flash-panel" aria-labelledby="admin-flash-title">
+          <div className="admin-flash-icon" aria-hidden="true">
+            <Lightning weight="fill" />
+          </div>
+          <div className="admin-flash-copy">
+            <p className="eyebrow">Brand moment</p>
+            <h2 id="admin-flash-title">Your turn</h2>
+            {dashboard.flash.turn === null ? (
+              <p>
+                {dashboard.flash.enabled
+                  ? dashboard.flash.nextFlashTurnAt === null
+                    ? "Le prochain tirage se prépare."
+                    : `Prochain tirage vers ${new Intl.DateTimeFormat("fr-FR", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }).format(new Date(dashboard.flash.nextFlashTurnAt))}.`
+                  : "Les tirages automatiques sont désactivés dans les réglages."}
+              </p>
+            ) : (
+              <p>
+                <strong>{dashboard.flash.turn.participant.nickname}</strong>{" "}
+                {dashboard.flash.turn.status === "SUBMITTED"
+                  ? `a choisi ${dashboard.flash.turn.track?.title ?? "un morceau"}.`
+                  : "a été tiré au sort et choisit son morceau."}
+              </p>
+            )}
+            <small>
+              <Timer aria-hidden="true" />
+              {dashboard.flash.intervalMinutes} min entre les tirages ·{" "}
+              {dashboard.flash.selectionWindowSeconds} s pour répondre
+            </small>
+          </div>
+          <div className="admin-flash-actions">
+            {dashboard.flash.turn === null ? (
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={party.status !== "ACTIVE" || flashMutation.isPending}
+                onClick={() => flashMutation.mutate("trigger")}
+              >
+                <Lightning aria-hidden="true" />
+                Tirer maintenant
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="secondary-button"
+                disabled={flashMutation.isPending}
+                onClick={() => flashMutation.mutate("cancel")}
+              >
+                Annuler ce tour
+              </button>
+            )}
+          </div>
+        </section>
+        <FormError message={actionError instanceof Error ? actionError.message : undefined} />
+
+        <section
+          className="dashboard-section"
+          id="host-people"
+          aria-labelledby="participants-title"
         >
-          {party.status === "ENDED" ? "Soirée terminée" : "Clôturer"}
-        </button>
-      </section>
+          <div className="section-heading">
+            <div>
+              <h2 id="participants-title">Participants</h2>
+            </div>
+          </div>
+          {dashboard.participants.length === 0 ? (
+            <p className="dashboard-empty">Personne n’a encore rejoint la soirée.</p>
+          ) : (
+            <div className="dashboard-participants">
+              {dashboard.participants.map((participant) => (
+                <article key={participant.id} className="dashboard-participant">
+                  <AvatarMark seed={participant.nickname} label={participant.nickname} />
+                  <div>
+                    <h3>{participant.nickname}</h3>
+                    <p>
+                      {participant.contributionCount} proposition
+                      {participant.contributionCount === 1 ? "" : "s"} ·{" "}
+                      {participant.isActive ? "connecté" : "hors ligne"}
+                    </p>
+                    <div className="reward-badges">
+                      {participant.rewards
+                        .filter((reward) => reward.status === "AVAILABLE")
+                        .map((reward) => (
+                          <span key={reward.id}>
+                            {rewardShortLabels[reward.type]} ×{reward.usesRemaining}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="participant-actions">
+                    <RewardAssignment
+                      participantName={participant.nickname}
+                      disabled={rewardMutation.isPending || participant.isBlocked}
+                      onAssign={(type) =>
+                        rewardMutation.mutate({
+                          partyId,
+                          participantId: participant.id,
+                          type,
+                          uses: 1,
+                        })
+                      }
+                    />
+                    <button
+                      className="text-danger-button"
+                      disabled={participant.isBlocked || blockMutation.isPending}
+                      onClick={() => blockMutation.mutate(participant.id)}
+                    >
+                      <LockKey aria-hidden="true" />
+                      {participant.isBlocked ? "Bloqué" : "Bloquer"}
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="dashboard-section" id="host-rotation" aria-labelledby="proposals-title">
+          <div className="section-heading">
+            <div>
+              <h2 id="proposals-title">Music control</h2>
+            </div>
+          </div>
+          <div className="dashboard-track-list">
+            {dashboard.recentTracks.length === 0 ? (
+              <p className="dashboard-empty">
+                Les propositions apparaîtront ici dès qu’un invité ajoute un morceau.
+              </p>
+            ) : (
+              dashboard.recentTracks.map((track, index) => (
+                <RotationTrackCard
+                  key={track.id}
+                  track={track}
+                  position={index + 1}
+                  label={`${track.playlistName} · ${track.status}`}
+                  actions={
+                    track.status === "PENDING" ? (
+                      <>
+                        <button
+                          className="secondary-button"
+                          disabled={forceMutation.isPending}
+                          onClick={() => forceMutation.mutate(track.id)}
+                        >
+                          <CheckCircle aria-hidden="true" />
+                          Forcer ensuite
+                        </button>
+                        <button
+                          className="icon-button danger-button"
+                          aria-label={`Supprimer ${track.title}`}
+                          disabled={removeMutation.isPending}
+                          onClick={() => removeMutation.mutate(track.id)}
+                        >
+                          <Trash aria-hidden="true" />
+                        </button>
+                      </>
+                    ) : undefined
+                  }
+                />
+              ))
+            )}
+          </div>
+        </section>
+
+        <section className="dashboard-section" aria-labelledby="settings-title">
+          <div className="section-heading">
+            <div>
+              <h2 id="settings-title">Rules</h2>
+            </div>
+          </div>
+          <PartySettingsForm
+            settings={dashboard.settings}
+            isPending={settingsMutation.isPending}
+            {...(settingsMutation.error instanceof Error
+              ? { errorMessage: settingsMutation.error.message }
+              : {})}
+            onSubmit={(input) => settingsMutation.mutate(input)}
+          />
+        </section>
+
+        <section className="dashboard-danger-zone" aria-labelledby="danger-title">
+          <WarningCircle aria-hidden="true" weight="fill" />
+          <div>
+            <h2 id="danger-title">Fin de la rotation ?</h2>
+            <p>Les invités seront déconnectés et aucune nouvelle proposition ne sera acceptée.</p>
+          </div>
+          <button
+            className="danger-action-button"
+            disabled={party.status === "ENDED" || endMutation.isPending}
+            onClick={requestEnd}
+          >
+            {party.status === "ENDED" ? "Soirée terminée" : "Clôturer"}
+          </button>
+        </section>
+      </div>
     </main>
   );
 }
