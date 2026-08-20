@@ -1,5 +1,6 @@
 import { env } from "../config/env.js";
 import { prisma } from "../lib/prisma.js";
+import { isTrustedOrigin } from "../lib/trusted-origin.js";
 import {
   ADMIN_SESSION_COOKIE,
   PARTICIPANT_SESSION_COOKIE,
@@ -29,16 +30,33 @@ export const parseCookieHeader = (header: string | undefined): ReadonlyMap<strin
 };
 
 export const isTrustedSocketOrigin = (origin: string | undefined) => {
-  if (origin === undefined) {
-    return false;
-  }
-
-  try {
-    return new URL(origin).origin === env.WEB_ORIGIN;
-  } catch {
-    return false;
-  }
+  return isTrustedOrigin({
+    origin,
+    host: undefined,
+    protocol: undefined,
+    configuredOrigin: env.WEB_ORIGIN,
+  });
 };
+
+export const isTrustedSocketRequestOrigin = ({
+  origin,
+  host,
+  forwardedHost,
+  forwardedProtocol,
+  encrypted,
+}: {
+  origin: string | undefined;
+  host: string | undefined;
+  forwardedHost: string | undefined;
+  forwardedProtocol: string | undefined;
+  encrypted: boolean;
+}) =>
+  isTrustedOrigin({
+    origin,
+    host: forwardedHost ?? host,
+    protocol: forwardedProtocol ?? (encrypted ? "https" : "http"),
+    configuredOrigin: env.WEB_ORIGIN,
+  });
 
 export const loadSocketIdentity = async (
   cookieHeader: string | undefined,

@@ -378,12 +378,11 @@ export function AdminDashboardPage() {
           </div>
         </section>
 
-        <section className="dashboard-section" aria-labelledby="settings-title">
-          <div className="section-heading">
-            <div>
-              <h2 id="settings-title">Rules</h2>
-            </div>
-          </div>
+        <section
+          className="dashboard-section rotate-settings-section"
+          id="host-settings"
+          aria-label="Paramètres"
+        >
           <PartySettingsForm
             settings={dashboard.settings}
             isPending={settingsMutation.isPending}

@@ -3,6 +3,7 @@ import type { RequestHandler } from "express";
 import { AppError } from "../../errors/app-error.js";
 import { env } from "../../config/env.js";
 import { prisma } from "../../lib/prisma.js";
+import { isTrustedOrigin } from "../../lib/trusted-origin.js";
 import {
   ADMIN_CSRF_COOKIE,
   ADMIN_SESSION_COOKIE,
@@ -14,20 +15,19 @@ import { hashOpaqueToken, tokenMatchesHash } from "./session-crypto.js";
 export const requireTrustedOrigin: RequestHandler = (request, _response, next) => {
   const origin = request.get("origin");
 
-  if (origin === undefined || safeOrigin(origin) !== env.WEB_ORIGIN) {
+  if (
+    !isTrustedOrigin({
+      origin,
+      host: request.get("x-forwarded-host") ?? request.get("host"),
+      protocol: request.get("x-forwarded-proto") ?? request.protocol,
+      configuredOrigin: env.WEB_ORIGIN,
+    })
+  ) {
     next(new AppError(403, "FORBIDDEN", "Origine de la requête refusée."));
     return;
   }
 
   next();
-};
-
-const safeOrigin = (value: string) => {
-  try {
-    return new URL(value).origin;
-  } catch {
-    return null;
-  }
 };
 
 export const requireAdmin: RequestHandler = async (request, _response, next) => {

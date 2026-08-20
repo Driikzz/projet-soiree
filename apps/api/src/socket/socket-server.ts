@@ -1,4 +1,5 @@
 import type { Server as HttpServer } from "node:http";
+import { TLSSocket } from "node:tls";
 
 import {
   partySocketPayloadSchema,
@@ -10,7 +11,11 @@ import { Server } from "socket.io";
 import { env } from "../config/env.js";
 import { logger } from "../lib/logger.js";
 import { prisma } from "../lib/prisma.js";
-import { canSubscribeToParty, isTrustedSocketOrigin, loadSocketIdentity } from "./socket-auth.js";
+import {
+  canSubscribeToParty,
+  isTrustedSocketRequestOrigin,
+  loadSocketIdentity,
+} from "./socket-auth.js";
 import { getPartyRoom } from "./party-room.js";
 import { registerRealtimePublisher } from "./realtime-publisher.js";
 import { consumeSocketAction } from "./socket-rate-limit.js";
@@ -86,7 +91,17 @@ export const createSocketServer = (httpServer: HttpServer): RotateSocketServer =
       methods: ["GET", "POST"],
     },
     allowRequest: (request, callback) => {
-      const allowed = isTrustedSocketOrigin(request.headers.origin);
+      const header = (name: string) => {
+        const value = request.headers[name];
+        return Array.isArray(value) ? value[0] : value;
+      };
+      const allowed = isTrustedSocketRequestOrigin({
+        origin: request.headers.origin,
+        host: request.headers.host,
+        forwardedHost: header("x-forwarded-host"),
+        forwardedProtocol: header("x-forwarded-proto"),
+        encrypted: request.socket instanceof TLSSocket && request.socket.encrypted,
+      });
       if (!allowed) {
         logger.warn(
           { requestOrigin: request.headers.origin, expectedOrigin: env.WEB_ORIGIN },

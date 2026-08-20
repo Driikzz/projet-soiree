@@ -16,6 +16,18 @@ describe("request security", () => {
     expect(response.body.error.code).toBe("FORBIDDEN");
   });
 
+  it("accepts a same-origin request forwarded from a LAN address", async () => {
+    const response = await request(app)
+      .post("/api/auth/login")
+      .set("Origin", "http://192.168.1.42:8080")
+      .set("X-Forwarded-Host", "192.168.1.42:8080")
+      .set("X-Forwarded-Proto", "http")
+      .send({ identifier: "a", password: "short" })
+      .expect(400);
+
+    expect(response.body.error.code).toBe("VALIDATION_ERROR");
+  });
+
   it("validates request bodies before authentication logic", async () => {
     const response = await request(app)
       .post("/api/auth/login")

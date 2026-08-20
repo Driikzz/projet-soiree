@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { env } from "../src/config/env.js";
 import { getPartyRoom } from "../src/socket/party-room.js";
-import { isTrustedSocketOrigin, parseCookieHeader } from "../src/socket/socket-auth.js";
+import {
+  isTrustedSocketOrigin,
+  isTrustedSocketRequestOrigin,
+  parseCookieHeader,
+} from "../src/socket/socket-auth.js";
 import { consumeSocketAction } from "../src/socket/socket-rate-limit.js";
 
 describe("socket security helpers", () => {
@@ -26,6 +30,30 @@ describe("socket security helpers", () => {
     expect(isTrustedSocketOrigin(`${env.WEB_ORIGIN}/`)).toBe(true);
     expect(isTrustedSocketOrigin("not-a-url")).toBe(false);
     expect(isTrustedSocketOrigin("https://example.invalid")).toBe(false);
+  });
+
+  it("accepts a same-origin LAN request forwarded by the web proxy", () => {
+    expect(
+      isTrustedSocketRequestOrigin({
+        origin: "http://192.168.1.42:8080",
+        host: "api:3000",
+        forwardedHost: "192.168.1.42:8080",
+        forwardedProtocol: "http",
+        encrypted: false,
+      }),
+    ).toBe(true);
+  });
+
+  it("rejects a third-party socket origin even behind the proxy", () => {
+    expect(
+      isTrustedSocketRequestOrigin({
+        origin: "https://example.invalid",
+        host: "api:3000",
+        forwardedHost: "rotate.local",
+        forwardedProtocol: "https",
+        encrypted: false,
+      }),
+    ).toBe(false);
   });
 
   it("limits repeated socket actions inside the rolling window", () => {
